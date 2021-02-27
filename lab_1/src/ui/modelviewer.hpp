@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QPainter>
+#include <glm/glm.hpp>
 #include "ui_modelviewer.h"
 #include "core/model.hpp"
 
@@ -20,12 +21,18 @@ namespace ui
         void paintEvent(QPaintEvent* event);
 
         void paintModel(const core::Model& model);
+        bool event(QEvent* event);
 
     private:
         Ui::ModelViewer ui;
 
-        core::Model active_model;
-        QTransform initial_transform;
+        core::Model model;
+
+        glm::mat4 projection;
+        glm::mat4 view;
+
+        bool rotating;
+        QPointF start_rotation_pos;
 
         QPainter painter;
         QPen pen;
