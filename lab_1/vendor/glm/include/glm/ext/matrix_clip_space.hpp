@@ -212,11 +212,11 @@ namespace glm
 		T left, T right, T bottom, T top, T near, T far);
 
 
-	/// Creates a matrix for a right handed, symetric perspective-view frustum.
+	/// Creates a matrix for a right handed, symetric perspective-model_view frustum.
 	/// The near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -225,11 +225,11 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveRH_ZO(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a right handed, symetric perspective-view frustum.
+	/// Creates a matrix for a right handed, symetric perspective-model_view frustum.
 	/// The near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -238,11 +238,11 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveRH_NO(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a left handed, symetric perspective-view frustum.
+	/// Creates a matrix for a left handed, symetric perspective-model_view frustum.
 	/// The near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -251,11 +251,11 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveLH_ZO(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a left handed, symetric perspective-view frustum.
+	/// Creates a matrix for a left handed, symetric perspective-model_view frustum.
 	/// The near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -264,11 +264,11 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveLH_NO(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a symetric perspective-view frustum using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
+	/// Creates a matrix for a symetric perspective-model_view frustum using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
 	/// The near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -277,11 +277,11 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveZO(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a symetric perspective-view frustum using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
+	/// Creates a matrix for a symetric perspective-model_view frustum using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
 	/// The near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -290,12 +290,12 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveNO(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a right handed, symetric perspective-view frustum.
+	/// Creates a matrix for a right handed, symetric perspective-model_view frustum.
 	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	/// Otherwise, the near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -304,12 +304,12 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveRH(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a left handed, symetric perspective-view frustum.
+	/// Creates a matrix for a left handed, symetric perspective-model_view frustum.
 	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	/// Otherwise, the near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -318,11 +318,11 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveLH(
 		T fovy, T aspect, T near, T far);
 
-	/// Creates a matrix for a symetric perspective-view frustum based on the default handedness and default near and far clip planes definition.
+	/// Creates a matrix for a symetric perspective-model_view frustum based on the default handedness and default near and far clip planes definition.
 	/// To change default handedness use GLM_FORCE_LEFT_HANDED. To change default near and far clip planes definition use GLM_FORCE_DEPTH_ZERO_TO_ONE.
 	///
-	/// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 	///
@@ -332,7 +332,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspective(
 		T fovy, T aspect, T near, T far);
 
-	/// Builds a perspective projection matrix based on a field of view using right-handed coordinates.
+	/// Builds a perspective projection matrix based on a field of model_view using right-handed coordinates.
 	/// The near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	///
 	/// @param fov Expressed in radians.
@@ -346,7 +346,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovRH_ZO(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a perspective projection matrix based on a field of view using right-handed coordinates.
+	/// Builds a perspective projection matrix based on a field of model_view using right-handed coordinates.
 	/// The near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
 	/// @param fov Expressed in radians.
@@ -360,7 +360,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovRH_NO(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a perspective projection matrix based on a field of view using left-handed coordinates.
+	/// Builds a perspective projection matrix based on a field of model_view using left-handed coordinates.
 	/// The near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	///
 	/// @param fov Expressed in radians.
@@ -374,7 +374,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovLH_ZO(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a perspective projection matrix based on a field of view using left-handed coordinates.
+	/// Builds a perspective projection matrix based on a field of model_view using left-handed coordinates.
 	/// The near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
 	/// @param fov Expressed in radians.
@@ -388,7 +388,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovLH_NO(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a perspective projection matrix based on a field of view using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
+	/// Builds a perspective projection matrix based on a field of model_view using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
 	/// The near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	///
 	/// @param fov Expressed in radians.
@@ -402,7 +402,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovZO(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a perspective projection matrix based on a field of view using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
+	/// Builds a perspective projection matrix based on a field of model_view using left-handed coordinates if GLM_FORCE_LEFT_HANDED if defined or right-handed coordinates otherwise.
 	/// The near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
 	/// @param fov Expressed in radians.
@@ -416,7 +416,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovNO(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a right handed perspective projection matrix based on a field of view.
+	/// Builds a right handed perspective projection matrix based on a field of model_view.
 	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	/// Otherwise, the near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
@@ -431,7 +431,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovRH(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a left handed perspective projection matrix based on a field of view.
+	/// Builds a left handed perspective projection matrix based on a field of model_view.
 	/// If GLM_FORCE_DEPTH_ZERO_TO_ONE is defined, the near and far clip planes correspond to z normalized device coordinates of 0 and +1 respectively. (Direct3D clip volume definition)
 	/// Otherwise, the near and far clip planes correspond to z normalized device coordinates of -1 and +1 respectively. (OpenGL clip volume definition)
 	///
@@ -446,7 +446,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFovLH(
 		T fov, T width, T height, T near, T far);
 
-	/// Builds a perspective projection matrix based on a field of view and the default handedness and default near and far clip planes definition.
+	/// Builds a perspective projection matrix based on a field of model_view and the default handedness and default near and far clip planes definition.
 	/// To change default handedness use GLM_FORCE_LEFT_HANDED. To change default near and far clip planes definition use GLM_FORCE_DEPTH_ZERO_TO_ONE.
 	///
 	/// @param fov Expressed in radians.
@@ -460,10 +460,10 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> perspectiveFov(
 		T fov, T width, T height, T near, T far);
 
-	/// Creates a matrix for a left handed, symmetric perspective-view frustum with far plane at infinite.
+	/// Creates a matrix for a left handed, symmetric perspective-model_view frustum with far plane at infinite.
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	///
 	/// @tparam T A floating-point scalar type
@@ -471,10 +471,10 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> infinitePerspectiveLH(
 		T fovy, T aspect, T near);
 
-	/// Creates a matrix for a right handed, symmetric perspective-view frustum with far plane at infinite.
+	/// Creates a matrix for a right handed, symmetric perspective-model_view frustum with far plane at infinite.
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	///
 	/// @tparam T A floating-point scalar type
@@ -482,10 +482,10 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> infinitePerspectiveRH(
 		T fovy, T aspect, T near);
 
-	/// Creates a matrix for a symmetric perspective-view frustum with far plane at infinite with default handedness.
+	/// Creates a matrix for a symmetric perspective-model_view frustum with far plane at infinite with default handedness.
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	///
 	/// @tparam T A floating-point scalar type
@@ -493,10 +493,10 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> infinitePerspective(
 		T fovy, T aspect, T near);
 
-	/// Creates a matrix for a symmetric perspective-view frustum with far plane at infinite for graphics hardware that doesn't support depth clamping.
+	/// Creates a matrix for a symmetric perspective-model_view frustum with far plane at infinite for graphics hardware that doesn't support depth clamping.
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	///
 	/// @tparam T A floating-point scalar type
@@ -504,10 +504,10 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, defaultp> tweakedInfinitePerspective(
 		T fovy, T aspect, T near);
 
-	/// Creates a matrix for a symmetric perspective-view frustum with far plane at infinite for graphics hardware that doesn't support depth clamping.
+	/// Creates a matrix for a symmetric perspective-model_view frustum with far plane at infinite for graphics hardware that doesn't support depth clamping.
 	///
-	/// @param fovy Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.
-	/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
+	/// @param fovy Specifies the field of model_view angle, in degrees, in the y direction. Expressed in radians.
+	/// @param aspect Specifies the aspect ratio that determines the field of model_view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 	/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 	/// @param ep Epsilon
 	///

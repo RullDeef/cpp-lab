@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QPainter>
+#include <QTimer>
 #include <glm/glm.hpp>
 #include "ui_modelviewer.h"
 #include "core/model.hpp"
@@ -23,13 +24,30 @@ namespace ui
         void paintModel(const core::Model& model);
         bool event(QEvent* event);
 
+        QPointF projectVertex(const core::Model::Vertex& vertex) const;
+
+    private:
+        void initMVP();
+        void initPainter();
+        void initTimer();
+
+        void initSignals();
+
+    public slots:
+        void update();
+
+        void loadModelSlot();
+
     private:
         Ui::ModelViewer ui;
 
+        QTimer updateLoopTimer;
+
         core::Model model;
 
+        glm::mat4 model_view;
+        glm::mat4 view_zoom;
         glm::mat4 projection;
-        glm::mat4 view;
 
         bool rotating;
         QPointF start_rotation_pos;

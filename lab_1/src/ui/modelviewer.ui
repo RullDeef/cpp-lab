@@ -45,17 +45,17 @@
     <property name="title">
      <string>Модель</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
+    <addaction name="modelLoadOpt"/>
+    <addaction name="modelSaveOpt"/>
    </widget>
    <addaction name="menu"/>
   </widget>
-  <action name="action">
+  <action name="modelLoadOpt">
    <property name="text">
     <string>загрузить...</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="modelSaveOpt">
    <property name="text">
     <string>сохранить...</string>
    </property>
