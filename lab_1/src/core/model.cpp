@@ -5,18 +5,18 @@
 using core::ErrorCode;
 using core::Model;
 
-inline void model_clear(Model& model)
+void core::model_clear(Model& model)
 {
     model.verts.clear();
     model.edges.clear();
 }
 
-inline void model_add_vertex(Model& model, const Model::Vertex& vertex)
+void core::model_vertex_add(Model& model, const Model::Vertex& vertex)
 {
     model.verts.push_back(vertex);
 }
 
-inline void model_add_edge(Model& model, const Model::Edge& edge)
+void core::model_edge_add(Model& model, const Model::Edge& edge)
 {
     model.edges.push_back(edge);
 }
@@ -43,7 +43,7 @@ ErrorCode load_verts(std::ifstream& ifile, Model& model)
         if (!parse_vertex(strbuf, vertex))
             return ErrorCode::invalid_file;
 
-        model_add_vertex(model, vertex);
+        model_vertex_add(model, vertex);
         verts_count++;
     }
 
@@ -70,22 +70,22 @@ ErrorCode load_edges(std::ifstream& ifile, Model& model)
         if (!parse_edge(strbuf, edge))
             return ErrorCode::invalid_file;
 
-        model_add_edge(model, edge);
+        model_edge_add(model, edge);
     }
 
     return ErrorCode::success;
 }
 
-ErrorCode core::load_model(const char* filename, Model& model)
+ErrorCode core::model_load(const char* filename, Model& model)
 {
     if (filename == nullptr)
         return ErrorCode::invalid_file_name;
 
-    std::ifstream ifile(filename, std::ios::in);
-    return load_model(ifile, model);
+    std::ifstream ifile(filename);
+    return model_load(ifile, model);
 }
 
-ErrorCode core::load_model(std::ifstream& ifile, Model& model)
+ErrorCode core::model_load(std::ifstream& ifile, Model& model)
 {
     if (!ifile)
         return ErrorCode::cannot_open_file;
@@ -99,5 +99,27 @@ ErrorCode core::load_model(std::ifstream& ifile, Model& model)
     return status;
 }
 
-ErrorCode core::save_model(const char* filename, Model& model);
-ErrorCode core::save_model(std::ofstream& ofile, Model& model);
+ErrorCode core::model_save(const char* filename, Model& model)
+{
+    if (filename == nullptr)
+        return ErrorCode::invalid_file_name;
+
+    std::ofstream ofile(filename);
+    return model_save(ofile, model);
+}
+
+ErrorCode core::model_save(std::ofstream& ofile, Model& model)
+{
+    if (!ofile)
+        return ErrorCode::cannot_open_file;
+
+    ErrorCode status = ErrorCode::success;
+    for (const auto& vertex : model.verts)
+        ofile << vertex.x << " " << vertex.y << " " << vertex.z << "\n";
+    ofile << "\n";
+    for (const auto& edge : model.edges)
+        ofile << edge.first << " " << edge.second << "\n";
+
+    ofile.flush();
+    return status;
+}

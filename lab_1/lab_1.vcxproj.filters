@@ -33,9 +33,15 @@
     <ClCompile Include="src\ui\modelviewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\modelcontext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\model.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\modelcontext.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

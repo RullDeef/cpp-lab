@@ -115,11 +115,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core\model.cpp" />
+    <ClCompile Include="src\core\modelcontext.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ui\modelviewer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\model.hpp" />
+    <ClInclude Include="src\core\modelcontext.hpp" />
     <QtMoc Include="src\ui\modelviewer.hpp" />
   </ItemGroup>
   <ItemGroup>

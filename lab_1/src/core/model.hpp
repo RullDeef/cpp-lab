@@ -28,9 +28,14 @@ namespace core
         std::vector<Edge> edges;
     };
 
-    ErrorCode load_model(const char* filename, Model& model);
-    ErrorCode load_model(std::ifstream& ifile, Model& model);
+    void model_clear(Model& model);
 
-    ErrorCode save_model(const char* filename, Model& model);
-    ErrorCode save_model(std::ofstream& ofile, Model& model);
+    void model_vertex_add(Model& model, const Model::Vertex& vertex);
+    void model_edge_add(Model& model, const Model::Edge& edge);
+    
+    ErrorCode model_load(const char* filename, Model& model);
+    ErrorCode model_load(std::ifstream& ifile, Model& model);
+
+    ErrorCode model_save(const char* filename, Model& model);
+    ErrorCode model_save(std::ofstream& ofile, Model& model);
 }
