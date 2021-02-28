@@ -113,16 +113,17 @@ bool ui::ModelViewer::event(QEvent* event)
     if (event->type() == QEvent::Type::MouseButtonPress)
     {
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-        if (mouseEvent->button() == Qt::MouseButton::LeftButton)
-        {
+        prev_mouse_pos = mouseEvent->localPos();
+
+        if (mouseEvent->button() == Qt::MouseButton::RightButton)
+            grabbing = true;
+        else if (mouseEvent->button() == Qt::MouseButton::LeftButton)
             rotating = true;
-            start_rotation_pos = mouseEvent->localPos();
-        }
     }
     else if (event->type() == QEvent::Type::MouseButtonRelease)
     {
-        if (static_cast<QMouseEvent*>(event)->button() == Qt::MouseButton::LeftButton)
-            rotating = false;
+        grabbing = false;
+        rotating = false;
     }
     else if (event->type() == QEvent::Type::Wheel)
     {
@@ -132,12 +133,26 @@ bool ui::ModelViewer::event(QEvent* event)
     }
     else if (event->type() == QEvent::Type::MouseMove)
     {
-        if (rotating) // apply rotation to model_view
+        if (grabbing)
         {
             QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-            QPointF curr_rotation_pos = mouseEvent->localPos();
-            QPointF delta = curr_rotation_pos - start_rotation_pos;
-            start_rotation_pos = curr_rotation_pos;
+            QPointF curr_mouse_pos = mouseEvent->localPos();
+            QPointF delta = curr_mouse_pos - prev_mouse_pos;
+            prev_mouse_pos = curr_mouse_pos;
+
+            constexpr auto sensetivity = 60.0f;
+            delta /= sensetivity;
+
+            core::grab(model_context, delta.x(), delta.y());
+
+            repaint();
+        }
+        else if (rotating) // apply rotation to model_view
+        {
+            QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+            QPointF curr_mouse_pos = mouseEvent->localPos();
+            QPointF delta = curr_mouse_pos - prev_mouse_pos;
+            prev_mouse_pos = curr_mouse_pos;
 
             constexpr auto sensetivity = 60.0f;
             delta /= sensetivity;

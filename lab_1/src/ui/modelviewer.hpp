@@ -24,7 +24,6 @@ namespace ui
         bool event(QEvent* event);
 
     private:
-        void initMVP();
         void initPainter();
         void initTimer();
         void initSignals();
@@ -41,9 +40,9 @@ namespace ui
         bool model_loaded;
         core::ModelContext model_context;
 
-
+        bool grabbing;
         bool rotating;
-        QPointF start_rotation_pos;
+        QPointF prev_mouse_pos;
 
         QPainter painter;
         QPen pen;

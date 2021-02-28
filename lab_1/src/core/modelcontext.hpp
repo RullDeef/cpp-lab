@@ -16,7 +16,7 @@ namespace core
     struct Camera
     {
         glm::vec3 position;
-        glm::vec3 look_direction;
+        glm::vec3 look_center;
 
         glm::mat4 view;
         glm::mat4 projection;
