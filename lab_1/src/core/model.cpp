@@ -123,3 +123,37 @@ ErrorCode core::model_save(std::ofstream& ofile, Model& model)
     ofile.flush();
     return status;
 }
+
+Model core::default_cube(double side)
+{
+    side /= 2;
+    Model model;
+
+    model.verts.resize(8);
+
+    model.verts[0] = {-side, -side, -side};
+    model.verts[1] = { side, -side, -side};
+    model.verts[2] = { side,  side, -side};
+    model.verts[3] = {-side,  side, -side};
+    model.verts[4] = {-side, -side,  side};
+    model.verts[5] = { side, -side,  side};
+    model.verts[6] = { side,  side,  side};
+    model.verts[7] = {-side,  side,  side};
+
+    model.edges.resize(12);
+    
+    model.edges[ 0] = {0, 1};
+    model.edges[ 1] = {0, 3};
+    model.edges[ 2] = {0, 4};
+    model.edges[ 3] = {1, 2};
+    model.edges[ 4] = {1, 5};
+    model.edges[ 5] = {2, 3};
+    model.edges[ 6] = {2, 6};
+    model.edges[ 7] = {3, 7};
+    model.edges[ 8] = {4, 5};
+    model.edges[ 9] = {4, 7};
+    model.edges[10] = {5, 6};
+    model.edges[11] = {6, 7};
+
+    return model;
+}

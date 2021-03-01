@@ -42,17 +42,17 @@ namespace core
     void clear_selection(ModelContext& context);
     
     // selection from viewport (depends on edit mode)
-    void select(ModelContext& context, double x, double y);
-    void toggle_selection(ModelContext& context, double x, double y);
+    void select(ModelContext& context, int x, int y);
+    void toggle_selection(ModelContext& context, int x, int y);
 
     void remove_selected(ModelContext& context);
     void connect_selected_verts(ModelContext& context);
 
     // from viewport
-    void add_vertex(ModelContext& context, double x, double y);
+    void add_vertex(ModelContext& context, int x, int y);
 
     // navigation functions
     void zoom(ModelContext& context, double delta);
     void grab(ModelContext& context, double dx, double dy);
-    void orbit_aroud_selection(ModelContext& context, float phi, float theta);
+    void orbit_around_selection(ModelContext& context, float phi, float theta);
 }

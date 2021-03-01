@@ -31,7 +31,28 @@
   <property name="windowTitle">
    <string>Просмотр моделей</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QLabel" name="editStateLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>201</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>9</pointsize>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Режим редактирования: узлы</string>
+    </property>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -45,19 +66,38 @@
     <property name="title">
      <string>Модель</string>
     </property>
+    <addaction name="modelNewOpt"/>
+    <addaction name="separator"/>
     <addaction name="modelLoadOpt"/>
     <addaction name="modelSaveOpt"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Справка</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>О программе</string>
+    </property>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <action name="modelLoadOpt">
    <property name="text">
-    <string>загрузить...</string>
+    <string>открыть</string>
    </property>
   </action>
   <action name="modelSaveOpt">
    <property name="text">
-    <string>сохранить...</string>
+    <string>сохранить</string>
+   </property>
+  </action>
+  <action name="modelNewOpt">
+   <property name="text">
+    <string>новая</string>
    </property>
   </action>
  </widget>

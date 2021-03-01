@@ -28,6 +28,12 @@ namespace core
         std::vector<Edge> edges;
     };
 
+    // одна точка входа.
+    // свои модули для математики.
+    // "слишком умный интерфейс".
+    // не использовать STL.
+    // только перенос/поворот/масштабирование.
+
     void model_clear(Model& model);
 
     void model_vertex_add(Model& model, const Model::Vertex& vertex);
@@ -38,4 +44,6 @@ namespace core
 
     ErrorCode model_save(const char* filename, Model& model);
     ErrorCode model_save(std::ofstream& ofile, Model& model);
+
+    Model default_cube(double side);
 }

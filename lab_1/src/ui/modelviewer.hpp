@@ -20,8 +20,13 @@ namespace ui
         bool preloadModel(const char *filename);
         void paintEvent(QPaintEvent* event);
 
+        void mouseMoveEvent(QMouseEvent* event);
+        void mousePressEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent* event);
+        void wheelEvent(QWheelEvent* event);
+        void keyPressEvent(QKeyEvent* event);
+
         void paintModel();
-        bool event(QEvent* event);
 
     private:
         void initPainter();
@@ -31,6 +36,8 @@ namespace ui
     public slots:
         void update();
         void loadModelSlot();
+
+        void newModelSlot();
 
     private:
         Ui::ModelViewer ui;
@@ -45,7 +52,12 @@ namespace ui
         QPointF prev_mouse_pos;
 
         QPainter painter;
+
+        // regular pen
         QPen pen;
         QBrush brush;
+
+        // selected pen
+        QPen selected_pen;
     };
 }

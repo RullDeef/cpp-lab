@@ -8,7 +8,8 @@
 #include "modelviewer.hpp"
 
 ui::ModelViewer::ModelViewer(QWidget* parent)
-    : QMainWindow(parent), updateLoopTimer(this), rotating(false), model_loaded(false)
+    : QMainWindow(parent), updateLoopTimer(this),
+    model_loaded(false), grabbing(false), rotating(false)
 {
     ui.setupUi(this);
 
@@ -29,6 +30,9 @@ void ui::ModelViewer::initPainter()
     pen.setWidthF(2.0);
 
     brush.setColor(QColor::fromRgb(225, 20, 20));
+
+    selected_pen.setColor(QColor::fromRgb(225, 180, 64));
+    selected_pen.setWidthF(3.0);
 }
 
 void ui::ModelViewer::initTimer()
@@ -40,6 +44,7 @@ void ui::ModelViewer::initTimer()
 void ui::ModelViewer::initSignals()
 {
     connect(ui.modelLoadOpt, SIGNAL(triggered()), this, SLOT(loadModelSlot()));
+    connect(ui.modelNewOpt, SIGNAL(triggered()), this, SLOT(newModelSlot()));
 }
 
 bool ui::ModelViewer::preloadModel(const char* filename)
@@ -68,6 +73,12 @@ void ui::ModelViewer::loadModelSlot()
         if (filenames.count() == 1)
             preloadModel(filenames[0].toStdString().c_str());
     }
+}
+
+void ui::ModelViewer::newModelSlot()
+{
+    model_context = core::wrap_model(core::default_cube(2.0), 0, 0, width(), height());
+    model_loaded = true;
 }
 
 void ui::ModelViewer::paintEvent(QPaintEvent* event)
@@ -104,66 +115,89 @@ void ui::ModelViewer::paintModel()
             painter.drawEllipse(QPointF(point.x, point.y), 2, 2);
         }
 
+        painter.setPen(selected_pen);
+
+        // paint selected verticies
+        for (unsigned int i : model_context.selected_verts)
+        {
+            core::Model::Vertex v = model_context.model.verts[i];
+            glm::vec2 p = core::project(model_context, v);
+            painter.drawEllipse(QPointF(p.x, p.y), 2, 2);
+        }
+
         painter.end();
     }
 }
 
-bool ui::ModelViewer::event(QEvent* event)
+void ui::ModelViewer::mouseMoveEvent(QMouseEvent* event)
 {
-    if (event->type() == QEvent::Type::MouseButtonPress)
-    {
-        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-        prev_mouse_pos = mouseEvent->localPos();
+    QPointF curr_mouse_pos = event->localPos();
+    QPointF delta = curr_mouse_pos - prev_mouse_pos;
+    prev_mouse_pos = curr_mouse_pos;
 
-        if (mouseEvent->button() == Qt::MouseButton::RightButton)
+    constexpr auto grab_sensetivity = 60.0f;
+    constexpr auto rotate_sensetivity = 60.0f;
+
+    if (grabbing)
+    {
+        delta /= grab_sensetivity;
+        core::grab(model_context, delta.x(), delta.y());
+    }
+    else if (rotating)
+    {
+        delta /= rotate_sensetivity;
+        core::orbit_around_selection(model_context, delta.x(), delta.y());
+    }
+}
+
+void ui::ModelViewer::mousePressEvent(QMouseEvent* event)
+{
+    prev_mouse_pos = event->localPos();
+
+    if (event->button() == Qt::MouseButton::MiddleButton)
+    {
+        if (QApplication::queryKeyboardModifiers().testFlag(Qt::KeyboardModifier::ShiftModifier))
             grabbing = true;
-        else if (mouseEvent->button() == Qt::MouseButton::LeftButton)
+        else
             rotating = true;
     }
-    else if (event->type() == QEvent::Type::MouseButtonRelease)
+}
+
+void ui::ModelViewer::mouseReleaseEvent(QMouseEvent* event)
+{
+    grabbing = false;
+    rotating = false;
+
+    if (event->button() == Qt::MouseButton::LeftButton)
     {
-        grabbing = false;
-        rotating = false;
+        if (QApplication::queryKeyboardModifiers().testFlag(Qt::KeyboardModifier::ShiftModifier))
+            core::toggle_selection(model_context, event->localPos().x(), event->localPos().y());
+        else
+            core::select(model_context, event->localPos().x(), event->localPos().y());
     }
-    else if (event->type() == QEvent::Type::Wheel)
+    else if (event->button() == Qt::MouseButton::RightButton)
     {
-        QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
-        double delta = wheelEvent->angleDelta().y() / 200.0;
-        core::zoom(model_context, delta);
+        core::add_vertex(model_context, event->localPos().x(), event->localPos().y());
     }
-    else if (event->type() == QEvent::Type::MouseMove)
+}
+
+void ui::ModelViewer::wheelEvent(QWheelEvent* event)
+{
+    QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
+    double delta = wheelEvent->angleDelta().y() / 200.0;
+    core::zoom(model_context, delta);
+}
+
+void ui::ModelViewer::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key::Key_E)
     {
-        if (grabbing)
-        {
-            QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-            QPointF curr_mouse_pos = mouseEvent->localPos();
-            QPointF delta = curr_mouse_pos - prev_mouse_pos;
-            prev_mouse_pos = curr_mouse_pos;
-
-            constexpr auto sensetivity = 60.0f;
-            delta /= sensetivity;
-
-            core::grab(model_context, delta.x(), delta.y());
-
-            repaint();
-        }
-        else if (rotating) // apply rotation to model_view
-        {
-            QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-            QPointF curr_mouse_pos = mouseEvent->localPos();
-            QPointF delta = curr_mouse_pos - prev_mouse_pos;
-            prev_mouse_pos = curr_mouse_pos;
-
-            constexpr auto sensetivity = 60.0f;
-            delta /= sensetivity;
-
-            core::orbit_aroud_selection(model_context, delta.x(), delta.y());
-
-            repaint();
-        }
+        core::connect_selected_verts(model_context);
     }
-
-    return QMainWindow::event(event);
+    else if (event->key() == Qt::Key::Key_Delete)
+    {
+        core::remove_selected(model_context);
+    }
 }
 
 void ui::ModelViewer::update()
