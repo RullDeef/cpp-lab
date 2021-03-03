@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include "model.hpp"
 
+#if 0
+
 namespace core
 {
     enum class EditMode
@@ -56,3 +58,5 @@ namespace core
     void grab(ModelContext& context, double dx, double dy);
     void orbit_around_selection(ModelContext& context, float phi, float theta);
 }
+
+#endif

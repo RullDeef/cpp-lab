@@ -4,7 +4,13 @@
 #include <QPainter>
 #include <QTimer>
 #include "ui_modelviewer.h"
-#include "core/modelcontext.hpp"
+#include "../core/model_viewer.hpp"
+
+// одна точка входа.
+// свои модули для математики.
+// "слишком умный интерфейс".
+// не использовать STL.
+// только перенос/поворот/масштабирование.
 
 namespace ui
 {
@@ -17,35 +23,27 @@ namespace ui
         ~ModelViewer();
 
     protected:
-        bool preloadModel(const char *filename);
         void paintEvent(QPaintEvent* event);
-
         void mouseMoveEvent(QMouseEvent* event);
         void mousePressEvent(QMouseEvent* event);
         void mouseReleaseEvent(QMouseEvent* event);
         void wheelEvent(QWheelEvent* event);
-        void keyPressEvent(QKeyEvent* event);
 
+        void paintProjection(const core::ProjectedModel& prj);
         void paintModel();
 
     private:
-        void initPainter();
-        void initTimer();
-        void initSignals();
+        bool handleErrorCode(core::ErrorCode status);
 
     public slots:
-        void update();
         void loadModelSlot();
-
-        void newModelSlot();
+        void saveModelSlot();
 
     private:
         Ui::ModelViewer ui;
 
-        QTimer updateLoopTimer;
-
         bool model_loaded;
-        core::ModelContext model_context;
+        core::Context context;
 
         bool grabbing;
         bool rotating;
@@ -53,11 +51,6 @@ namespace ui
 
         QPainter painter;
 
-        // regular pen
         QPen pen;
-        QBrush brush;
-
-        // selected pen
-        QPen selected_pen;
     };
 }

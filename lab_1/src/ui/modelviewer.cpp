@@ -8,125 +8,145 @@
 #include "modelviewer.hpp"
 
 ui::ModelViewer::ModelViewer(QWidget* parent)
-    : QMainWindow(parent), updateLoopTimer(this),
-    model_loaded(false), grabbing(false), rotating(false)
+    : QMainWindow(parent), model_loaded(false), grabbing(false), rotating(false)
 {
     ui.setupUi(this);
 
-    initPainter();
-    initSignals();
+    pen.setColor(QColor::fromRgb(128, 256, 192));
+    pen.setWidthF(2.0);
 
-    initTimer();
+    connect(ui.modelLoadOpt, SIGNAL(triggered()), this, SLOT(loadModelSlot()));
+    connect(ui.modelSaveOpt, SIGNAL(triggered()), this, SLOT(saveModelSlot()));
+
+    core::Action action { core::ActionType::Init };
+    action.viewport = { 0, 0, width(), height() };
+    handleErrorCode(core::model_viewer(context, action));
 }
 
 ui::ModelViewer::~ModelViewer()
 {
-    updateLoopTimer.stop();
-}
-
-void ui::ModelViewer::initPainter()
-{
-    pen.setColor(QColor::fromRgb(128, 256, 192));
-    pen.setWidthF(2.0);
-
-    brush.setColor(QColor::fromRgb(225, 20, 20));
-
-    selected_pen.setColor(QColor::fromRgb(225, 180, 64));
-    selected_pen.setWidthF(3.0);
-}
-
-void ui::ModelViewer::initTimer()
-{
-    connect(&updateLoopTimer, SIGNAL(timeout()), this, SLOT(update()));
-    updateLoopTimer.start(1000 / 60);
-}
-
-void ui::ModelViewer::initSignals()
-{
-    connect(ui.modelLoadOpt, SIGNAL(triggered()), this, SLOT(loadModelSlot()));
-    connect(ui.modelNewOpt, SIGNAL(triggered()), this, SLOT(newModelSlot()));
-}
-
-bool ui::ModelViewer::preloadModel(const char* filename)
-{
-    core::Model model;
-    if (core::model_load(filename, model) == core::ErrorCode::success)
-    {
-        model_context = core::wrap_model(model, 0, 0, width(), height());
-        model_loaded = true;
-        return true;
-    }
-    
-    QMessageBox messageBox;
-    messageBox.setText(u8"Не удалось загрузить модель из файла.");
-    messageBox.exec();
-    return false;
+    core::Action action { core::ActionType::Destroy };
+    handleErrorCode(core::model_viewer(context, action));
 }
 
 void ui::ModelViewer::loadModelSlot()
 {
     QFileDialog dialog(this, u8"Выберите файл модели");
 
-    if (dialog.exec())
+    if (!dialog.exec())
+        return;
+
+    QStringList filenames = dialog.selectedFiles();
+    if (filenames.count() != 1)
+        return;
+
+    // LOGIC - move to core namespace (!!!)
+    core::Action action { core::ActionType::Destroy };
+    if (handleErrorCode(core::model_viewer(context, action)))
     {
-        QStringList filenames = dialog.selectedFiles();
-        if (filenames.count() == 1)
-            preloadModel(filenames[0].toStdString().c_str());
+        action = { core::ActionType::Init };
+        action.viewport = { 0, 0, width(), height() };
+        if (handleErrorCode(core::model_viewer(context, action)))
+        {
+            std::string str = filenames[0].toStdString();
+            action = { core::ActionType::Load };
+            action.filename = str.c_str();
+            if (handleErrorCode(core::model_viewer(context, action)))
+                model_loaded = true;
+        }
     }
 }
 
-void ui::ModelViewer::newModelSlot()
+void ui::ModelViewer::saveModelSlot()
 {
-    model_context = core::wrap_model(core::default_cube(2.0), 0, 0, width(), height());
-    model_loaded = true;
+    QFileDialog dialog(this, u8"Выберите файл модели");
+
+    if (!dialog.exec())
+        return;
+
+    QStringList filenames = dialog.selectedFiles();
+    if (filenames.count() != 1)
+        return;
+
+    std::string str = filenames[0].toStdString();
+    core::Action action { core::ActionType::Save };
+    action.filename = str.c_str();
+    handleErrorCode(core::model_viewer(context, action));
+}
+
+void ui::ModelViewer::paintProjection(const core::ProjectedModel& prj)
+{
+    // paint edges
+    for (unsigned int i = 0; i < prj.edges_count; i++)
+    {
+        core::screen_point p1 = prj.edges[i].p1;
+        core::screen_point p2 = prj.edges[i].p2;
+
+        painter.drawLine(QPoint(p1.x, p1.y), QPoint(p2.x, p2.y));
+    }
+
+    // paint verticies
+    for (unsigned int i = 0; i < prj.verts_count; i++)
+    {
+        core::screen_point p = prj.verts[i];
+
+        painter.drawEllipse(QPoint(p.x, p.y), 2, 2);
+    }
 }
 
 void ui::ModelViewer::paintEvent(QPaintEvent* event)
 {
     QMainWindow::paintEvent(event);
 
-    if (model_loaded)
-        paintModel();
+    if (!model_loaded)
+        return;
+
+    if (!painter.begin(this))
+        return;
+
+    painter.setPen(pen);
+    paintProjection(context.projection);
+    painter.end();
 }
 
-void ui::ModelViewer::paintModel()
+// true = good
+bool ui::ModelViewer::handleErrorCode(core::ErrorCode status)
 {
-    if (painter.begin(this))
+    const char* message = u8"Произошла неизвестная ошибка.";
+
+    switch (status)
     {
-        painter.setPen(pen);
-        painter.setBrush(brush);
+    case core::ErrorCode::success:
+        return true;
 
-        // paint edges
-        for (const auto& edge : model_context.model.edges)
-        {
-            core::Model::Vertex v1 = model_context.model.verts[edge.first];
-            core::Model::Vertex v2 = model_context.model.verts[edge.second];
+    case core::ErrorCode::invalid_viewport:
+        message = u8"Некорректная область просмотра (veiwport)";
+        break;
 
-            glm::vec2 p1 = core::project(model_context, v1);
-            glm::vec2 p2 = core::project(model_context, v2);
+    case core::ErrorCode::bad_malloc:
+        message = u8"Не удалось выделить достаточно памяти для работы.";
+        break;
 
-            painter.drawLine(QPointF(p1.x, p1.y), QPointF(p2.x, p2.y));
-        }
+    case core::ErrorCode::invalid_file_name:
+        message = u8"Указано некорректное имя файла.";
+        break;
 
-        // paint verticies
-        for (const auto& vertex : model_context.model.verts)
-        {
-            glm::vec2 point = core::project(model_context, vertex);
-            painter.drawEllipse(QPointF(point.x, point.y), 2, 2);
-        }
+    case core::ErrorCode::cannot_open_file:
+        message = u8"Не удалось открыть файл.";
+        break;
 
-        painter.setPen(selected_pen);
+    case core::ErrorCode::invalid_file:
+        message = u8"Файл имеет некорректный формат.";
+        break;
 
-        // paint selected verticies
-        for (unsigned int i : model_context.selected_verts)
-        {
-            core::Model::Vertex v = model_context.model.verts[i];
-            glm::vec2 p = core::project(model_context, v);
-            painter.drawEllipse(QPointF(p.x, p.y), 2, 2);
-        }
-
-        painter.end();
+    case core::ErrorCode::unknown_action:
+        message = u8"При взаимодействии с прикладным доменом, последний не смог распознать тип запрашиваемого действия.";
+        break;
     }
+
+
+    QMessageBox::critical(this, u8"Ошибка", message);
+    return false;
 }
 
 void ui::ModelViewer::mouseMoveEvent(QMouseEvent* event)
@@ -135,18 +155,19 @@ void ui::ModelViewer::mouseMoveEvent(QMouseEvent* event)
     QPointF delta = curr_mouse_pos - prev_mouse_pos;
     prev_mouse_pos = curr_mouse_pos;
 
-    constexpr auto grab_sensetivity = 60.0f;
-    constexpr auto rotate_sensetivity = 60.0f;
-
     if (grabbing)
     {
-        delta /= grab_sensetivity;
-        core::grab(model_context, delta.x(), delta.y());
+        core::Action action { core::ActionType::Translate };
+        action.translate = { delta.x(), delta.y() };
+        handleErrorCode(core::model_viewer(context, action));
+        repaint();
     }
     else if (rotating)
     {
-        delta /= rotate_sensetivity;
-        core::orbit_around_selection(model_context, delta.x(), delta.y());
+        core::Action action { core::ActionType::Rotate };
+        action.rotate = { delta.x(), delta.y() };
+        handleErrorCode(core::model_viewer(context, action));
+        repaint();
     }
 }
 
@@ -154,7 +175,7 @@ void ui::ModelViewer::mousePressEvent(QMouseEvent* event)
 {
     prev_mouse_pos = event->localPos();
 
-    if (event->button() == Qt::MouseButton::MiddleButton)
+    if (event->button() == Qt::MouseButton::LeftButton)
     {
         if (QApplication::queryKeyboardModifiers().testFlag(Qt::KeyboardModifier::ShiftModifier))
             grabbing = true;
@@ -167,40 +188,14 @@ void ui::ModelViewer::mouseReleaseEvent(QMouseEvent* event)
 {
     grabbing = false;
     rotating = false;
-
-    if (event->button() == Qt::MouseButton::LeftButton)
-    {
-        if (QApplication::queryKeyboardModifiers().testFlag(Qt::KeyboardModifier::ShiftModifier))
-            core::toggle_selection(model_context, event->localPos().x(), event->localPos().y());
-        else
-            core::select(model_context, event->localPos().x(), event->localPos().y());
-    }
-    else if (event->button() == Qt::MouseButton::RightButton)
-    {
-        core::add_vertex(model_context, event->localPos().x(), event->localPos().y());
-    }
 }
 
 void ui::ModelViewer::wheelEvent(QWheelEvent* event)
 {
     QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
-    double delta = wheelEvent->angleDelta().y() / 200.0;
-    core::zoom(model_context, delta);
-}
 
-void ui::ModelViewer::keyPressEvent(QKeyEvent* event)
-{
-    if (event->key() == Qt::Key::Key_E)
-    {
-        core::connect_selected_verts(model_context);
-    }
-    else if (event->key() == Qt::Key::Key_Delete)
-    {
-        core::remove_selected(model_context);
-    }
-}
-
-void ui::ModelViewer::update()
-{
-    QWidget::update();
+    core::Action action { core::ActionType::Scale };
+    action.scale.factor = wheelEvent->angleDelta().y() / 180.0;
+    handleErrorCode(core::model_viewer(context, action));
+    repaint();
 }

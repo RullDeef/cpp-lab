@@ -2,6 +2,8 @@
 #include <glm/gtx/intersect.hpp>
 #include "modelcontext.hpp"
 
+#if 0
+
 using namespace core;
 using namespace glm;
 
@@ -227,3 +229,5 @@ void core::orbit_around_selection(ModelContext& context, float phi, float theta)
 
     update_camera_view(context.camera);
 }
+
+#endif

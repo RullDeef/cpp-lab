@@ -31,28 +31,7 @@
   <property name="windowTitle">
    <string>Просмотр моделей</string>
   </property>
-  <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="editStateLabel">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>201</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Segoe UI</family>
-      <pointsize>9</pointsize>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Режим редактирования: узлы</string>
-    </property>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -66,24 +45,22 @@
     <property name="title">
      <string>Модель</string>
     </property>
-    <addaction name="modelNewOpt"/>
-    <addaction name="separator"/>
     <addaction name="modelLoadOpt"/>
     <addaction name="modelSaveOpt"/>
    </widget>
-   <widget class="QMenu" name="menu_2">
+   <widget class="QMenu" name="helpOpt">
     <property name="title">
      <string>Справка</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_3">
+   <widget class="QMenu" name="aboutOpt">
     <property name="title">
      <string>О программе</string>
     </property>
    </widget>
    <addaction name="menu"/>
-   <addaction name="menu_2"/>
-   <addaction name="menu_3"/>
+   <addaction name="helpOpt"/>
+   <addaction name="aboutOpt"/>
   </widget>
   <action name="modelLoadOpt">
    <property name="text">
