@@ -31,47 +31,25 @@ ui::ModelViewer::~ModelViewer()
 
 void ui::ModelViewer::loadModelSlot()
 {
-    QFileDialog dialog(this, u8"Выберите файл модели");
-
-    if (!dialog.exec())
-        return;
-
-    QStringList filenames = dialog.selectedFiles();
-    if (filenames.count() != 1)
-        return;
-
-    // LOGIC - move to core namespace (!!!)
-    core::Action action { core::ActionType::Destroy };
-    if (handleErrorCode(core::model_viewer(context, action)))
+    std::string filename;
+    if (requestFilename(filename))
     {
-        action = { core::ActionType::Init };
-        action.viewport = { 0, 0, width(), height() };
+        core::Action action = { core::ActionType::Load };
+        action.filename = filename.c_str();
         if (handleErrorCode(core::model_viewer(context, action)))
-        {
-            std::string str = filenames[0].toStdString();
-            action = { core::ActionType::Load };
-            action.filename = str.c_str();
-            if (handleErrorCode(core::model_viewer(context, action)))
-                model_loaded = true;
-        }
+            model_loaded = true;
     }
 }
 
 void ui::ModelViewer::saveModelSlot()
 {
-    QFileDialog dialog(this, u8"Выберите файл модели");
-
-    if (!dialog.exec())
-        return;
-
-    QStringList filenames = dialog.selectedFiles();
-    if (filenames.count() != 1)
-        return;
-
-    std::string str = filenames[0].toStdString();
-    core::Action action { core::ActionType::Save };
-    action.filename = str.c_str();
-    handleErrorCode(core::model_viewer(context, action));
+    std::string filename;
+    if (requestFilename(filename))
+    {
+        core::Action action { core::ActionType::Save };
+        action.filename = filename.c_str();
+        handleErrorCode(core::model_viewer(context, action));
+    }
 }
 
 void ui::ModelViewer::paintProjection(const core::ProjectedModel& prj)
@@ -107,6 +85,21 @@ void ui::ModelViewer::paintEvent(QPaintEvent* event)
     painter.setPen(pen);
     paintProjection(context.projection);
     painter.end();
+}
+
+bool ui::ModelViewer::requestFilename(std::string& filename)
+{
+    QFileDialog dialog(this, u8"Выберите файл модели");
+
+    if (!dialog.exec())
+        return false;
+
+    QStringList filenames = dialog.selectedFiles();
+    if (filenames.count() != 1)
+        return false;
+
+    filename = filenames[0].toStdString();
+    return true;
 }
 
 // true = good
@@ -151,24 +144,27 @@ bool ui::ModelViewer::handleErrorCode(core::ErrorCode status)
 
 void ui::ModelViewer::mouseMoveEvent(QMouseEvent* event)
 {
+    if (!grabbing && !rotating)
+        return;
+
     QPointF curr_mouse_pos = event->localPos();
     QPointF delta = curr_mouse_pos - prev_mouse_pos;
     prev_mouse_pos = curr_mouse_pos;
 
+    core::Action action {};
     if (grabbing)
     {
-        core::Action action { core::ActionType::Translate };
+        action.type = core::ActionType::Translate;
         action.translate = { delta.x(), delta.y() };
-        handleErrorCode(core::model_viewer(context, action));
-        repaint();
     }
     else if (rotating)
     {
-        core::Action action { core::ActionType::Rotate };
+        action.type = core::ActionType::Rotate;
         action.rotate = { delta.x(), delta.y() };
-        handleErrorCode(core::model_viewer(context, action));
-        repaint();
     }
+
+    handleErrorCode(core::model_viewer(context, action));
+    repaint();
 }
 
 void ui::ModelViewer::mousePressEvent(QMouseEvent* event)
@@ -177,7 +173,8 @@ void ui::ModelViewer::mousePressEvent(QMouseEvent* event)
 
     if (event->button() == Qt::MouseButton::LeftButton)
     {
-        if (QApplication::queryKeyboardModifiers().testFlag(Qt::KeyboardModifier::ShiftModifier))
+        if (QApplication::queryKeyboardModifiers().testFlag
+                (Qt::KeyboardModifier::ShiftModifier))
             grabbing = true;
         else
             rotating = true;

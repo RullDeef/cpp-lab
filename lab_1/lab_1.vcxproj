@@ -114,17 +114,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\alg.cpp" />
-    <ClCompile Include="src\core\modelcontext.cpp" />
+    <ClCompile Include="src\core\context.cpp" />
+    <ClCompile Include="src\core\ext_math.cpp" />
     <ClCompile Include="src\core\model_viewer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ui\modelviewer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\alg.hpp" />
-    <ClInclude Include="src\core\basetypes.hpp" />
-    <ClInclude Include="src\core\model.hpp" />
-    <ClInclude Include="src\core\modelcontext.hpp" />
+    <ClInclude Include="src\core\action.hpp" />
+    <ClInclude Include="src\core\ext_math.hpp" />
+    <ClInclude Include="src\core\error_code.hpp" />
+    <ClInclude Include="src\core\context.hpp" />
     <ClInclude Include="src\core\model_viewer.hpp" />
     <QtMoc Include="src\ui\modelviewer.hpp" />
   </ItemGroup>

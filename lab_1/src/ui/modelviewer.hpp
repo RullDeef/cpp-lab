@@ -6,12 +6,6 @@
 #include "ui_modelviewer.h"
 #include "../core/model_viewer.hpp"
 
-// одна точка входа.
-// свои модули для математики.
-// "слишком умный интерфейс".
-// не использовать STL.
-// только перенос/поворот/масштабирование.
-
 namespace ui
 {
     class ModelViewer : public QMainWindow
@@ -33,6 +27,7 @@ namespace ui
         void paintModel();
 
     private:
+        bool requestFilename(std::string& filename);
         bool handleErrorCode(core::ErrorCode status);
 
     public slots:

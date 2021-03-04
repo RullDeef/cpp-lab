@@ -1,5 +1,5 @@
 #include <cmath>
-#include "alg.hpp"
+#include "ext_math.hpp"
 
 using namespace core;
 
@@ -15,7 +15,7 @@ mat alg::identity()
 
 vec alg::norm(const vec& v)
 {
-    real len = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    double len = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
     return vec { v.x / len, v.y / len, v.z / len };
 }
 
@@ -54,9 +54,9 @@ mat alg::mat_mult(const mat& left, const mat& right)
     return res;
 }
 
-real alg::mat_det(const mat& m)
+double alg::mat_det(const mat& m)
 {
-    real det = 0;
+    double det = 0;
 
     det += m.data[0] * m.data[5] * m.data[10] * m.data[15];
     det += m.data[1] * m.data[6] * m.data[11] * m.data[12];
@@ -187,7 +187,7 @@ mat alg::mat_inv(const mat& m)
         m.data[8] * m.data[1] * m.data[6] -
         m.data[8] * m.data[2] * m.data[5];
 
-    real det = 1 / (m.data[0] * inv.data[0]
+    double det = 1 / (m.data[0] * inv.data[0]
         + m.data[1] * inv.data[4]
         + m.data[2] * inv.data[8]
         + m.data[3] * inv.data[12]);
@@ -208,41 +208,11 @@ mat alg::translation(const vec& offset)
     };
 }
 
-mat alg::rotation_x(real angle)
+mat alg::rotation(const vec& axis, double angle)
 {
-    return mat {
-        1, 0, 0, 0,
-        0, cos(angle), -sin(angle), 0,
-        0, sin(angle),  cos(angle), 0,
-        0, 0, 0, 1
-    };
-}
-
-mat alg::rotation_y(real angle)
-{
-    return mat {
-         cos(angle), 0, sin(angle), 0,
-        0, 1, 0, 0,
-        -sin(angle), 0, cos(angle), 0,
-        0, 0, 0, 1
-    };
-}
-
-mat alg::rotation_z(real angle)
-{
-    return mat {
-        cos(angle), -sin(angle), 0, 0,
-        sin(angle),  cos(angle), 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    };
-}
-
-mat alg::rotation(const vec& axis, real angle)
-{
-    const real& x = axis.x, y = axis.y, z = axis.z;
-    real c = cos(angle), s = sin(angle);
-    real imc = 1 - c;
+    const double& x = axis.x, y = axis.y, z = axis.z;
+    double c = cos(angle), s = sin(angle);
+    double imc = 1 - c;
 
     return mat{
         c + x * x * imc,        x * y * imc + z * s,    x * z * imc - y * s,  0,
@@ -250,13 +220,6 @@ mat alg::rotation(const vec& axis, real angle)
         x * z * imc + y * s,    y * z * imc - x * s,    c + z * z * imc,      0,
         0, 0, 0, 1
     };
-
-    // return mat {
-    //     c + x * x * imc, x * y * imc - y * s, x * z * imc + y * s, 0,
-    //     x * y * imc * z * s, c + y * y * imc, y * z * imc - x * s, 0,
-    //     x * z * imc - y * s, y * z * imc + x * s, c + z * z * imc, 0,
-    //     0, 0, 0, 1
-    // };
 }
 
 mat alg::scale(const vec& dims)
@@ -269,9 +232,9 @@ mat alg::scale(const vec& dims)
     };
 }
 
-mat alg::perspective(angle fov, real aspect, real near, real far)
+mat alg::perspective(double fov, double aspect, double near, double far)
 {
-    real s = 1 / tan(fov / 2);
+    double s = 1 / tan(fov / 2);
 
     return mat {
         s / aspect, 0, 0, 0,
@@ -284,8 +247,9 @@ mat alg::perspective(angle fov, real aspect, real near, real far)
 screen_point alg::vec_project(const vec& v, const mat& prj, viewport viewport)
 {
     vec p_v = vec_mult(v, prj);
+
     return screen_point{
-        integer(viewport.left + 0.5 * (1 + p_v.x / -p_v.z) * viewport.width),
-        integer(viewport.top + 0.5 * (1 - p_v.y / -p_v.z) * viewport.height)
+        int(viewport.left + 0.5 * (1 + p_v.x / -p_v.z) * viewport.width),
+        int(viewport.top + 0.5 * (1 - p_v.y / -p_v.z) * viewport.height)
     };
 }

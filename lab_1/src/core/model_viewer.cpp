@@ -1,33 +1,40 @@
 #include <cstdio>
 #include <cstdlib>
-#include <memory>
+#include "ext_math.hpp"
 #include "model_viewer.hpp"
-#include "alg.hpp"
 
 using namespace core;
 using namespace core::alg;
 
-ErrorCode core::validate_viewport(viewport viewport)
+static ErrorCode do_smart_load(Context& context, const char* filename)
 {
-    if (viewport.width > 0 && viewport.height > 0)
-        return ErrorCode::success;
+    ErrorCode status;
+    if (validate_context(context) == ErrorCode::success)
+    {
+        Model new_model{ 0, 0, nullptr, nullptr };
+
+        status = do_load(new_model, filename);
+        if (status == ErrorCode::success)
+        {
+            destroy_model(context.model);
+            destroy_projection(context.projection);
+            context.model = new_model;
+            context.view_mat = translation({ 0, 0, view_z });
+        }
+    }
     else
-        return ErrorCode::invalid_viewport;
-}
+        status = do_load(context.model, filename);
 
-ErrorCode core::validate_model(const Model& model)
-{
-    return ErrorCode::success;
-}
+    if (status == ErrorCode::success)
+    {
+        status = init_projection(context.projection,
+            context.model.verts_count, context.model.edges_count);
 
-ErrorCode core::validate_projection(const ProjectedModel& projetion)
-{
-    return ErrorCode::success;
-}
+        if (status == ErrorCode::success)
+            status = update_projection(context);
+    }
 
-ErrorCode core::validate_context(const Context& context)
-{
-    return ErrorCode::success;
+    return status;
 }
 
 ErrorCode core::model_viewer(Context& context, const Action& action)
@@ -45,37 +52,14 @@ ErrorCode core::model_viewer(Context& context, const Action& action)
         return do_destroy(context);
 
     if (action.type == ActionType::Init)
-    {
-        ErrorCode status = validate_viewport(action.viewport);
-        if (status == ErrorCode::success)
-        {
-            memset(&context, 0, sizeof(Context));
-            context.viewport = action.viewport;
-            real aspect = (real)action.viewport.width / action.viewport.height;
-            context.proj_mat = perspective(view_fov, aspect, view_near, view_far);
-            context.view_mat = translation({ 0, 0, view_z });
-        }
-        return status;
-    }
+        return do_init(context, action.viewport);
 
     ErrorCode status = validate_viewport(context.viewport);
     if (status != ErrorCode::success)
         return status;
 
     if (action.type == ActionType::Load)
-    {
-        status = do_load(context.model, action.filename);
-        if (status == ErrorCode::success)
-        {
-            status = init_projection(context.projection,
-                context.model.verts_count, context.model.edges_count);
-
-            if (status == ErrorCode::success)
-                status = update_projection(context);
-        }
-
-        return status;
-    }
+        return do_smart_load(context, action.filename);
 
     status = validate_model(context.model);
     if (status != ErrorCode::success)
@@ -84,6 +68,9 @@ ErrorCode core::model_viewer(Context& context, const Action& action)
     status = validate_projection(context.projection);
     if (status != ErrorCode::success)
         return status;
+
+    if (action.type == ActionType::Save)
+        return do_save(context.model, context.view_mat, action.filename);
 
     switch (action.type)
     {
@@ -96,8 +83,6 @@ ErrorCode core::model_viewer(Context& context, const Action& action)
     case ActionType::Rotate:
         status = do_rotation(context.view_mat, action.rotate);
         break;
-    case ActionType::Save:
-        return do_save(context.model, context.view_mat, action.filename);
     default:
         return ErrorCode::unknown_action;
     }
@@ -110,6 +95,14 @@ ErrorCode core::model_viewer(Context& context, const Action& action)
 
 ErrorCode core::do_translation(mat& view, const TranslateAction& action)
 {
+    constexpr auto sensetivity = 60.0;
+
+    double dx = -action.dx / sensetivity;
+    double dy =  action.dy / sensetivity;
+
+    vec loc = dir_mult({ dx, dy, 0 }, mat_inv(view));
+    view = mat_mult(translation(loc), view);
+
     return ErrorCode::success;
 }
 
@@ -117,8 +110,8 @@ ErrorCode core::do_rotation(mat& view, const RotateAction& action)
 {
     constexpr auto sensetivity = 60.0;
 
-    real phi = -action.dx / sensetivity;
-    real theta = -action.dy / sensetivity;
+    double phi = -action.dx / sensetivity;
+    double theta = -action.dy / sensetivity;
 
     vec x_loc = norm(dir_mult({ 1, 0, 0 }, mat_inv(view)));
     view = mat_mult(rotation(x_loc, theta), view);
@@ -133,16 +126,10 @@ ErrorCode core::do_scale(mat& view, const ScaleAction& action)
 {
     constexpr auto sensetivity = 60.0;
 
-    real f = 1 + action.factor / sensetivity;
+    double f = 1 + action.factor / sensetivity;
     view = mat_mult(scale({ f, f, f }), view);
 
     return ErrorCode::success;
-}
-
-// true = success
-inline bool read_vertex(FILE* file, vec& vert)
-{
-    return fscanf(file, "%lf%lf%lf", &vert.x, &vert.y, &vert.z) == 3;
 }
 
 // file validated already
@@ -157,21 +144,17 @@ static ErrorCode load_verts(FILE* file, Model& model)
 
     for (unsigned int i = 0; i < model.verts_count; i++)
     {
-        if (!read_vertex(file, model.verts[i]))
+        vec& vert = model.verts[i];
+        if (fscanf(file, "%lf%lf%lf", &vert.x, &vert.y, &vert.z) != 3)
         {
             free(model.verts);
             model.verts = nullptr;
+            model.verts_count = 0;
             return ErrorCode::invalid_file;
         }
     }
 
     return ErrorCode::success;
-}
-
-// true = success
-inline bool read_edge(FILE* file, edge& edge)
-{
-    return fscanf(file, "%u%u", &edge.p1, &edge.p2) == 2 && edge.p1 != edge.p2;
 }
 
 // file validated already
@@ -186,10 +169,12 @@ static ErrorCode load_edges(FILE* file, Model& model)
 
     for (unsigned int i = 0; i < model.edges_count; i++)
     {
-        if (!read_edge(file, model.edges[i]))
+        edge& edge = model.edges[i];
+        if (fscanf(file, "%u%u", &edge.p1, &edge.p2) != 2 || edge.p1 == edge.p2)
         {
             free(model.edges);
             model.edges = nullptr;
+            model.edges_count = 0;
             return ErrorCode::invalid_file;
         }
     }
@@ -215,6 +200,7 @@ ErrorCode core::do_load(Model& model, const char* filename)
         {
             free(model.verts);
             model.verts = nullptr;
+            model.verts_count = 0;
         }
     }
 
@@ -271,87 +257,22 @@ ErrorCode core::do_save(const Model& model, mat view, const char* filename)
     return status;
 }
 
-static void destroy_model(Model& model)
+ErrorCode core::do_init(Context& context, viewport viewport)
 {
-    if (model.verts)
-        free(model.verts);
-
-    if (model.edges)
-        free(model.edges);
-
-    memset(&model, 0, sizeof(Model));
-}
-
-static void destroy_projection(ProjectedModel& projection)
-{
-    if (projection.verts)
-        free(projection.verts);
-
-    if (projection.edges)
-        free(projection.edges);
-
-    memset(&projection, 0, sizeof(ProjectedModel));
+    ErrorCode status = validate_viewport(viewport);
+    if (status == ErrorCode::success)
+    {
+        context = { 0 };
+        context.viewport = viewport;
+        double aspect = (double)viewport.width / viewport.height;
+        context.proj_mat = perspective(view_fov, aspect, view_near, view_far);
+        context.view_mat = translation({ 0, 0, view_z });
+    }
+    return status;
 }
 
 ErrorCode core::do_destroy(Context& context)
 {
-    destroy_model(context.model);
-    destroy_projection(context.projection);
-
-    context.proj_mat = identity();
-    context.view_mat = identity();
-    context.viewport = viewport { 0, 0, 0, 0 };
-
-    return ErrorCode::success;
-}
-
-ErrorCode core::init_projection(ProjectedModel& prj, unsigned int verts, unsigned int edges)
-{
-    prj.verts_count = verts;
-    prj.verts = static_cast<screen_point*>(malloc(verts * sizeof(screen_point)));
-
-    if (prj.verts == nullptr)
-    {
-        prj.verts_count = 0;
-        return ErrorCode::bad_malloc;
-    }
-
-    prj.edges_count = edges;
-    prj.edges = static_cast<section*>(malloc(edges * sizeof(section)));
-
-    if (prj.edges == nullptr)
-    {
-        free(prj.verts);
-        prj.edges_count = 0;
-        prj.verts_count = 0;
-        prj.verts = nullptr;
-        return ErrorCode::bad_malloc;
-    }
-
-    return ErrorCode::success;
-}
-
-ErrorCode core::update_projection(Context& context)
-{
-    mat mvp = mat_mult(context.view_mat, context.proj_mat);
-
-    // project each vertex in model
-    for (unsigned int i = 0; i < context.model.verts_count; i++)
-    {
-        vec v = context.model.verts[i];
-        screen_point p = vec_project(context.model.verts[i], mvp, context.viewport);
-        context.projection.verts[i] = p;
-    }
-
-    // copy projected points based on edges
-    for (unsigned int i = 0; i < context.model.edges_count; i++)
-    {
-        index p1 = context.model.edges[i].p1;
-        index p2 = context.model.edges[i].p2;
-
-        context.projection.edges[i].p1 = context.projection.verts[p1];
-        context.projection.edges[i].p2 = context.projection.verts[p2];
-    }
-
+    destroy_context(context);
     return ErrorCode::success;
 }
