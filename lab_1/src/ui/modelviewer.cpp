@@ -17,6 +17,8 @@ ui::ModelViewer::ModelViewer(QWidget* parent)
 
     connect(ui.modelLoadOpt, SIGNAL(triggered()), this, SLOT(loadModelSlot()));
     connect(ui.modelSaveOpt, SIGNAL(triggered()), this, SLOT(saveModelSlot()));
+    connect(ui.helpOpt, SIGNAL(triggered()), this, SLOT(showHelpSlot()));
+    connect(ui.infoOpt, SIGNAL(triggered()), this, SLOT(showInfoSlot()));
 
     core::Action action { core::ActionType::Init };
     action.viewport = { 0, 0, width(), height() };
@@ -50,6 +52,24 @@ void ui::ModelViewer::saveModelSlot()
         action.filename = filename.c_str();
         handleErrorCode(core::model_viewer(context, action));
     }
+}
+
+void ui::ModelViewer::showHelpSlot()
+{
+    QMessageBox::about(this, u8"Справка",
+        u8"Перемещение модели параллельно плоскости экрана: Shift + ЛКМ\n"
+        u8"Вращение модели: ЛКМ\n"
+        u8"Масштабирование модели: СКМ"
+    );
+}
+
+void ui::ModelViewer::showInfoSlot()
+{
+    QMessageBox::about(this, u8"О программе",
+        u8"Лабораторная работа №1 по ООП.\n\n"
+        u8"Выполнил: Клименко Алексей, ИУ7-45Б\n"
+        u8"@ Март, 2021"
+    );
 }
 
 void ui::ModelViewer::paintProjection(const core::ProjectedModel& prj)
@@ -189,10 +209,8 @@ void ui::ModelViewer::mouseReleaseEvent(QMouseEvent* event)
 
 void ui::ModelViewer::wheelEvent(QWheelEvent* event)
 {
-    QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
-
     core::Action action { core::ActionType::Scale };
-    action.scale.factor = wheelEvent->angleDelta().y() / 180.0;
+    action.scale.factor = event->angleDelta().y() / 180.0;
     handleErrorCode(core::model_viewer(context, action));
     repaint();
 }

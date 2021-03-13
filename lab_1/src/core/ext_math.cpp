@@ -39,7 +39,7 @@ vec alg::dir_mult(const vec& v, const mat& m)
 
 mat alg::mat_mult(const mat& left, const mat& right)
 {
-    mat res {};
+    mat res;
 
     for (int i = 0; i < 4; i++)
     {
@@ -249,7 +249,7 @@ screen_point alg::vec_project(const vec& v, const mat& prj, viewport viewport)
     vec p_v = vec_mult(v, prj);
 
     return screen_point{
-        int(viewport.left + 0.5 * (1 + p_v.x / -p_v.z) * viewport.width),
-        int(viewport.top + 0.5 * (1 - p_v.y / -p_v.z) * viewport.height)
+        static_cast<int>(viewport.left + 0.5 * (1 + p_v.x / -p_v.z) * viewport.width),
+        static_cast<int>(viewport.top + 0.5 * (1 - p_v.y / -p_v.z) * viewport.height)
     };
 }

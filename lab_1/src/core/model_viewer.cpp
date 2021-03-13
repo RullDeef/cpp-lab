@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
+#include <memory>
 #include "ext_math.hpp"
 #include "model_viewer.hpp"
 
@@ -142,22 +143,24 @@ static ErrorCode load_verts(FILE* file, Model& model)
     if (model.verts == nullptr)
         return ErrorCode::bad_malloc;
 
-    for (unsigned int i = 0; i < model.verts_count; i++)
+    bool file_valid = true;
+    for (unsigned int i = 0; i < model.verts_count && file_valid; i++)
     {
-        vec& vert = model.verts[i];
-        if (fscanf(file, "%lf%lf%lf", &vert.x, &vert.y, &vert.z) != 3)
-        {
-            free(model.verts);
-            model.verts = nullptr;
-            model.verts_count = 0;
-            return ErrorCode::invalid_file;
-        }
+        vec& v = model.verts[i];
+        file_valid = fscanf(file, "%lf%lf%lf", &v.x, &v.y, &v.z) == 3;
     }
 
-    return ErrorCode::success;
+    if (!file_valid)
+    {
+        free(model.verts);
+        model.verts = nullptr;
+        model.verts_count = 0;
+    }
+
+    return file_valid ? ErrorCode::success : ErrorCode::invalid_file;
 }
 
-// file validated already
+// file ptr validated already
 static ErrorCode load_edges(FILE* file, Model& model)
 {
     if (fscanf(file, "%u", &model.edges_count) != 1 || model.edges_count == 0)
@@ -167,22 +170,23 @@ static ErrorCode load_edges(FILE* file, Model& model)
     if (model.edges == nullptr)
         return ErrorCode::bad_malloc;
 
-    for (unsigned int i = 0; i < model.edges_count; i++)
+    bool file_valid = true;
+    for (unsigned int i = 0; i < model.edges_count && file_valid; i++)
     {
         edge& edge = model.edges[i];
-        if (fscanf(file, "%u%u", &edge.p1, &edge.p2) != 2 || edge.p1 == edge.p2)
-        {
-            free(model.edges);
-            model.edges = nullptr;
-            model.edges_count = 0;
-            return ErrorCode::invalid_file;
-        }
+        file_valid = fscanf(file, "%u%u", &edge.p1, &edge.p2) == 2 && edge.p1 != edge.p2;
     }
 
-    return ErrorCode::success;
+    if (!file_valid)
+    {
+        free(model.edges);
+        model.edges = nullptr;
+        model.edges_count = 0;
+    }
+
+    return file_valid ? ErrorCode::success : ErrorCode::invalid_file;
 }
 
-// model MUST contain at least two vertecies and one edge
 ErrorCode core::do_load(Model& model, const char* filename)
 {
     if (filename == nullptr)
@@ -210,32 +214,28 @@ ErrorCode core::do_load(Model& model, const char* filename)
 
 static ErrorCode save_verts(FILE* file, const Model& model, mat view)
 {
-    if (fprintf(file, "%u\n", model.verts_count) < 0)
-        return ErrorCode::cannot_write_file;
+    bool bad_file = fprintf(file, "%u\n", model.verts_count) < 0;
 
-    for (unsigned int i = 0; i < model.verts_count; i++)
+    for (unsigned int i = 0; i < model.verts_count && !bad_file; i++)
     {
         vec v = vec_mult(model.verts[i], view);
-        if (fprintf(file, "%lf %lf %lf\n", v.x, v.y, v.z) < 0)
-            return ErrorCode::cannot_write_file;
+        bad_file = fprintf(file, "%lf %lf %lf\n", v.x, v.y, v.z) < 0;
     }
 
-    return ErrorCode::success;
+    return bad_file ? ErrorCode::cannot_write_file : ErrorCode::success;
 }
 
 static ErrorCode save_edges(FILE* file, const Model& model)
 {
-    if (fprintf(file, "%u\n", model.edges_count) < 0)
-        return ErrorCode::cannot_write_file;
+    bool bad_write = fprintf(file, "%u\n", model.edges_count) < 0;
 
-    for (unsigned int i = 0; i < model.edges_count; i++)
+    for (unsigned int i = 0; i < model.edges_count && !bad_write; i++)
     {
         edge e = model.edges[i];
-        if (fprintf(file, "%u %u\n", e.p1, e.p2) < 0)
-            return ErrorCode::cannot_write_file;
+        bad_write = fprintf(file, "%u %u\n", e.p1, e.p2) < 0;
     }
 
-    return ErrorCode::success;
+    return bad_write ? ErrorCode::cannot_write_file : ErrorCode::success;
 }
 
 ErrorCode core::do_save(const Model& model, mat view, const char* filename)
@@ -262,12 +262,14 @@ ErrorCode core::do_init(Context& context, viewport viewport)
     ErrorCode status = validate_viewport(viewport);
     if (status == ErrorCode::success)
     {
-        context = { 0 };
         context.viewport = viewport;
-        double aspect = (double)viewport.width / viewport.height;
+        double aspect = static_cast<double>(viewport.width) / viewport.height;
         context.proj_mat = perspective(view_fov, aspect, view_near, view_far);
         context.view_mat = translation({ 0, 0, view_z });
+        memset(&context.model, 0, sizeof(Model));
+        memset(&context.projection, 0, sizeof(ProjectedModel));
     }
+
     return status;
 }
 

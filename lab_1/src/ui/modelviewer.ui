@@ -48,19 +48,15 @@
     <addaction name="modelLoadOpt"/>
     <addaction name="modelSaveOpt"/>
    </widget>
-   <widget class="QMenu" name="helpOpt">
+   <widget class="QMenu" name="helpMenu">
     <property name="title">
      <string>Справка</string>
     </property>
-   </widget>
-   <widget class="QMenu" name="aboutOpt">
-    <property name="title">
-     <string>О программе</string>
-    </property>
+    <addaction name="helpOpt"/>
+    <addaction name="infoOpt"/>
    </widget>
    <addaction name="menu"/>
-   <addaction name="helpOpt"/>
-   <addaction name="aboutOpt"/>
+   <addaction name="helpMenu"/>
   </widget>
   <action name="modelLoadOpt">
    <property name="text">
@@ -75,6 +71,16 @@
   <action name="modelNewOpt">
    <property name="text">
     <string>новая</string>
+   </property>
+  </action>
+  <action name="helpOpt">
+   <property name="text">
+    <string>Помощь</string>
+   </property>
+  </action>
+  <action name="infoOpt">
+   <property name="text">
+    <string>О программе</string>
    </property>
   </action>
  </widget>

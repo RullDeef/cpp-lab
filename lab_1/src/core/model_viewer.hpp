@@ -14,12 +14,6 @@ namespace core
     ErrorCode do_rotation(mat& view, const RotateAction& action);
     ErrorCode do_scale(mat& view, const ScaleAction& action);
 
-    /**
-     * @brief загружает модель из файла
-     * 
-     * @param model модель (деинициализированная)
-     * @param filename имя входного файла
-     */
     ErrorCode do_load(Model& model, const char* filename);
     ErrorCode do_save(const Model& model, mat view, const char* filename);
 

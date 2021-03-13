@@ -34,6 +34,9 @@ namespace ui
         void loadModelSlot();
         void saveModelSlot();
 
+        void showHelpSlot();
+        void showInfoSlot();
+
     private:
         Ui::ModelViewer ui;
 
