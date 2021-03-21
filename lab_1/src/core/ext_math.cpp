@@ -3,7 +3,12 @@
 
 using namespace core;
 
-mat alg::identity()
+bool alg::viewport_is_valid(const viewport& viewport)
+{
+    return viewport.width > 0 && viewport.height > 0;
+}
+
+mat alg::mat_identity()
 {
     return mat {
         1, 0, 0, 0,
@@ -11,6 +16,11 @@ mat alg::identity()
         0, 0, 1, 0,
         0, 0, 0, 1
     };
+}
+
+vec alg::vec_create(double x, double y, double z)
+{
+    return vec { x, y, z };
 }
 
 vec alg::norm(const vec& v)

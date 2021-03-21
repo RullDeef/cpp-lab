@@ -1,3 +1,5 @@
+
+#if 0
 #include <memory>
 #include "error_code.hpp"
 #include "ext_math.hpp"
@@ -56,8 +58,8 @@ void core::destroy_context(Context& context)
     destroy_model(context.model);
     destroy_projection(context.projection);
 
-    context.proj_mat = identity();
-    context.view_mat = identity();
+    context.proj_mat = mat_identity();
+    context.view_mat = mat_identity();
     context.viewport = viewport { 0, 0, 0, 0 };
 }
 
@@ -111,3 +113,5 @@ ErrorCode core::update_projection(Context& context)
 
     return ErrorCode::success;
 }
+
+#endif

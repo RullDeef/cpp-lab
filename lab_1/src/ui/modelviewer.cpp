@@ -8,7 +8,7 @@
 #include "modelviewer.hpp"
 
 ui::ModelViewer::ModelViewer(QWidget* parent)
-    : QMainWindow(parent), model_loaded(false), grabbing(false), rotating(false)
+    : QMainWindow(parent), grabbing(false), rotating(false)
 {
     ui.setupUi(this);
 
@@ -21,14 +21,14 @@ ui::ModelViewer::ModelViewer(QWidget* parent)
     connect(ui.infoOpt, SIGNAL(triggered()), this, SLOT(showInfoSlot()));
 
     core::Action action { core::ActionType::Init };
-    action.viewport = { 0, 0, width(), height() };
-    handleErrorCode(core::model_viewer(context, action));
+    action.viewport = core::alg::viewport_init(width(), height());
+    handleErrorCode(core::model_viewer(nullptr, action));
 }
 
 ui::ModelViewer::~ModelViewer()
 {
     core::Action action { core::ActionType::Destroy };
-    handleErrorCode(core::model_viewer(context, action));
+    handleErrorCode(core::model_viewer(nullptr, action));
 }
 
 void ui::ModelViewer::loadModelSlot()
@@ -38,8 +38,7 @@ void ui::ModelViewer::loadModelSlot()
     {
         core::Action action = { core::ActionType::Load };
         action.filename = filename.c_str();
-        if (handleErrorCode(core::model_viewer(context, action)))
-            model_loaded = true;
+        handleErrorCode(core::model_viewer(nullptr, action));
     }
 }
 
@@ -50,7 +49,7 @@ void ui::ModelViewer::saveModelSlot()
     {
         core::Action action { core::ActionType::Save };
         action.filename = filename.c_str();
-        handleErrorCode(core::model_viewer(context, action));
+        handleErrorCode(core::model_viewer(nullptr, action));
     }
 }
 
@@ -84,26 +83,30 @@ void ui::ModelViewer::paintProjection(const core::ProjectedModel& prj)
     }
 
     // paint verticies
-    for (unsigned int i = 0; i < prj.verts_count; i++)
-    {
-        core::screen_point p = prj.verts[i];
-
-        painter.drawEllipse(QPoint(p.x, p.y), 2, 2);
-    }
+    // for (unsigned int i = 0; i < prj.verts_count; i++)
+    // {
+    //     core::screen_point p = prj.verts[i];
+    // 
+    //     painter.drawEllipse(QPoint(p.x, p.y), 1, 1);
+    // }
 }
 
 void ui::ModelViewer::paintEvent(QPaintEvent* event)
 {
     QMainWindow::paintEvent(event);
 
-    if (!model_loaded)
+    const core::ProjectedModel* projection = nullptr;
+    core::Action action = { core::ActionType::RecomputeProjection };
+    core::ErrorCode status = core::model_viewer(&projection, action);
+
+    if (status != core::ErrorCode::success)
         return;
 
     if (!painter.begin(this))
         return;
 
     painter.setPen(pen);
-    paintProjection(context.projection);
+    paintProjection(*projection);
     painter.end();
 }
 
@@ -172,18 +175,15 @@ void ui::ModelViewer::mouseMoveEvent(QMouseEvent* event)
     prev_mouse_pos = curr_mouse_pos;
 
     core::Action action {};
-    if (grabbing)
-    {
-        action.type = core::ActionType::Translate;
-        action.translate = { delta.x(), delta.y() };
-    }
-    else if (rotating)
-    {
-        action.type = core::ActionType::Rotate;
-        action.rotate = { delta.x(), delta.y() };
-    }
+    action.dx = delta.x();
+    action.dy = delta.y();
 
-    handleErrorCode(core::model_viewer(context, action));
+    if (grabbing)
+        action.type = core::ActionType::Translate;
+    else if (rotating)
+        action.type = core::ActionType::Rotate;
+
+    handleErrorCode(core::model_viewer(nullptr, action));
     repaint();
 }
 
@@ -210,7 +210,7 @@ void ui::ModelViewer::mouseReleaseEvent(QMouseEvent* event)
 void ui::ModelViewer::wheelEvent(QWheelEvent* event)
 {
     core::Action action { core::ActionType::Scale };
-    action.scale.factor = event->angleDelta().y() / 180.0;
-    handleErrorCode(core::model_viewer(context, action));
+    action.factor = event->angleDelta().y() / 180.0;
+    handleErrorCode(core::model_viewer(nullptr, action));
     repaint();
 }

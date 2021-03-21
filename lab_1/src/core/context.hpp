@@ -1,16 +1,12 @@
 #pragma once
 
+#if 0
+
 #include "error_code.hpp"
 #include "ext_math.hpp"
 
 namespace core
 {
-    constexpr auto view_near = 1.4;
-    constexpr auto view_far = 100.0;
-    constexpr auto view_fov = 75 * 3.1415 / 180;
-
-    constexpr auto view_z = -10.0;
-
     struct edge
     {
         unsigned int p1;
@@ -63,3 +59,5 @@ namespace core
     ErrorCode init_projection(ProjectedModel& prj, unsigned int verts, unsigned int edges);
     ErrorCode update_projection(Context& context);
 }
+
+#endif

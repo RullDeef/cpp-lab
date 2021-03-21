@@ -40,15 +40,11 @@ namespace ui
     private:
         Ui::ModelViewer ui;
 
-        bool model_loaded;
-        core::Context context;
-
         bool grabbing;
         bool rotating;
         QPointF prev_mouse_pos;
 
         QPainter painter;
-
         QPen pen;
     };
 }

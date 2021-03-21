@@ -24,14 +24,17 @@ namespace core
     {
         int left;
         int top;
-        int width;
-        int height;
+        unsigned int width;
+        unsigned int height;
     };
 
     namespace alg
     {
-        mat identity();
+        bool viewport_is_valid(const viewport& viewport);
 
+        mat mat_identity();
+
+        vec vec_create(double x, double y, double z);
         vec norm(const vec& v);
 
         vec vec_mult(const vec& v, const mat& m);
@@ -48,5 +51,17 @@ namespace core
         mat perspective(double fov, double aspect, double near, double far);
 
         screen_point vec_project(const vec& v, const mat& prj, viewport viewport);
+
+        constexpr viewport viewport_init(unsigned int width = 0, unsigned int height = 0)
+        {
+            viewport v {};
+
+            v.left = 0;
+            v.top = 0;
+            v.width = width;
+            v.height = height;
+
+            return v;
+        }
     }
 }

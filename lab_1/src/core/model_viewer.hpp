@@ -1,22 +1,16 @@
 #pragma once
 
+#include "sal.hpp"
 #include "error_code.hpp"
-#include "context.hpp"
+#include "ext_math.hpp"
 #include "action.hpp"
+
+#include "model.hpp"
+#include "projectedmodel.hpp"
+#include "view.hpp"
 
 namespace core
 {
     // точка входа в прикладном домене
-    ErrorCode model_viewer(Context& context, const Action& action);
-
-    // список вызываемых действий
-    ErrorCode do_translation(mat& view, const TranslateAction& action);
-    ErrorCode do_rotation(mat& view, const RotateAction& action);
-    ErrorCode do_scale(mat& view, const ScaleAction& action);
-
-    ErrorCode do_load(Model& model, const char* filename);
-    ErrorCode do_save(const Model& model, mat view, const char* filename);
-
-    ErrorCode do_init(Context& context, viewport viewport);
-    ErrorCode do_destroy(Context& context);
+    ErrorCode model_viewer(OUT const ProjectedModel** projmod, IN const Action& action);
 }
