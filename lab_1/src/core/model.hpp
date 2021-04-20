@@ -5,6 +5,8 @@
 #include "error_code.hpp"
 #include "ext_math.hpp"
 
+#include "view.hpp"
+
 namespace core
 {
     struct edge
@@ -33,5 +35,5 @@ namespace core
     ErrorCode model_load(OUT Model& model, IN const char* filename);
     ErrorCode model_save(IN const Model& model, IN const char* filename);
 
-    ErrorCode model_save_transformed(IN const Model& model, IN const char* filename, IN mat matrix);
+    ErrorCode model_save_transformed(IN const Model& model, IN const View& view, IN const char* filename);
 }

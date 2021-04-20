@@ -114,7 +114,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\context.cpp" />
     <ClCompile Include="src\core\ext_math.cpp" />
     <ClCompile Include="src\core\model.cpp" />
     <ClCompile Include="src\core\model_viewer.cpp" />
@@ -127,7 +126,6 @@
     <ClInclude Include="src\core\action.hpp" />
     <ClInclude Include="src\core\ext_math.hpp" />
     <ClInclude Include="src\core\error_code.hpp" />
-    <ClInclude Include="src\core\context.hpp" />
     <ClInclude Include="src\core\model.hpp" />
     <ClInclude Include="src\core\model_viewer.hpp" />
     <ClInclude Include="src\core\projectedmodel.hpp" />

@@ -20,15 +20,17 @@ ui::ModelViewer::ModelViewer(QWidget* parent)
     connect(ui.helpOpt, SIGNAL(triggered()), this, SLOT(showHelpSlot()));
     connect(ui.infoOpt, SIGNAL(triggered()), this, SLOT(showInfoSlot()));
 
+    core::ProjectedModel projection;
     core::Action action { core::ActionType::Init };
     action.viewport = core::alg::viewport_init(width(), height());
-    handleErrorCode(core::model_viewer(nullptr, action));
+    handleErrorCode(core::model_viewer(projection, action));
 }
 
 ui::ModelViewer::~ModelViewer()
 {
+    core::ProjectedModel projection;
     core::Action action { core::ActionType::Destroy };
-    handleErrorCode(core::model_viewer(nullptr, action));
+    handleErrorCode(core::model_viewer(projection, action));
 }
 
 void ui::ModelViewer::loadModelSlot()
@@ -36,9 +38,10 @@ void ui::ModelViewer::loadModelSlot()
     std::string filename;
     if (requestFilename(filename))
     {
+        core::ProjectedModel projection;
         core::Action action = { core::ActionType::Load };
         action.filename = filename.c_str();
-        handleErrorCode(core::model_viewer(nullptr, action));
+        handleErrorCode(core::model_viewer(projection, action));
     }
 }
 
@@ -47,9 +50,10 @@ void ui::ModelViewer::saveModelSlot()
     std::string filename;
     if (requestFilename(filename))
     {
+        core::ProjectedModel projection;
         core::Action action { core::ActionType::Save };
         action.filename = filename.c_str();
-        handleErrorCode(core::model_viewer(nullptr, action));
+        handleErrorCode(core::model_viewer(projection, action));
     }
 }
 
@@ -81,23 +85,15 @@ void ui::ModelViewer::paintProjection(const core::ProjectedModel& prj)
 
         painter.drawLine(QPoint(p1.x, p1.y), QPoint(p2.x, p2.y));
     }
-
-    // paint verticies
-    // for (unsigned int i = 0; i < prj.verts_count; i++)
-    // {
-    //     core::screen_point p = prj.verts[i];
-    // 
-    //     painter.drawEllipse(QPoint(p.x, p.y), 1, 1);
-    // }
 }
 
 void ui::ModelViewer::paintEvent(QPaintEvent* event)
 {
     QMainWindow::paintEvent(event);
 
-    const core::ProjectedModel* projection = nullptr;
+    core::ProjectedModel projection;
     core::Action action = { core::ActionType::RecomputeProjection };
-    core::ErrorCode status = core::model_viewer(&projection, action);
+    core::ErrorCode status = core::model_viewer(projection, action);
 
     if (status != core::ErrorCode::success)
         return;
@@ -106,7 +102,7 @@ void ui::ModelViewer::paintEvent(QPaintEvent* event)
         return;
 
     painter.setPen(pen);
-    paintProjection(*projection);
+    paintProjection(projection);
     painter.end();
 }
 
@@ -183,7 +179,8 @@ void ui::ModelViewer::mouseMoveEvent(QMouseEvent* event)
     else if (rotating)
         action.type = core::ActionType::Rotate;
 
-    handleErrorCode(core::model_viewer(nullptr, action));
+    core::ProjectedModel projection;
+    handleErrorCode(core::model_viewer(projection, action));
     repaint();
 }
 
@@ -209,8 +206,9 @@ void ui::ModelViewer::mouseReleaseEvent(QMouseEvent* event)
 
 void ui::ModelViewer::wheelEvent(QWheelEvent* event)
 {
+    core::ProjectedModel projection;
     core::Action action { core::ActionType::Scale };
     action.factor = event->angleDelta().y() / 180.0;
-    handleErrorCode(core::model_viewer(nullptr, action));
+    handleErrorCode(core::model_viewer(projection, action));
     repaint();
 }

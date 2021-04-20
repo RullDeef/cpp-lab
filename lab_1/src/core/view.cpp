@@ -9,10 +9,14 @@ constexpr auto view_fov = 75 * 3.1415 / 180;
 
 constexpr auto view_z = -10.0;
 
+constexpr auto move_sensetivity = 60.0;
+constexpr auto rotate_sensetivity = 60.0;
+constexpr auto scale_sensetivity = 60.0;
+
 View core::view_init(IN const viewport& viewport)
 {
     double aspect = (double)viewport.width / viewport.height;
-    View view {};
+    View view;
 
     view.viewport = viewport;
     view.view_mat = mat_identity();
@@ -45,10 +49,8 @@ ErrorCode core::view_translate(VAR View& view, int dx, int dy)
     if (!view_is_valid(view))
         return ErrorCode::invalid_view;
 
-    constexpr auto sensetivity = 60.0;
-
-    double _dx = -dx / sensetivity;
-    double _dy = dy / sensetivity;
+    double _dx = -dx / move_sensetivity;
+    double _dy = dy / move_sensetivity;
 
     vec loc = vec_create(_dx, _dy, 0);
     loc = dir_mult(loc, mat_inv(view.view_mat));
@@ -62,9 +64,7 @@ ErrorCode core::view_scale(VAR View& view, double dfactor)
     if (!view_is_valid(view))
         return ErrorCode::invalid_view;
 
-    constexpr auto sensetivity = 60.0;
-
-    double f = 1 + dfactor / sensetivity;
+    double f = 1 + dfactor / scale_sensetivity;
 
     vec factor = vec_create(f, f, f);
     view.view_mat = mat_mult(scale(factor), view.view_mat);
@@ -77,10 +77,8 @@ ErrorCode core::view_rotate(VAR View& view, int dx, int dy)
     if (!view_is_valid(view))
         return ErrorCode::invalid_view;
 
-    constexpr auto sensetivity = 60.0;
-
-    double phi = -dx / sensetivity;
-    double theta = -dy / sensetivity;
+    double phi = -dx / rotate_sensetivity;
+    double theta = -dy / rotate_sensetivity;
 
     vec x_loc = vec_create(1, 0, 0);
     x_loc = norm(dir_mult(x_loc, mat_inv(view.view_mat)));
@@ -110,5 +108,6 @@ ErrorCode core::view_apply(OUT vec& out, IN const View& view, IN vec in)
         return ErrorCode::invalid_view;
 
     out = vec_mult(in, view.view_mat);
+
     return ErrorCode::success;
 }

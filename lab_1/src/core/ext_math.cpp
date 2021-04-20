@@ -224,7 +224,7 @@ mat alg::rotation(const vec& axis, double angle)
     double c = cos(angle), s = sin(angle);
     double imc = 1 - c;
 
-    return mat{
+    return mat {
         c + x * x * imc,        x * y * imc + z * s,    x * z * imc - y * s,  0,
         x * y * imc - z * s,    c + y * y * imc,        y * z * imc + x * s,  0,
         x * z * imc + y * s,    y * z * imc - x * s,    c + z * z * imc,      0,

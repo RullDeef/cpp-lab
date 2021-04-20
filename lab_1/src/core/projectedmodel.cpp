@@ -56,11 +56,13 @@ static bool projmod_allocate(OUT ProjectedModel& projmod, IN unsigned int verts_
     projmod.edges_count = edges_count;
     projmod.edges = (section*)malloc(edges_count * sizeof(section));
 
-    bool valid = projmod.verts != nullptr && projmod.edges != nullptr;
-    if (!valid)
+    if (projmod.verts == nullptr || projmod.edges == nullptr)
+    {
         projmod_destroy(projmod);
+        return false;
+    }
 
-    return valid;
+    return true;
 }
 
 static void projmod_update_edges_indices(OUT section* prj_edges, IN const screen_point* points, const edge* edges, unsigned int edges_count)
