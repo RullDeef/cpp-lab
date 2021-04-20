@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\list\list_iterator.hpp">
+      <Filter>Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\list.hpp">
+      <Filter>List</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\list_node.hpp">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\list_impl.hpp">
+      <Filter>List</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\exceptions.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\base_list.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Iterators">
+      <UniqueIdentifier>{c3d922be-b34d-4ee3-a20a-612f9f43d222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="List">
+      <UniqueIdentifier>{47bdee74-b9d6-439a-bf51-a705d469fd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Node">
+      <UniqueIdentifier>{fa6f5ed2-5ae0-4310-8059-2b95437e7310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{f40db0f3-871d-4f04-a541-50b16deabc69}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
