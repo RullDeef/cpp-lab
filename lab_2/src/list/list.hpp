@@ -14,23 +14,38 @@ template<typename T>
 class list : public base_list<T>
 {
 public:
-    using node_ptr = typename list_node<T>::node_ptr;
+    using value_type = T;
+    using node_ptr = typename list_node<value_type>::node_ptr;
 
-    using iterator = base_list_iterator<T>;
-    using const_iterator = base_list_iterator<const T>;
+    using iterator = base_list_iterator<value_type>;
+    using const_iterator = base_list_iterator<value_type>;
 
     list() noexcept = default;
     list(const list& lst);
     list(list&& temp) noexcept;
+
+    list(std::initializer_list<value_type> init_list);
+
+    list& operator=(const list& lst);
 
     bool is_empty() const noexcept override { return !head; }
 
     size_t size() const noexcept override;
     void clear() noexcept override;
 
-    list(std::initializer_list<T> init_list);
+    operator bool() const noexcept { return !is_empty(); }
 
-    void push_back(const T& value);
+    bool operator==(const list& lst) const noexcept;
+    bool operator!=(const list& lst) const noexcept;
+
+    list operator+(const value_type& value) const;
+    list operator+(const list& lst) const;
+
+    void push_front(const value_type& value);
+    void push_front(const list& lst);
+
+    void push_back(const value_type& value);
+    void push_back(const list& lst);
 
     iterator begin() noexcept;
     iterator end() noexcept;

@@ -22,6 +22,15 @@ inline list<T>::list(std::initializer_list<T> init_list)
 }
 
 template<typename T>
+inline list<T>& list<T>::operator=(const list<T>& lst)
+{
+    clear();
+    for (const auto& value : lst)
+        push_back(value);
+    return *this;
+}
+
+template<typename T>
 size_t list<T>::size() const noexcept
 {
     size_t size = 0;
@@ -33,11 +42,62 @@ size_t list<T>::size() const noexcept
 template<typename T>
 inline void list<T>::clear() noexcept
 {
-    head = node_ptr(nullptr);
+    head = nullptr;
 }
 
 template<typename T>
-inline void list<T>::push_back(const T& value)
+inline bool list<T>::operator==(const list& lst) const noexcept
+{
+    return !(*this != lst);
+}
+
+template<typename T>
+inline bool list<T>::operator!=(const list& lst) const noexcept
+{
+    node_ptr node_1 = head;
+    node_ptr node_2 = lst.head;
+
+    while (node_1 && node_2 && *node_1 == *node_2)
+    {
+        node_1 = node_1->next();
+        node_2 = node_2->next();
+    }
+
+    return node_1 || node_2;
+}
+
+template<typename T>
+inline list<T> list<T>::operator+(const list::value_type& value) const
+{
+    list res = *this;
+    res.push_back(value);
+    return res;
+}
+
+template<typename T>
+inline list<T> list<T>::operator+(const list& lst) const
+{
+    list res = *this;
+    res.push_back(lst);
+    return res;
+}
+
+template<typename T>
+inline void list<T>::push_front(const value_type& value)
+{
+    node_ptr new_node = create_new_node(value);
+    new_node->insert_end(head);
+    head = new_node;
+}
+
+template<typename T>
+inline void list<T>::push_front(const list& lst)
+{
+    *this = lst + *this;
+}
+
+template<typename T>
+inline void list<T>::push_back(const list::value_type& value)
 {
     if (!head)
         head = create_new_node(value);
@@ -49,6 +109,13 @@ inline void list<T>::push_back(const T& value)
 }
 
 template<typename T>
+inline void list<T>::push_back(const list& lst)
+{
+    for (const auto& value : lst)
+        push_back(value);
+}
+
+template<typename T>
 inline typename list<T>::iterator list<T>::begin() noexcept
 {
     return iterator(head);
@@ -57,20 +124,19 @@ inline typename list<T>::iterator list<T>::begin() noexcept
 template<typename T>
 inline typename list<T>::iterator list<T>::end() noexcept
 {
-    return iterator(node_ptr(nullptr));
+    return iterator();
 }
 
 template<typename T>
 inline typename list<T>::const_iterator list<T>::begin() const noexcept
 {
-    // return const_iterator(list_node<const T>::node_ptr(list_node<const T>(*head)));
-    return const_iterator(list_node<const T>::node_ptr(nullptr));
+    return const_iterator(head);
 }
 
 template<typename T>
 inline typename list<T>::const_iterator list<T>::end() const noexcept
 {
-    return const_iterator(list_node<const T>::node_ptr(nullptr));
+    return const_iterator();
 }
 
 template<typename T>

@@ -7,6 +7,7 @@ class list_node
 {
 public:
     using node_ptr = std::shared_ptr<list_node<T>>;
+    using cnode_ptr = std::shared_ptr<const list_node<T>>;
 
     list_node() noexcept : _next(nullptr) {}
     list_node(const T& value) noexcept : _data(value), _next(nullptr) {}

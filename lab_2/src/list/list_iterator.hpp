@@ -3,6 +3,8 @@
 #include <cstddef>
 #include "list_node.hpp"
 
+#include "exceptions.hpp"
+
 // forward declaration
 template<typename T, typename _Base = std::iterator<std::forward_iterator_tag, T>>
 class base_list_iterator;
@@ -23,9 +25,12 @@ public:
 
     using node_ptr = typename list_node<value_type>::node_ptr;
 
-    explicit base_list_iterator(const node_ptr& ptr) : _node(ptr) {}
-    base_list_iterator(const base_list_iterator& iter) : _node(iter._node) {}
-    base_list_iterator(base_list_iterator&& iter) : _node(iter._node) {}
+    base_list_iterator() noexcept = default;
+
+    explicit base_list_iterator(const node_ptr& ptr) noexcept : _node(ptr) {}
+
+    base_list_iterator(const base_list_iterator& iter) noexcept : _node(iter._node) {}
+    base_list_iterator(base_list_iterator&& iter) noexcept : _node(iter._node) {}
 
     reference operator*() { return _node->data(); }
     pointer operator->() { return &_node->data(); }
@@ -35,7 +40,7 @@ public:
 
     base_list_iterator& operator++()
     {
-        if (!_node) throw std::runtime_error("invalid node for list iterator");
+        if (!_node) throw invalid_state_iterator_exception(__FILE__, typeid(*this).name(), __LINE__);
         _node = _node->next();
         return *this;
     }
