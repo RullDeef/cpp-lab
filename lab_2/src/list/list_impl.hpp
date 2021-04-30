@@ -46,6 +46,16 @@ inline void list<T>::clear() noexcept
 }
 
 template<typename T>
+template<typename S>
+inline list<T>::operator list<S>() const
+{
+    list<S> result;
+    for (const auto& value : *this)
+        result.push_back(S(value));
+    return result;
+}
+
+template<typename T>
 inline bool list<T>::operator==(const list& lst) const noexcept
 {
     return !(*this != lst);
@@ -83,6 +93,16 @@ inline list<T> list<T>::operator+(const list& lst) const
 }
 
 template<typename T>
+inline size_t list<T>::count(const value_type& value) const
+{
+    size_t amount = 0;
+    for (const auto& item : *this)
+        if (item == value)
+            amount++;
+    return amount;
+}
+
+template<typename T>
 inline void list<T>::push_front(const value_type& value)
 {
     node_ptr new_node = create_new_node(value);
@@ -113,6 +133,24 @@ inline void list<T>::push_back(const list& lst)
 {
     for (const auto& value : lst)
         push_back(value);
+}
+
+template<typename T>
+inline typename list<T>::value_type& list<T>::at(size_t index)
+{
+    node_ptr node = head;
+    for (size_t i = 0; i < index; i++)
+        node = node->next();
+    return node->data();
+}
+
+template<typename T>
+inline const typename list<T>::value_type& list<T>::at(size_t index) const
+{
+    node_ptr node = head;
+    for (size_t i = 0; i < index; i++)
+        node = node->next();
+    return node->data();
 }
 
 template<typename T>

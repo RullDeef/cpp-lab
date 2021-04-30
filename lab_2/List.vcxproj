@@ -144,6 +144,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\list\base_list.hpp" />
+    <ClInclude Include="src\list\base_list_iterator.hpp" />
+    <ClInclude Include="src\list\const_list_iterator.hpp" />
     <ClInclude Include="src\list\exceptions.hpp" />
     <ClInclude Include="src\list\list.hpp" />
     <ClInclude Include="src\list\list_impl.hpp" />

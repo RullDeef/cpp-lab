@@ -47,6 +47,8 @@ int test_constructors()
     ASSERT(list_double == list_double_2);
     ASSERT(list_double == list_double_3);
 
+    list<float> list_float = list<int>(list_double);
+
     list<int> list_init_list = {};
     list<int> list_init_list_2 = {1, 2, 4, 2, 3};
 
@@ -60,15 +62,15 @@ int test_foreach()
 {
     TEST_BEGIN;
 
-    list<int> list = { 3, 5, 2, 0, 4 };
+    list<int> int_list = { 3, 5, 2, 0, 4 };
 
     // test for each loop (non-const)
-    for (auto& value : list)
+    for (auto& value : int_list)
         std::cout << "value : " << value << std::endl;
     std::cout << std::endl;
 
     // test for each loop (const)
-    for (const auto& value : list)
+    for (const auto& value : static_cast<const list<int>&>(int_list))
         std::cout << "const value : " << value << std::endl;
     std::cout << std::endl;
 
