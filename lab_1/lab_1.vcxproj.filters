@@ -22,6 +22,18 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{9564860c-7296-4629-b6a2-9504f57b3aa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transform">
+      <UniqueIdentifier>{b8dc61e4-02f6-46b3-a313-84d91ec0e562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Projection">
+      <UniqueIdentifier>{b8cee0a7-1956-4459-9d65-f0ae3959c46c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="View">
+      <UniqueIdentifier>{557361ce-dfcc-4275-b2c9-352af88d195f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -36,14 +48,26 @@
     <ClCompile Include="src\core\ext_math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\view.cpp">
+    <ClCompile Include="src\core\model_viewer_entry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\model.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\core\model\edge_array.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\projectedmodel.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\core\model\model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\model\vert_array.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\transform\transform.cpp">
+      <Filter>Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\view\view.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\projection\projection.cpp">
+      <Filter>Projection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,17 +83,29 @@
     <ClInclude Include="src\core\action.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\view.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\model.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\projectedmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\sal.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\model_viewer_entry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\model\edge_array.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\model\model.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\model\vert_array.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\transform\transform.hpp">
+      <Filter>Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\view\view.hpp">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\projection\projection.hpp">
+      <Filter>Projection</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

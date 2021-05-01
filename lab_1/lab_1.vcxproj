@@ -115,10 +115,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core\ext_math.cpp" />
-    <ClCompile Include="src\core\model.cpp" />
+    <ClCompile Include="src\core\model\edge_array.cpp" />
+    <ClCompile Include="src\core\model\model.cpp" />
+    <ClCompile Include="src\core\model\vert_array.cpp" />
     <ClCompile Include="src\core\model_viewer.cpp" />
-    <ClCompile Include="src\core\projectedmodel.cpp" />
-    <ClCompile Include="src\core\view.cpp" />
+    <ClCompile Include="src\core\model_viewer_entry.cpp" />
+    <ClCompile Include="src\core\projection\projection.cpp" />
+    <ClCompile Include="src\core\transform\transform.cpp" />
+    <ClCompile Include="src\core\view\view.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ui\modelviewer.cpp" />
   </ItemGroup>
@@ -126,11 +130,15 @@
     <ClInclude Include="src\core\action.hpp" />
     <ClInclude Include="src\core\ext_math.hpp" />
     <ClInclude Include="src\core\error_code.hpp" />
-    <ClInclude Include="src\core\model.hpp" />
+    <ClInclude Include="src\core\model\edge_array.hpp" />
+    <ClInclude Include="src\core\model\model.hpp" />
+    <ClInclude Include="src\core\model\vert_array.hpp" />
     <ClInclude Include="src\core\model_viewer.hpp" />
-    <ClInclude Include="src\core\projectedmodel.hpp" />
+    <ClInclude Include="src\core\model_viewer_entry.hpp" />
+    <ClInclude Include="src\core\projection\projection.hpp" />
     <ClInclude Include="src\core\sal.hpp" />
-    <ClInclude Include="src\core\view.hpp" />
+    <ClInclude Include="src\core\transform\transform.hpp" />
+    <ClInclude Include="src\core\view\view.hpp" />
     <QtMoc Include="src\ui\modelviewer.hpp" />
   </ItemGroup>
   <ItemGroup>

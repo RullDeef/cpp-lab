@@ -92,7 +92,7 @@ void ui::ModelViewer::paintEvent(QPaintEvent* event)
     QMainWindow::paintEvent(event);
 
     core::ProjectedModel projection;
-    core::Action action = { core::ActionType::RecomputeProjection };
+    core::Action action = { core::ActionType::ComputeProjection };
     core::ErrorCode status = core::model_viewer(projection, action);
 
     if (status != core::ErrorCode::success)

@@ -1,14 +1,12 @@
 #include <cmath>
 #include "ext_math.hpp"
 
-using namespace core;
-
-bool alg::viewport_is_valid(const viewport& viewport)
+bool viewport_is_valid(const viewport& viewport)
 {
     return viewport.width > 0 && viewport.height > 0;
 }
 
-mat alg::mat_identity()
+mat mat_identity()
 {
     return mat {
         1, 0, 0, 0,
@@ -18,18 +16,18 @@ mat alg::mat_identity()
     };
 }
 
-vec alg::vec_create(double x, double y, double z)
+vec vec_create(double x, double y, double z)
 {
     return vec { x, y, z };
 }
 
-vec alg::norm(const vec& v)
+vec norm(const vec& v)
 {
     double len = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
     return vec { v.x / len, v.y / len, v.z / len };
 }
 
-vec alg::vec_mult(const vec& v, const mat& m)
+vec vec_mult(const vec& v, const mat& m)
 {
     return vec {
         v.x * m.data[0] + v.y * m.data[4] + v.z * m.data[ 8] + m.data[12],
@@ -38,7 +36,7 @@ vec alg::vec_mult(const vec& v, const mat& m)
     };
 }
 
-vec alg::dir_mult(const vec& v, const mat& m)
+vec dir_mult(const vec& v, const mat& m)
 {
     return vec {
         v.x * m.data[0] + v.y * m.data[4] + v.z * m.data[8],
@@ -47,7 +45,7 @@ vec alg::dir_mult(const vec& v, const mat& m)
     };
 }
 
-mat alg::mat_mult(const mat& left, const mat& right)
+mat mat_mult(const mat& left, const mat& right)
 {
     mat res;
 
@@ -64,7 +62,7 @@ mat alg::mat_mult(const mat& left, const mat& right)
     return res;
 }
 
-double alg::mat_det(const mat& m)
+double mat_det(const mat& m)
 {
     double det = 0;
 
@@ -81,7 +79,7 @@ double alg::mat_det(const mat& m)
     return det;
 }
 
-mat alg::mat_inv(const mat& m)
+mat mat_inv(const mat& m)
 {
     mat inv;
 
@@ -208,7 +206,7 @@ mat alg::mat_inv(const mat& m)
     return inv;
 }
 
-mat alg::translation(const vec& offset)
+mat translation(const vec& offset)
 {
     return mat {
         1, 0, 0, 0,
@@ -218,7 +216,7 @@ mat alg::translation(const vec& offset)
     };
 }
 
-mat alg::rotation(const vec& axis, double angle)
+mat rotation(const vec& axis, double angle)
 {
     const double& x = axis.x, y = axis.y, z = axis.z;
     double c = cos(angle), s = sin(angle);
@@ -232,7 +230,7 @@ mat alg::rotation(const vec& axis, double angle)
     };
 }
 
-mat alg::scale(const vec& dims)
+mat scale(const vec& dims)
 {
     return mat {
         dims.x, 0, 0, 0,
@@ -242,7 +240,7 @@ mat alg::scale(const vec& dims)
     };
 }
 
-mat alg::perspective(double fov, double aspect, double near, double far)
+mat perspective(double fov, double aspect, double near, double far)
 {
     double s = 1 / tan(fov / 2);
 
@@ -254,7 +252,7 @@ mat alg::perspective(double fov, double aspect, double near, double far)
     };
 }
 
-screen_point alg::vec_project(const vec& v, const mat& prj, viewport viewport)
+screen_point vec_project(const vec& v, const mat& prj, viewport viewport)
 {
     vec p_v = vec_mult(v, prj);
 

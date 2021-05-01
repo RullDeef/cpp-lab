@@ -10,7 +10,7 @@ namespace core
         Destroy,             // releases model resources
         Load,                // load model from file
         Save,                // saves model to file
-        RecomputeProjection, // updates projection, if needed
+        ComputeProjection, // updates projection, if needed
         Translate,           // translate model
         Rotate,              // rotate model
         Scale                // scale model
