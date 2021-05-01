@@ -23,6 +23,7 @@ int test_constructors();
 int test_foreach();
 int test_clear();
 int test_operators();
+int test_add_diff_types();
 
 int main()
 {
@@ -32,6 +33,7 @@ int main()
     SUB_TEST(test_foreach);
     SUB_TEST(test_clear);
     SUB_TEST(test_operators);
+    SUB_TEST(test_add_diff_types);
 
     TEST_END;
 }
@@ -70,7 +72,8 @@ int test_foreach()
     std::cout << std::endl;
 
     // test for each loop (const)
-    for (const auto& value : static_cast<const list<int>&>(int_list))
+    const list<int>& cint_list = int_list;
+    for (const auto& value : cint_list)
         std::cout << "const value : " << value << std::endl;
     std::cout << std::endl;
 
@@ -85,17 +88,13 @@ int test_clear()
 
     ASSERT(syms.size() == 3);
 
-    std::cout << "syms: ";
-    for (const auto& sym : syms) std::cout << "'" << sym << "' ";
-    std::cout << std::endl;
+    std::cout << "syms: " << syms << std::endl;
     std::cout << "size = " << syms.size() << std::endl;
 
     syms.clear();
     ASSERT(syms.size() == 0);
 
-    std::cout << "syms after clear: ";
-    for (const auto& sym : syms) std::cout << "'" << sym << "' ";
-    std::cout << std::endl;
+    std::cout << "syms after clear: " << syms << std::endl;
     std::cout << "size = " << syms.size() << std::endl;
 
     TEST_END;
@@ -116,9 +115,20 @@ int test_operators()
     floats = floats_2 + 1.2f + floats + 1.3f + 4.5f;
     ASSERT(floats.size() == 10);
 
-    for (const auto& value : floats)
-        std::cout << value << " ";
-    std::cout << std::endl;
+    std::cout << floats << std::endl;
+
+    TEST_END;
+}
+
+int test_add_diff_types()
+{
+    TEST_BEGIN;
+
+    list<int> int_list = { 1, 2, 3 };
+    list<float> float_list = { 1.5f, 2.5f, 3.2f };
+
+    list<float> res = int_list + float_list;
+    std::cout << res << std::endl;
 
     TEST_END;
 }

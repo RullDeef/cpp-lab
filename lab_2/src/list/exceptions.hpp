@@ -50,3 +50,10 @@ public:
     invalid_state_iterator_exception(const char* filename, const char* classname, int line)
         : base_list_iterator_exception(filename, classname, line, "invalid iterator state") {}
 };
+
+class out_of_bounds_iterator_exception : public base_list_iterator_exception
+{
+public:
+    out_of_bounds_iterator_exception(const char* filename, const char* classname, int line)
+        : base_list_iterator_exception(filename, classname, line, "iterator out of bounds") {}
+};

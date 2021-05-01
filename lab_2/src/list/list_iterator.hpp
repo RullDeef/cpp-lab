@@ -1,20 +1,25 @@
 #pragma once
 
-#include "base_list_iterator.hpp"
+#include "const_list_iterator.hpp"
 
-template<typename T, typename _Base = base_list_iterator<T>>
-class list_iterator : public _Base
+template<typename T>
+class list_iterator : public const_list_iterator<T>
 {
 public:
-    using value_type = typename _Base::value_type;
-    using reference = typename _Base::reference;
-    using pointer = typename _Base::pointer;
-
-    using node_ptr = typename _Base::node_ptr;
-
     list_iterator() noexcept = default;
-    explicit list_iterator(const node_ptr& node) noexcept : _Base(node) {}
+    list_iterator(const list_iterator& iter) noexcept;
+    list_iterator(list_iterator&& iter) noexcept;
 
-    reference operator*() { return _Base::node()->data(); }
-    pointer operator->() { return &_Base::node()->data(); }
+    explicit list_iterator(const std::shared_ptr<list_node<T>>& node) noexcept;
+
+    T& operator*();
+    T* operator->();
+
+    list_iterator& operator++();
+    list_iterator operator++(int);
+
+protected:
+    using const_list_iterator<T>::_node;
 };
+
+#include "list_iterator_impl.hpp"

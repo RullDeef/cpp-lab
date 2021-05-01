@@ -11,7 +11,7 @@ list<T>::list(const list& lst)
 
 template<typename T>
 inline list<T>::list(list&& temp) noexcept
-    : head(temp.head)
+    : head(std::move(temp.head))
 {}
 
 template<typename T>
@@ -22,11 +22,27 @@ inline list<T>::list(std::initializer_list<T> init_list)
 }
 
 template<typename T>
+template<typename _Iter>
+list<T>::list(_Iter begin, _Iter end)
+{
+    for (_Iter iter = begin; iter != end; ++iter)
+        push_back(*iter);
+}
+
+template<typename T>
 inline list<T>& list<T>::operator=(const list<T>& lst)
 {
     clear();
     for (const auto& value : lst)
         push_back(value);
+    return *this;
+}
+
+template<typename T>
+list<T>& list<T>::operator=(list<T>&& lst) noexcept
+{
+    clear();
+    head = std::move(lst.head);
     return *this;
 }
 
@@ -40,9 +56,21 @@ size_t list<T>::size() const noexcept
 }
 
 template<typename T>
+bool list<T>::is_empty() const noexcept
+{
+    return !head;
+}
+
+template<typename T>
 inline void list<T>::clear() noexcept
 {
     head = nullptr;
+}
+
+template<typename T>
+list<T>::operator bool() const noexcept
+{
+    return bool(head);
 }
 
 template<typename T>
@@ -77,7 +105,16 @@ inline bool list<T>::operator!=(const list& lst) const noexcept
 }
 
 template<typename T>
-inline list<T> list<T>::operator+(const list::value_type& value) const
+template<typename U>
+auto list<T>::operator+(const list<U>& lst) const -> decltype(list<decltype(T() + U())>())
+{
+    list<decltype(T() + U())> res = *this;
+    res.push_back(lst);
+    return res;
+}
+
+template<typename T>
+list<T> list<T>::operator+(const T& value) const
 {
     list res = *this;
     res.push_back(value);
@@ -85,15 +122,23 @@ inline list<T> list<T>::operator+(const list::value_type& value) const
 }
 
 template<typename T>
-inline list<T> list<T>::operator+(const list& lst) const
+template<typename U>
+list<T>& list<T>::operator+=(const list<U>& lst)
 {
-    list res = *this;
-    res.push_back(lst);
-    return res;
+    for (const auto& value : lst)
+        push_back(static_cast<T>(value));
+    return *this;
 }
 
 template<typename T>
-inline size_t list<T>::count(const value_type& value) const
+list<T>& list<T>::operator+=(const T& value)
+{
+    push_back(value);
+    return *this;
+}
+
+template<typename T>
+size_t list<T>::count(const T& value) const
 {
     size_t amount = 0;
     for (const auto& item : *this)
@@ -103,7 +148,16 @@ inline size_t list<T>::count(const value_type& value) const
 }
 
 template<typename T>
-inline void list<T>::push_front(const value_type& value)
+bool list<T>::contains(const T& value) const
+{
+    for (const auto& item : *this)
+        if (item == value)
+            return true;
+    return false;
+}
+
+template<typename T>
+inline void list<T>::push_front(const T& value)
 {
     node_ptr new_node = create_new_node(value);
     new_node->insert_end(head);
@@ -117,7 +171,7 @@ inline void list<T>::push_front(const list& lst)
 }
 
 template<typename T>
-inline void list<T>::push_back(const list::value_type& value)
+inline void list<T>::push_back(const T& value)
 {
     if (!head)
         head = create_new_node(value);
@@ -136,7 +190,7 @@ inline void list<T>::push_back(const list& lst)
 }
 
 template<typename T>
-inline typename list<T>::value_type& list<T>::at(size_t index)
+T& list<T>::at(size_t index)
 {
     node_ptr node = head;
     for (size_t i = 0; i < index; i++)
@@ -145,7 +199,7 @@ inline typename list<T>::value_type& list<T>::at(size_t index)
 }
 
 template<typename T>
-inline const typename list<T>::value_type& list<T>::at(size_t index) const
+const T& list<T>::at(size_t index) const
 {
     node_ptr node = head;
     for (size_t i = 0; i < index; i++)
@@ -178,6 +232,18 @@ inline typename list<T>::const_iterator list<T>::end() const noexcept
 }
 
 template<typename T>
+inline typename list<T>::const_iterator list<T>::cbegin() const noexcept
+{
+    return const_iterator(head);
+}
+
+template<typename T>
+inline typename list<T>::const_iterator list<T>::cend() const noexcept
+{
+    return const_iterator();
+}
+
+template<typename T>
 typename list<T>::node_ptr list<T>::create_new_node(const T& value)
 {
     try
@@ -188,4 +254,27 @@ typename list<T>::node_ptr list<T>::create_new_node(const T& value)
     {
         throw memory_list_exception(__FILE__, typeid(*this).name(), __LINE__);
     }
+}
+
+template<typename T, typename U>
+auto operator+(const U& value, const list<T>& lst) -> decltype(list<decltype(U() + T())>())
+{
+    decltype(list<decltype(U() + T())>()) res = lst;
+    res.push_front(value);
+    return res;
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& stream, const list<T>& lst)
+{
+    stream << "{";
+
+    int i = 0;
+    for (const auto& value : lst)
+    {
+        if (i++ > 0) stream << ", ";
+        stream << value;
+    }
+
+    return stream << "}";
 }

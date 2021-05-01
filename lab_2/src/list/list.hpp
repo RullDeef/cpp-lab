@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <initializer_list>
 #include "exceptions.hpp"
 #include "list_node.hpp"
@@ -8,31 +9,37 @@
 #include "const_list_iterator.hpp"
 
 template<typename T>
-class list : public base_list<T>
+class list : public base_list
 {
 public:
-    using value_type = T;
-    using node_ptr = typename list_node<value_type>::node_ptr;
+    using node_ptr = typename list_node<T>::node_ptr;
 
-    using iterator = list_iterator<value_type>;
-    using const_iterator = const_list_iterator<value_type>;
+    using iterator = list_iterator<T>;
+    using const_iterator = const_list_iterator<T>;
 
     list() noexcept = default;
     list(const list& lst);
     list(list&& temp) noexcept;
 
-    list(std::initializer_list<value_type> init_list);
+    list(std::initializer_list<T> init_list);
+
+    // list(T* array, size_t size) // from C-array
+    // list s peremennim chislom parametrov
+
+    template<typename _Iter>
+    list(_Iter begin, _Iter end);
 
     virtual ~list() = default;
 
     list& operator=(const list& lst);
-
-    bool is_empty() const noexcept override { return !head; }
+    list& operator=(list&& lst) noexcept;
 
     size_t size() const noexcept override;
+    bool is_empty() const noexcept override;
+
     void clear() noexcept override;
 
-    operator bool() const noexcept { return !is_empty(); }
+    operator bool() const noexcept;
 
     template<typename S>
     operator list<S>() const;
@@ -40,35 +47,50 @@ public:
     bool operator==(const list& lst) const noexcept;
     bool operator!=(const list& lst) const noexcept;
 
-    list operator+(const value_type& value) const;
-    list operator+(const list& lst) const;
+    template<typename U = T>
+    auto operator+(const list<U>& lst) const -> decltype(list<decltype(T() + U())>());
+    list operator+(const T& value) const;
 
-    size_t count(const value_type& value) const;
-    inline bool contains(const value_type& value) const { return count(value) > 0; }
+    template<typename U = T>
+    list& operator+=(const list<U>& lst);
+    list& operator+=(const T& value);
 
-    void push_front(const value_type& value);
+    size_t count(const T& value) const;
+    bool contains(const T& value) const;
+
+    void push_front(const T& value);
     void push_front(const list& lst);
 
-    void push_back(const value_type& value);
+    void push_back(const T& value);
     void push_back(const list& lst);
 
-    value_type& at(size_t index);
-    const value_type& at(size_t index) const;
+    // emplace_front(...)
+    // emplace_back(...)
 
-    iterator begin() noexcept;
-    iterator end() noexcept;
+    // sublist(...)
 
-    const_iterator begin() const noexcept;
-    const_iterator end() const noexcept;
+    T& at(size_t index);
+    const T& at(size_t index) const;
 
-    const_iterator cbegin() const noexcept { return begin(); }
-    const_iterator cend() const noexcept { return end(); }
+    inline iterator begin() noexcept;
+    inline iterator end() noexcept;
 
-protected:
-    node_ptr create_new_node(const T& value);
+    inline const_iterator begin() const noexcept;
+    inline const_iterator end() const noexcept;
+
+    inline const_iterator cbegin() const noexcept;
+    inline const_iterator cend() const noexcept;
 
 private:
+    node_ptr create_new_node(const T& value);
+
     node_ptr head;
 };
+
+template<typename T, typename U = T>
+auto operator+(const U& value, const list<T>& lst) -> decltype(list<decltype(U() + T())>());
+
+template<typename T>
+std::ostream& operator<<(std::ostream& stream, const list<T>& lst);
 
 #include "list_impl.hpp"

@@ -22,10 +22,13 @@
     <ClInclude Include="src\list\base_list.hpp">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="src\list\base_list_iterator.hpp">
+    <ClInclude Include="src\list\const_list_iterator.hpp">
       <Filter>Iterators</Filter>
     </ClInclude>
-    <ClInclude Include="src\list\const_list_iterator.hpp">
+    <ClInclude Include="src\list\const_list_iterator_impl.hpp">
+      <Filter>Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\list_iterator_impl.hpp">
       <Filter>Iterators</Filter>
     </ClInclude>
   </ItemGroup>
