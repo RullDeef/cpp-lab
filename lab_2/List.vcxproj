@@ -151,7 +151,10 @@
     <ClInclude Include="src\list\list_impl.hpp" />
     <ClInclude Include="src\list\list_iterator.hpp" />
     <ClInclude Include="src\list\list_iterator_impl.hpp" />
+    <ClInclude Include="src\list\base_list_node.hpp" />
+    <ClCompile Include="src\list\base_list_node.cpp" />
     <ClInclude Include="src\list\list_node.hpp" />
+    <ClInclude Include="src\list\list_node_impl.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

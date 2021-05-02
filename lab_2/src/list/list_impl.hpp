@@ -1,6 +1,15 @@
 #pragma once
 
+#include <cstdlib>
 #include "list.hpp"
+
+template<typename T>
+template<typename U>
+list<T>::list(const list<U>& lst)
+{
+    for (const auto& value : lst)
+        push_back(T(value));
+}
 
 template<typename T>
 list<T>::list(const list& lst)
@@ -11,8 +20,9 @@ list<T>::list(const list& lst)
 
 template<typename T>
 inline list<T>::list(list&& temp) noexcept
-    : head(std::move(temp.head))
-{}
+{
+    head.swap(temp.head);
+}
 
 template<typename T>
 inline list<T>::list(std::initializer_list<T> init_list)
@@ -22,11 +32,52 @@ inline list<T>::list(std::initializer_list<T> init_list)
 }
 
 template<typename T>
+template<typename... Args>
+list<T>::list(const T& first, const T& second, const Args&... other)
+    : list(other...)
+{
+    push_front(second);
+    push_front(first);
+}
+
+template<typename T>
+list<T>::list(const T& first, const T& second)
+{
+    push_front(second);
+    push_front(first);
+}
+
+template<typename T>
+list<T>::list(const T& value)
+{
+    push_front(value);
+}
+
+template<typename T>
+list<T>::list(T* array, size_t size)
+{
+    if (!array && size != 0)
+        throw invalid_rawptr_list_exception(__FILE__, typeid(*this).name(), __LINE__);
+    else if (!array && size == 0)
+        return;
+
+    for (size_t i = 0; i < size; i++)
+        push_back(array[i]);
+    free(array);
+}
+
+template<typename T>
 template<typename _Iter>
 list<T>::list(_Iter begin, _Iter end)
 {
     for (_Iter iter = begin; iter != end; ++iter)
         push_back(*iter);
+}
+
+template<typename T>
+list<T>::~list()
+{
+    clear();
 }
 
 template<typename T>
@@ -42,7 +93,7 @@ template<typename T>
 list<T>& list<T>::operator=(list<T>&& lst) noexcept
 {
     clear();
-    head = std::move(lst.head);
+    head.swap(lst.head);
     return *this;
 }
 
@@ -50,7 +101,7 @@ template<typename T>
 size_t list<T>::size() const noexcept
 {
     size_t size = 0;
-    for (node_ptr node = head; node; node = node->next())
+    for (const auto& item : *this)
         size++;
     return size;
 }
@@ -58,50 +109,39 @@ size_t list<T>::size() const noexcept
 template<typename T>
 bool list<T>::is_empty() const noexcept
 {
-    return !head;
+    return !(head->next());
 }
 
 template<typename T>
 inline void list<T>::clear() noexcept
 {
-    head = nullptr;
+    head->unlink_next();
 }
 
 template<typename T>
 list<T>::operator bool() const noexcept
 {
-    return bool(head);
+    return bool(head->next());
 }
 
 template<typename T>
-template<typename S>
-inline list<T>::operator list<S>() const
-{
-    list<S> result;
-    for (const auto& value : *this)
-        result.push_back(S(value));
-    return result;
-}
-
-template<typename T>
-inline bool list<T>::operator==(const list& lst) const noexcept
+template<typename U>
+inline bool list<T>::operator==(const list<U>& lst) const noexcept
 {
     return !(*this != lst);
 }
 
 template<typename T>
-inline bool list<T>::operator!=(const list& lst) const noexcept
+template<typename U>
+bool list<T>::operator!=(const list<U>& lst) const noexcept
 {
-    node_ptr node_1 = head;
-    node_ptr node_2 = lst.head;
+    auto iter_1 = begin();
+    auto iter_2 = lst.begin();
 
-    while (node_1 && node_2 && *node_1 == *node_2)
-    {
-        node_1 = node_1->next();
-        node_2 = node_2->next();
-    }
+    while (iter_1 != end() && iter_2 != lst.end() && *iter_1 == *iter_2)
+        ++iter_1, ++iter_2;
 
-    return node_1 || node_2;
+    return iter_1 != end() || iter_2 != lst.end();
 }
 
 template<typename T>
@@ -159,9 +199,13 @@ bool list<T>::contains(const T& value) const
 template<typename T>
 inline void list<T>::push_front(const T& value)
 {
-    node_ptr new_node = create_new_node(value);
-    new_node->insert_end(head);
-    head = new_node;
+    if (!(head->next()))
+        head->insert_end(head, create_new_node(value));
+    else
+    {
+        node_ptr new_node = create_new_node(value);
+        head->next()->insert_end(head->next(), new_node);
+    }
 }
 
 template<typename T>
@@ -173,13 +217,7 @@ inline void list<T>::push_front(const list& lst)
 template<typename T>
 inline void list<T>::push_back(const T& value)
 {
-    if (!head)
-        head = create_new_node(value);
-    else
-    {
-        node_ptr new_node = create_new_node(value);
-        head->insert_end(new_node);
-    }
+    head->insert_end(head, create_new_node(value));
 }
 
 template<typename T>
@@ -190,61 +228,241 @@ inline void list<T>::push_back(const list& lst)
 }
 
 template<typename T>
+typename list<T>::iterator list<T>::insert(const_iterator pos, const T& value)
+{
+    if (begin() == end() && (pos == begin() || pos == end()))
+    {
+        push_front(value);
+        return begin();
+    }
+    else if (pos == begin())
+    {
+        push_front(value);
+        return ++begin();
+    }
+    else
+    {
+        node_ptr new_node = create_new_node(value);
+        node_ptr node = pos.node();
+
+        node->insert_end(node, new_node);
+        return iterator(new_node);
+
+        // node_ptr node = head;
+        // while (node->next() && node->next() != pos.node())
+        //     node = node->next();
+        // 
+        // new_node->insert_end(node->next());
+        // node->next() = new_node;
+        // return iterator(node->next());
+    }
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::insert(const_iterator pos, T&& value)
+{
+    if (pos == begin() || begin() == end())
+    {
+        push_front(value);
+        return begin();
+    }
+
+    node_ptr new_node = create_new_node(value);
+    pos.node()->insert_end(pos.node(), new_node);
+    return iterator(new_node);
+
+    // node_ptr new_node = create_new_node(value);
+    // 
+    // node_ptr node = head;
+    // while (node->next() && node->next() != pos.node())
+    //     node = node->next();
+    // 
+    // new_node->insert_end(node->next());
+    // node->next() = new_node;
+    // return iterator(new_node);
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::insert(const_iterator pos, size_t count, const T& value)
+{
+    if (count == 0)
+        return iterator(pos.node());
+
+    if (pos == begin() || begin() == end())
+    {
+        while (count-- > 0)
+            push_front(value);
+        return begin();
+    }
+
+    node_ptr new_node = create_new_node(value);
+    while (--count > 0)
+        new_node->insert_end(new_node, create_new_node(value));
+
+    pos.node()->insert_end(pos.node(), new_node);
+    return iterator(new_node);
+}
+
+template<typename T>
+template<typename InputIt>
+typename list<T>::iterator list<T>::insert(const_iterator pos, InputIt first, InputIt last)
+{
+    if (first == last)
+    {
+        iterator res = begin();
+        while (res != pos) ++res;
+        return res;
+    }
+    else
+    {
+        iterator res = insert(pos, *first);
+        pos = res;
+
+        while (++first != last)
+            pos = insert(++pos, *first);
+
+        return res;
+    }
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::insert(const_iterator pos, std::initializer_list<T> ilist)
+{
+    return insert(pos, ilist.begin(), ilist.end());
+}
+
+template<typename T>
+list<T> list<T>::sublist(const_iterator first, const_iterator last)
+{
+
+}
+
+template<typename T>
+list<T> list<T>::sublist(const_iterator pos, size_t count)
+{
+    if (count == 0)
+        return list();
+
+    const_iterator last = pos;
+    while (count-- > 0) ++last;
+    return sublist(pos, last);
+}
+
+template<typename T>
 T& list<T>::at(size_t index)
 {
-    node_ptr node = head;
+    if (index >= size())
+        throw out_of_bounds_list_exception(__FILE__, typeid(*this).name(), __LINE__);
+
+    node_ptr node = head->next();
     for (size_t i = 0; i < index; i++)
         node = node->next();
-    return node->data();
+    return **static_cast<list_node<T>*>(node.get());
 }
 
 template<typename T>
 const T& list<T>::at(size_t index) const
 {
-    node_ptr node = head;
+    if (index >= size())
+        throw out_of_bounds_list_exception(__FILE__, typeid(*this).name(), __LINE__);
+
+    node_ptr node = head->next();
     for (size_t i = 0; i < index; i++)
         node = node->next();
-    return node->data();
+    return **static_cast<list_node<T>*>(node.get());
+}
+
+template<typename T>
+inline T& list<T>::front()
+{
+    if (auto first = head->next())
+        return **static_cast<list_node<T>*>(first.get());
+    throw out_of_bounds_list_exception(__FILE__, typeid(*this).name(), __LINE__);
+}
+
+template<typename T>
+inline const T& list<T>::front() const
+{
+    if (auto first = head->next())
+        return **static_cast<list_node<const T>*>(first.get());
+    throw out_of_bounds_list_exception(__FILE__, typeid(*this).name(), __LINE__);
+}
+
+template<typename T>
+inline T& list<T>::back()
+{
+    if (auto last = head->prev())
+        return **static_cast<list_node<T>*>(last.get());
+    else
+        throw out_of_bounds_list_exception(__FILE__, typeid(*this).name(), __LINE__);
+}
+
+template<typename T>
+inline const T& list<T>::back() const
+{
+    if (auto last = head->prev())
+        return **static_cast<list_node<const T>*>(last.get());
+    else
+        throw out_of_bounds_list_exception(__FILE__, typeid(*this).name(), __LINE__);
 }
 
 template<typename T>
 inline typename list<T>::iterator list<T>::begin() noexcept
 {
+    if (head->next())
+        return iterator(head->next());
     return iterator(head);
 }
 
 template<typename T>
 inline typename list<T>::iterator list<T>::end() noexcept
 {
-    return iterator();
+    return iterator(head);
 }
 
 template<typename T>
 inline typename list<T>::const_iterator list<T>::begin() const noexcept
 {
-    return const_iterator(head);
+    if (head->next())
+        return iterator(head->next());
+    return iterator(head);
 }
 
 template<typename T>
 inline typename list<T>::const_iterator list<T>::end() const noexcept
 {
-    return const_iterator();
+    return const_iterator(head);
 }
 
 template<typename T>
 inline typename list<T>::const_iterator list<T>::cbegin() const noexcept
 {
-    return const_iterator(head);
+    if (head->next())
+        return iterator(head->next());
+    return iterator(head);
 }
 
 template<typename T>
 inline typename list<T>::const_iterator list<T>::cend() const noexcept
 {
-    return const_iterator();
+    return const_iterator(head);
 }
 
 template<typename T>
 typename list<T>::node_ptr list<T>::create_new_node(const T& value)
+{
+    try
+    {
+        return node_ptr(new list_node<T>(value));
+    }
+    catch (std::bad_alloc)
+    {
+        throw memory_list_exception(__FILE__, typeid(*this).name(), __LINE__);
+    }
+}
+
+template<typename T>
+typename list<T>::node_ptr list<T>::create_new_node(T&& value)
 {
     try
     {

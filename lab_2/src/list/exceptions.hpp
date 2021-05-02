@@ -27,6 +27,27 @@ public:
         : base_list_exception(filename, classname, line, "memory error occured") {}
 };
 
+class invalid_rawptr_list_exception : public base_list_exception
+{
+public:
+    invalid_rawptr_list_exception(const char* filename, const char* classname, int line)
+        : base_list_exception(filename, classname, line, "invalid raw pointer with non-zero array size") {}
+};
+
+class out_of_bounds_list_exception : public base_list_exception
+{
+public:
+    out_of_bounds_list_exception(const char* filename, const char* classname, int line)
+        : base_list_exception(filename, classname, line, "list index out of bounds") {}
+};
+
+class invalid_list_node_exception : public base_list_exception
+{
+public:
+    invalid_list_node_exception(const char* filename, const char* classname, int line)
+        : base_list_exception(filename, classname, line, "invalid list node state") {}
+};
+
 class base_list_iterator_exception : public std::exception
 {
 public:

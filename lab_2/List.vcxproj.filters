@@ -2,6 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\list\base_list_node.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\list\list_iterator.hpp">
@@ -9,9 +12,6 @@
     </ClInclude>
     <ClInclude Include="src\list\list.hpp">
       <Filter>List</Filter>
-    </ClInclude>
-    <ClInclude Include="src\list\list_node.hpp">
-      <Filter>Node</Filter>
     </ClInclude>
     <ClInclude Include="src\list\list_impl.hpp">
       <Filter>List</Filter>
@@ -30,6 +30,15 @@
     </ClInclude>
     <ClInclude Include="src\list\list_iterator_impl.hpp">
       <Filter>Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\base_list_node.hpp">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\list_node.hpp">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\list\list_node_impl.hpp">
+      <Filter>Node</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
