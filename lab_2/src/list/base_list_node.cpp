@@ -63,19 +63,21 @@ void base_list_node::insert_end(node_ptr this_ptr, node_ptr node)
         _next = node;
         node->_prev = this_ptr;
     }
-
-    // if (!_next)
-    //     _next = node;
-    // else
-    // {
-    //     node_ptr it = _next;
-    //     while (it->_next)
-    //         it = it->_next;
-    //     it->_next = node;
-    // }
 }
 
-bool base_list_node::is_empty() const
+base_list_node::node_ptr base_list_node::remove_this(node_ptr this_ptr)
+{
+    if (auto prev = _prev.lock())
+    {
+        prev->_next = _next;
+        _next->_prev = prev;
+        return _next;
+    }
+
+    return this_ptr;
+}
+
+bool base_list_node::is_empty() const noexcept
 {
     return true;
 }

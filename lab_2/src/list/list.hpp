@@ -79,7 +79,8 @@ public:
     iterator insert(const_iterator pos, InputIt first, InputIt last);
     iterator insert(const_iterator pos, std::initializer_list<T> ilist);
 
-    // remove(...) \ erase(...)
+    iterator erase(const_iterator pos);
+    iterator erase(const_iterator first, const_iterator last);
 
     list sublist(const_iterator first, const_iterator last);
     list sublist(const_iterator pos, size_t count);

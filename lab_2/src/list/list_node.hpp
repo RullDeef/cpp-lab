@@ -17,7 +17,7 @@ public:
     inline const T& operator*() const noexcept;
     inline const T* operator->() const noexcept;
 
-    bool is_empty() const override;
+    bool is_empty() const noexcept override;
 
 private:
     T _data;

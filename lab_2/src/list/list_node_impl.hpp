@@ -43,7 +43,7 @@ inline const T* list_node<T>::operator->() const noexcept
 }
 
 template<typename T>
-bool list_node<T>::is_empty() const
+bool list_node<T>::is_empty() const noexcept
 {
     return false;
 }

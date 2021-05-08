@@ -230,32 +230,15 @@ inline void list<T>::push_back(const list& lst)
 template<typename T>
 typename list<T>::iterator list<T>::insert(const_iterator pos, const T& value)
 {
-    if (begin() == end() && (pos == begin() || pos == end()))
+    if (pos == begin() || begin() == end())
     {
         push_front(value);
         return begin();
     }
-    else if (pos == begin())
-    {
-        push_front(value);
-        return ++begin();
-    }
-    else
-    {
-        node_ptr new_node = create_new_node(value);
-        node_ptr node = pos.node();
 
-        node->insert_end(node, new_node);
-        return iterator(new_node);
-
-        // node_ptr node = head;
-        // while (node->next() && node->next() != pos.node())
-        //     node = node->next();
-        // 
-        // new_node->insert_end(node->next());
-        // node->next() = new_node;
-        // return iterator(node->next());
-    }
+    node_ptr new_node = create_new_node(value);
+    pos.node()->insert_end(pos.node(), new_node);
+    return iterator(new_node);
 }
 
 template<typename T>
@@ -270,16 +253,6 @@ typename list<T>::iterator list<T>::insert(const_iterator pos, T&& value)
     node_ptr new_node = create_new_node(value);
     pos.node()->insert_end(pos.node(), new_node);
     return iterator(new_node);
-
-    // node_ptr new_node = create_new_node(value);
-    // 
-    // node_ptr node = head;
-    // while (node->next() && node->next() != pos.node())
-    //     node = node->next();
-    // 
-    // new_node->insert_end(node->next());
-    // node->next() = new_node;
-    // return iterator(new_node);
 }
 
 template<typename T>
@@ -332,9 +305,27 @@ typename list<T>::iterator list<T>::insert(const_iterator pos, std::initializer_
 }
 
 template<typename T>
+typename list<T>::iterator list<T>::erase(const_iterator pos)
+{
+    node_ptr node = pos.node();
+    return iterator(node->remove_this(node));
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::erase(const_iterator first, const_iterator last)
+{
+    while (first != last)
+        first = erase(first);
+    return iterator(last.node());
+}
+
+template<typename T>
 list<T> list<T>::sublist(const_iterator first, const_iterator last)
 {
-
+    // naive approach
+    list<T> res(first, last);
+    erase(first, last);
+    return res;
 }
 
 template<typename T>

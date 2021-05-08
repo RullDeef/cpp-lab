@@ -34,6 +34,8 @@ public:
     const_list_iterator operator--(int);
 
     friend typename list<T>::iterator list<T>::insert(typename list<T>::const_iterator pos, const T& value);
+    friend typename list<T>::iterator list<T>::erase(typename list<T>::const_iterator pos);
+    friend typename list<T>::iterator list<T>::erase(typename list<T>::const_iterator first, typename list<T>::const_iterator last);
 
 protected:
     typename base_list_node::node_ptr node();

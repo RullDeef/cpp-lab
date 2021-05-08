@@ -20,8 +20,9 @@ public:
 
     void unlink_next() noexcept;
     void insert_end(node_ptr this_ptr, node_ptr node);
+    node_ptr remove_this(node_ptr this_ptr); // removes *this node from chain connecting prev with next
 
-    virtual bool is_empty() const;
+    virtual bool is_empty() const noexcept;
 
 private:
     node_ptr _next;

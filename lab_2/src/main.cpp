@@ -29,6 +29,8 @@ int test_clear();
 int test_operators();
 int test_add_diff_types();
 int test_insert();
+int test_erase();
+int test_sublist();
 
 int main()
 {
@@ -40,6 +42,8 @@ int main()
     SUB_TEST(test_operators);
     SUB_TEST(test_add_diff_types);
     SUB_TEST(test_insert);
+    SUB_TEST(test_erase);
+    SUB_TEST(test_sublist);
 
     TEST_END;
 }
@@ -210,6 +214,39 @@ int test_insert()
         std::cout << list_int << std::endl;
         std::cout << *res_iter << std::endl;
     }
+
+    TEST_END;
+}
+
+int test_erase()
+{
+    TEST_BEGIN;
+
+    list<int> a = { 1, 2, 3 };
+    auto pos = a.begin();
+    pos++;
+    pos = a.erase(pos);
+
+    std::cout << "erased before: " << *pos << ", list: " << a << std::endl;
+    ASSERT(*pos == 3);
+
+    pos = a.erase(pos);
+    std::cout << "erased. pos is end: " << std::boolalpha << (pos == a.end()) << std::endl;
+    ASSERT(pos == a.end());
+
+    TEST_END;
+}
+
+int test_sublist()
+{
+    TEST_BEGIN;
+
+    list<int> a = { 1, 2, 3, 4, 5, 6, 7 };
+    auto b = a.sublist(++a.begin(), 3);
+
+    std::cout << a << ", " << b << std::endl;
+    ASSERT(a.size() == 4);
+    ASSERT(b.size() == 3);
 
     TEST_END;
 }
