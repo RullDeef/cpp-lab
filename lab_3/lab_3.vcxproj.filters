@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="EngineAPI">
+      <UniqueIdentifier>{6655c303-d0c6-4545-868a-70c34a86000f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineAPI\Scene">
+      <UniqueIdentifier>{ae7ca235-e76e-4cdb-8ffc-15848b2f8915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineAPI\Core">
+      <UniqueIdentifier>{9808d9da-e994-478a-88e3-a3415c9a7e76}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Engine\Core\Math\Vector.hpp">
+      <Filter>EngineAPI\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Core\Math\Matrix.hpp">
+      <Filter>EngineAPI\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Core\Math\Transform.hpp">
+      <Filter>EngineAPI\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\API\Scene\ICamera.hpp">
+      <Filter>EngineAPI\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\API\Scene\ISceneObject.hpp">
+      <Filter>EngineAPI\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\API\Scene\Scene.hpp">
+      <Filter>EngineAPI\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\API\Scene\SceneObjectGroup.hpp">
+      <Filter>EngineAPI\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\API\Engine.hpp" />
+    <ClInclude Include="src\Engine\API\Renderer\IRenderer.hpp" />
+    <ClInclude Include="src\Engine\API\Managers\SceneManager.hpp" />
+    <ClInclude Include="src\Engine\API\Controller.hpp" />
+    <ClInclude Include="src\Engine\API\EngineBuilder.hpp" />
+    <ClInclude Include="src\Engine\API\Commands\ICommand.hpp" />
+    <ClInclude Include="src\Engine\API\Commands\CommandQueue.hpp" />
+    <ClInclude Include="src\Engine\API\Commands\LoadSceneCommand.hpp" />
+    <ClInclude Include="src\Engine\Tools\Profiler.hpp" />
+    <ClInclude Include="src\Engine\Tools\Logger.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\HullModel.hpp" />
+    <ClInclude Include="src\Engine\API\Renderer\IDrawable.hpp" />
+    <ClInclude Include="src\Engine\Core\Color.hpp" />
+    <ClInclude Include="src\Engine\Qt\Renderer\QtRenderer.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\Builders\DefaultHullCubeBuilder.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\Builders\ISceneObjectBuilder.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\PerspectiveCamera.hpp" />
+    <ClInclude Include="src\Engine\Core\Math\Rect.hpp" />
+    <ClInclude Include="src\Engine\API\Commands\RenderSceneCommand.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\Builders\TransformBuilder.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Engine\API\Engine.cpp" />
+    <ClCompile Include="src\Engine\Qt\MainWindow.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Engine\Qt\EngineQt.cpp" />
+    <ClCompile Include="src\Engine\API\Commands\ICommand.cpp" />
+    <ClCompile Include="src\Engine\API\Commands\CommandQueue.cpp" />
+    <ClCompile Include="src\Engine\API\Controller.cpp" />
+    <ClCompile Include="src\Engine\API\Managers\SceneManager.cpp" />
+    <ClCompile Include="src\Engine\API\Commands\LoadSceneCommand.cpp" />
+    <ClCompile Include="src\Engine\Tools\Logger.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Vector.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\ISceneObject.cpp" />
+    <ClCompile Include="src\Engine\Qt\Renderer\QtRenderer.cpp" />
+    <ClCompile Include="src\Engine\Core\Color.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\SceneObjectGroup.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Objects\HullModel.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Objects\Builders\DefaultHullCubeBuilder.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Matrix.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Transform.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\ICamera.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Scene.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\PerspectiveCamera.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Rect.cpp" />
+    <ClCompile Include="src\Engine\API\Commands\RenderSceneCommand.cpp" />
+    <ClCompile Include="src\Engine\API\Renderer\IRenderer.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Objects\Builders\TransformBuilder.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\Engine\Qt\MainWindow.h" />
+    <QtMoc Include="src\Engine\Qt\EngineQt.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="src\Engine\Qt\MainWindow.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="src\Engine\Qt\MainWindow.ui" />
+  </ItemGroup>
+</Project>

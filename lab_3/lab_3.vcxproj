@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BA84654D-0030-4DCA-AF07-4F7BD42CFFD6}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>5.15.2_msvc2019_64</QtInstall>
+    <QtModules>core;xml;opengl;gui;uitools;widgets;multimediawidgets;openglextensions</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>5.15.2_msvc2019_64</QtInstall>
+    <QtModules>core;xml;opengl;gui;uitools;widgets;multimediawidgets;openglextensions</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Engine\Qt;$(ProjectDir)src\Engine\Core;$(ProjectDir)src\Engine\API;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Engine\Qt;$(ProjectDir)src\Engine\Core;$(ProjectDir)src\Engine\API;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Engine\API\Commands\CommandQueue.hpp" />
+    <ClInclude Include="src\Engine\API\Commands\ICommand.hpp" />
+    <ClInclude Include="src\Engine\API\Commands\LoadSceneCommand.hpp" />
+    <ClInclude Include="src\Engine\API\Commands\RenderSceneCommand.hpp" />
+    <ClInclude Include="src\Engine\API\Controller.hpp" />
+    <ClInclude Include="src\Engine\API\Engine.hpp" />
+    <ClInclude Include="src\Engine\API\EngineBuilder.hpp" />
+    <ClInclude Include="src\Engine\API\Managers\SceneManager.hpp" />
+    <ClInclude Include="src\Engine\API\Renderer\IDrawable.hpp" />
+    <ClInclude Include="src\Engine\API\Renderer\IRenderer.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\ICamera.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\ISceneObject.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\Builders\ISceneObjectBuilder.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\Builders\DefaultHullCubeBuilder.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\Builders\TransformBuilder.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Objects\HullModel.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\PerspectiveCamera.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\Scene.hpp" />
+    <ClInclude Include="src\Engine\API\Scene\SceneObjectGroup.hpp" />
+    <ClInclude Include="src\Engine\Core\Color.hpp" />
+    <ClInclude Include="src\Engine\Core\Math\Matrix.hpp" />
+    <ClInclude Include="src\Engine\Core\Math\Rect.hpp" />
+    <ClInclude Include="src\Engine\Core\Math\Transform.hpp" />
+    <ClInclude Include="src\Engine\Core\Math\Vector.hpp" />
+    <QtMoc Include="src\Engine\Qt\EngineQt.hpp" />
+    <ClInclude Include="src\Engine\Qt\Renderer\QtRenderer.hpp" />
+    <ClInclude Include="src\Engine\Tools\Logger.hpp" />
+    <ClInclude Include="src\Engine\Tools\Profiler.hpp" />
+    <QtMoc Include="src\Engine\Qt\MainWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Engine\API\Commands\CommandQueue.cpp" />
+    <ClCompile Include="src\Engine\API\Commands\ICommand.cpp" />
+    <ClCompile Include="src\Engine\API\Commands\LoadSceneCommand.cpp" />
+    <ClCompile Include="src\Engine\API\Commands\RenderSceneCommand.cpp" />
+    <ClCompile Include="src\Engine\API\Controller.cpp" />
+    <ClCompile Include="src\Engine\API\Engine.cpp" />
+    <ClCompile Include="src\Engine\API\Managers\SceneManager.cpp" />
+    <ClCompile Include="src\Engine\API\Renderer\IRenderer.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\ICamera.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\ISceneObject.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Objects\Builders\DefaultHullCubeBuilder.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Objects\Builders\TransformBuilder.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Objects\HullModel.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\PerspectiveCamera.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\Scene.cpp" />
+    <ClCompile Include="src\Engine\API\Scene\SceneObjectGroup.cpp" />
+    <ClCompile Include="src\Engine\Core\Color.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Matrix.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Rect.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Transform.cpp" />
+    <ClCompile Include="src\Engine\Core\Math\Vector.cpp" />
+    <ClCompile Include="src\Engine\Qt\EngineQt.cpp" />
+    <ClCompile Include="src\Engine\Qt\MainWindow.cpp" />
+    <ClCompile Include="src\Engine\Qt\Renderer\QtRenderer.cpp" />
+    <ClCompile Include="src\Engine\Tools\Logger.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="src\Engine\Qt\MainWindow.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="src\Engine\Qt\MainWindow.ui" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
