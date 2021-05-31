@@ -1,6 +1,7 @@
 #include "QtRenderer.hpp"
-#include "Engine/API/Scene/ICamera.hpp"
-#include "Engine/Tools/Logger.hpp"
+#include "API/Objects/ICamera.hpp"
+#include "Utils/Logger.hpp"
+
 
 QtRenderer::QtRenderer(QGraphicsView* graphicsView)
     : graphics(graphicsView), graphicsScene(new QGraphicsScene(graphicsView))
@@ -12,16 +13,6 @@ QtRenderer::~QtRenderer()
 {
 }
 
-void QtRenderer::beginFrame(std::shared_ptr<ICamera> camera)
-{
-    this->camera = camera;
-}
-
-void QtRenderer::endFrame()
-{
-    camera = nullptr;
-}
-
 void QtRenderer::setStrokeColor(const Color& color)
 {
     strokeColor = color;
@@ -29,10 +20,8 @@ void QtRenderer::setStrokeColor(const Color& color)
 
 void QtRenderer::drawLine(const Vector& p1, const Vector& p2)
 {
-    LOG_FUNC;
-
-    Vector pp1 = camera->projectPoint(p1 * getMatrix());
-    Vector pp2 = camera->projectPoint(p2 * getMatrix());
+    Vector pp1 = getCamera()->projectPoint(p1 * getMatrix());
+    Vector pp2 = getCamera()->projectPoint(p2 * getMatrix());
 
     QPen pen(strokeColor.getHex());
 

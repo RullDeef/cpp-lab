@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SceneObjectGroup.hpp"
+#include "API/Objects/SceneObjectGroup.hpp"
 
 class Scene : public SceneObjectGroup
 {

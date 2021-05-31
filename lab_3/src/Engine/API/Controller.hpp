@@ -1,19 +1,17 @@
 #pragma once
 
-#include "Managers/SceneManager.hpp"
+#include "API/Managers/IManagerFactory.hpp"
+
 
 class Controller
 {
 public:
-    Controller();
+    Controller(std::shared_ptr<IManagerFactory> managerFactory);
 
-    void createEmptyScene();
-    void loadScene(const char* filename);
-
-    bool addSceneObject(std::shared_ptr<ISceneObject> object);
-
-    void renderScene(std::shared_ptr<IRenderer> renderer);
+    std::shared_ptr<IStateManager> getStateManager();
+    std::shared_ptr<ISceneManager> getSceneManager();
 
 private:
-    SceneManager sceneManager;
+    std::shared_ptr<IStateManager> stateManager;
+    std::shared_ptr<ISceneManager> sceneManager;
 };

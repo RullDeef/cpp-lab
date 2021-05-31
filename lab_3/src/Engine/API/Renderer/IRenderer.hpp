@@ -15,8 +15,8 @@ public:
     IRenderer();
     virtual ~IRenderer() = default;
 
-    virtual void beginFrame(std::shared_ptr<ICamera> camera) = 0;
-    virtual void endFrame() = 0;
+    virtual void beginFrame(std::shared_ptr<ICamera> camera);
+    virtual void endFrame();
 
     void saveMatrix();
     void restoreMatrix();
@@ -29,10 +29,12 @@ public:
     virtual void clear(const Color& color) = 0;
 
     virtual Rect getViewport() const = 0;
+    virtual std::shared_ptr<ICamera> getCamera() const;
 
 protected:
     const Matrix& getMatrix() const;
 
 private:
+    std::shared_ptr<ICamera> camera;
     std::stack<Matrix> matrixStack;
 };

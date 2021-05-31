@@ -1,7 +1,13 @@
 #include "Color.hpp"
 
+
+Color::Color(int hex) noexcept
+    : hex(hex)
+{
+}
+
 Color::Color(int r, int g, int b, int a) noexcept
-    : hex(COLOR_HEX_FROM_RGBA(r, g, b, a))
+    : r(r), g(g), b(b), a(a)
 {
 }
 
@@ -10,57 +16,52 @@ Color::Color(const Color& color) noexcept
 {
 }
 
-Color::Color(int hex) noexcept
-    : hex(hex)
+unsigned char Color::getRed() const noexcept
 {
+    return r;
 }
 
-int Color::getRed() const noexcept
+unsigned char Color::getGreen() const noexcept
 {
-    return COLOR_RED_FROM_HEX(hex);
+    return g;
 }
 
-int Color::getGreen() const noexcept
+unsigned char Color::getBlue() const noexcept
 {
-    return COLOR_GREEN_FROM_HEX(hex);
+    return b;
 }
 
-int Color::getBlue() const noexcept
+unsigned char Color::getAlpha() const noexcept
 {
-    return COLOR_BLUE_FROM_HEX(hex);
+    return a;
 }
 
-int Color::getAlpha() const noexcept
-{
-    return COLOR_ALPHA_FROM_HEX(hex);
-}
-
-int Color::getHex() const noexcept
+unsigned int Color::getHex() const noexcept
 {
     return hex;
 }
 
-void Color::setRed(int value) noexcept
+void Color::setRed(unsigned char value) noexcept
 {
-    hex = COLOR_SET_BYTE(hex, COLOR_BYTE_RED, value);
+    r = value;
 }
 
-void Color::setGreen(int value) noexcept
+void Color::setGreen(unsigned char value) noexcept
 {
-    hex = COLOR_SET_BYTE(hex, COLOR_BYTE_GREEN, value);
+    g = value;
 }
 
-void Color::setBlue(int value) noexcept
+void Color::setBlue(unsigned char value) noexcept
 {
-    hex = COLOR_SET_BYTE(hex, COLOR_BYTE_BLUE, value);
+    b = value;
 }
 
-void Color::setAlpha(int value) noexcept
+void Color::setAlpha(unsigned char value) noexcept
 {
-    hex = COLOR_SET_BYTE(hex, COLOR_BYTE_ALPHA, value);
+    a = value;
 }
 
-void Color::setHex(int value) noexcept
+void Color::setHex(unsigned int value) noexcept
 {
     hex = value;
 }

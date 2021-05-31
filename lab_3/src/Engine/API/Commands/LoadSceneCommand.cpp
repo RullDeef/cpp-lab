@@ -1,9 +1,12 @@
 #include <QFileDialog>
+#include <stdexcept>
 #include "LoadSceneCommand.hpp"
-#include "../../Tools/Logger.hpp"
+#include "Engine/Utils/Logger.hpp"
+#include "API/Managers/ISceneManager.hpp"
 
-LoadSceneCommand::LoadSceneCommand(std::shared_ptr<Controller> controller)
-    : ICommand(controller)
+
+LoadSceneCommand::LoadSceneCommand(std::shared_ptr<ISceneManager> manager)
+    : manager(manager)
 {
 }
 
@@ -11,12 +14,8 @@ void LoadSceneCommand::execute()
 {
     LOG_FUNC;
 
-    QString filename = QFileDialog::getOpenFileName(nullptr, "загрузить сцену",
-        "Scene files (*.scn)");
+    if (manager.expired())
+        throw std::runtime_error("expired pointer to scene manager");
 
-    if (!filename.isEmpty())
-    {
-        QByteArray ba = filename.toLocal8Bit();
-        getController()->loadScene(ba.data());
-    }
+    manager.lock()->loadScene();
 }

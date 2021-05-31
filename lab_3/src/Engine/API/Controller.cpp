@@ -1,36 +1,28 @@
 #include "Controller.hpp"
-#include "Scene/PerspectiveCamera.hpp"
-#include "../Tools/Logger.hpp"
+#include <algorithm>
+#include "Engine/Utils/Logger.hpp"
 
-Controller::Controller()
+
+Controller::Controller(std::shared_ptr<IManagerFactory> managerFactory)
 {
+    stateManager = managerFactory->createStateManager();
+    sceneManager = managerFactory->createSceneManager(stateManager);
 }
 
-void Controller::createEmptyScene()
+std::shared_ptr<IStateManager> Controller::getStateManager()
 {
-    LOG_FUNC;
-
-    sceneManager.createEmptyScene();
+    return stateManager;
 }
 
-void Controller::loadScene(const char* filename)
+std::shared_ptr<ISceneManager> Controller::getSceneManager()
 {
-    LOG_FUNC;
-
-    sceneManager.loadScene(filename);
+    return sceneManager;
 }
 
-bool Controller::addSceneObject(std::shared_ptr<ISceneObject> object)
-{
-    LOG_FUNC;
 
-    return sceneManager.addSceneObject(object);
-}
-
+/*
 void Controller::renderScene(std::shared_ptr<IRenderer> renderer)
 {
-    LOG_FUNC;
-
     PerspectiveCamera* perspCam = new PerspectiveCamera();
     perspCam->setViewport(renderer->getViewport());
     perspCam->setNear(0.1);
@@ -44,3 +36,4 @@ void Controller::renderScene(std::shared_ptr<IRenderer> renderer)
     renderer->clear(Color(0xFF, 0xFF, 0xFF, 0xFF));
     sceneManager.renderScene(renderer, camera);
 }
+*/
