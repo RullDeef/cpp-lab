@@ -5,5 +5,5 @@
 
 namespace core
 {
-    ErrorCode model_viewer(OUT Projection& proj, IN const Action& action);
+    ErrorCode model_viewer(VAR Projection& proj, IN const Action& action);
 }

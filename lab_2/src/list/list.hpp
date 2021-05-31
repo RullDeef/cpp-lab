@@ -12,30 +12,22 @@ template<typename T>
 class list : public base_list
 {
 public:
-    using node_ptr = typename base_list_node::node_ptr;
-
     using iterator = list_iterator<T>;
     using const_iterator = const_list_iterator<T>;
 
     list() = default;
-
     template<typename U>
-    list(const list<U>& lst);
-    list(const list& lst);
-
+    explicit list(const list<U>& lst);
+    explicit list(const list& lst);
     list(list&& temp) noexcept;
-
-    list(std::initializer_list<T> init_list);
-
+    explicit list(std::initializer_list<T> init_list);
     template<typename... Args>
     list(const T& first, const T& second, const Args&... other);
     list(const T& first, const T& second);
     explicit list(const T& value);
-
     template<typename _Iter>
     list(_Iter begin, _Iter end);
-
-    list(T* array, size_t size); // steals C-array
+    list(T* array, size_t size);
 
     virtual ~list();
 
@@ -44,9 +36,7 @@ public:
 
     size_t size() const noexcept override;
     bool is_empty() const noexcept override;
-
     void clear() noexcept override;
-
     operator bool() const noexcept;
 
     template<typename U>
@@ -56,7 +46,7 @@ public:
     bool operator!=(const list<U>& lst) const noexcept;
 
     template<typename U>
-    auto operator+(const list<U>& lst) const -> decltype(list<decltype(T() + U())>());
+    auto operator+(const list<U>& lst) const -> decltype(list<decltype(T() + U())>()); // decltype(auto)
     list operator+(const T& value) const;
 
     template<typename U>
@@ -67,9 +57,9 @@ public:
     bool contains(const T& value) const;
 
     void push_front(const T& value);
-    void push_front(const list& lst);
-
     void push_back(const T& value);
+
+    void push_front(const list& lst);
     void push_back(const list& lst);
 
     iterator insert(const_iterator pos, const T& value);
@@ -86,22 +76,22 @@ public:
     list sublist(const_iterator pos, size_t count);
 
     T& at(size_t index);
-    const T& at(size_t index) const;
-
     inline T& front();
-    inline const T& front() const;
-
     inline T& back();
+
+    const T& at(size_t index) const;
+    inline const T& front() const;
     inline const T& back() const;
 
     inline iterator begin() noexcept;
-    inline iterator end() noexcept;
-
     inline const_iterator begin() const noexcept;
-    inline const_iterator end() const noexcept;
-
     inline const_iterator cbegin() const noexcept;
+
+    inline iterator end() noexcept;
+    inline const_iterator end() const noexcept;
     inline const_iterator cend() const noexcept;
+
+    using node_ptr = typename base_list_node::node_ptr;
 
 private:
     node_ptr create_new_node(const T& value);

@@ -2,7 +2,7 @@
 
 using namespace core;
 
-ErrorCode core::model_viewer(OUT Projection& proj, IN const Action& action)
+ErrorCode core::model_viewer(VAR Projection& proj, IN const Action& action)
 {
     static Model m_model = model_init();
     static View m_view = view_init();

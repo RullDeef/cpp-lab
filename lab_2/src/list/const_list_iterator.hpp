@@ -21,7 +21,6 @@ public:
 
     const T& operator*() const;
     const T* operator->() const;
-
     operator bool() const noexcept;
 
     inline bool operator==(const const_list_iterator& iter) const;

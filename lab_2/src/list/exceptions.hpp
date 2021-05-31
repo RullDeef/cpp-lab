@@ -2,16 +2,19 @@
 
 #include <exception>
 #include <string>
+#include <chrono>
 
 class base_list_exception : public std::exception
 {
 public:
     base_list_exception(const char* filename, const char* classname, int line, const char* info)
     {
+        time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         message = std::string(info)
             + " at line " + std::to_string(line)
             + " in class \"" + classname + "\""
-            + " in file \"" + filename + "\"";
+            + " in file \"" + filename + "\""
+            + " in " + ctime(&time);
     }
 
     virtual const char* what() const override { return message.c_str(); }
@@ -48,21 +51,11 @@ public:
         : base_list_exception(filename, classname, line, "invalid list node state") {}
 };
 
-class base_list_iterator_exception : public std::exception
+class base_list_iterator_exception : public base_list_exception
 {
 public:
-    base_list_iterator_exception(const char* filename, const char* classname, int line, const char* info)
-    {
-        message = std::string(info)
-            + " at line " + std::to_string(line)
-            + " in class \"" + classname + "\""
-            + " in file \"" + filename + "\"";
-    }
-
-    virtual const char* what() const override { return message.c_str(); }
-
-private:
-    std::string message;
+    base_list_iterator_exception(const char *filename, const char *classname, int line, const char* message)
+        : base_list_exception(filename, classname, line, message) {}
 };
 
 class invalid_state_iterator_exception : public base_list_iterator_exception

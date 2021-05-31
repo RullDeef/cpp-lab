@@ -41,11 +41,11 @@ const T& const_list_iterator<T>::operator*() const
 template<typename T>
 const T* const_list_iterator<T>::operator->() const
 {
-    if (auto ptr = _node.lock())
+    if (auto ptr = _node.lock()) // exp
     {
         if (auto data_node = dynamic_cast<list_node<T>*>(ptr.get()))
             return **data_node;
-        throw invalid_state_iterator_exception(__FILE__, typeid(*this).name(), __LINE__);
+        throw invalid_state_iterator_exception(__FILE__, typeid(*this).name(), __LINE__); // another exception
     }
 
     throw invalid_state_iterator_exception(__FILE__, typeid(*this).name(), __LINE__);
