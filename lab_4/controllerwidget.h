@@ -2,10 +2,12 @@
 #define CONTROLLERWIDGET_H
 
 #include <QWidget>
+#include <QPushButton>
 #include <QRadioButton>
 #include "common.h"
 #include "controller.h"
-#include "controllerbutton.h"
+#include "controllerbuttonwidget.h"
+
 
 namespace Ui {
 class Controller;
@@ -19,13 +21,8 @@ public:
     explicit ControllerWidget(Controller* controller);
     ~ControllerWidget();
 
-    Controller* operator->();
-    Controller& operator*();
-
 public slots:
-    void requestFloor(int floor);
-    void floorVisited(int floor);
-    void floorSkipped(int floor);
+    void cabinVisited(Cabin *cabin, int floor);
 
 private:
     void addFloorButton(int floor);
@@ -34,7 +31,8 @@ private:
     Controller* controller;
 
     std::vector<QRadioButton*> floorBulbs;
-    std::vector<ControllerButton*> controllerButtons;
+    std::vector<ControllerButton*> buttons;
+    std::vector<ControllerButtonWidget*> buttonWidgets;
 };
 
 #endif // CONTROLLERWIDGET_H

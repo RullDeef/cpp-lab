@@ -1,26 +1,36 @@
 #ifndef CONTROLLERBUTTON_H
 #define CONTROLLERBUTTON_H
 
-#include <QPushButton>
+#include <QObject>
 
-class ControllerButton : public QPushButton
+
+class ControllerButton : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit ControllerButton(QWidget *parent = nullptr);
-    ~ControllerButton();
+    enum class State
+    {
+        PRESSED,
+        RELEASED
+    };
 
-    void setNumber(int n);
+    explicit ControllerButton(int floor);
+    virtual ~ControllerButton();
 
-public slots:
-    void makeRequest();
+    int getFloorNumber() const;
 
 signals:
-    void requestFloor(int n);
+    void pressedSignal(ControllerButton* button);
+    void releasedSignal(ControllerButton* button);
+
+public slots:
+    void pressButton();
+    void releaseButton();
 
 private:
-    int floorNumber = 0;
+    int floorNumber;
+    State state = State::RELEASED;
 };
 
 #endif // CONTROLLERBUTTON_H

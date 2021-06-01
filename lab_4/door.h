@@ -3,23 +3,39 @@
 
 #include <QObject>
 
+
 class Door : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Door(QObject *parent = nullptr);
+    enum class State
+    {
+        CLOSED,
+        OPENING,
+        OPENED,
+        CLOSING
+    };
+
+    Door();
+    virtual ~Door();
 
 signals:
-    void opened();
-    void closed();
+    void openedSignal(Door* door);
+    void openingSignal(Door* door);
+    void closingSignal(Door* door);
+    void closedSignal(Door* door);
 
 public slots:
-    void open();
-    void close();
+    void openDoor();
+    void closeDoor();
 
-private:
-    int timeout = 1000;
+protected slots:
+    void _finishOpening();
+    void _finishClosing();
+
+public:
+    State state;
 };
 
 #endif // DOOR_H

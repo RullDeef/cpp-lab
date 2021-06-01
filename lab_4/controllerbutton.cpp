@@ -1,40 +1,28 @@
 #include "controllerbutton.h"
 
-ControllerButton::ControllerButton(QWidget *parent) :
-    QPushButton(parent)
+
+ControllerButton::ControllerButton(int floor)
+    : floorNumber(floor)
 {
-    setStyleSheet(
-        "background-color: rgb(190, 160, 200);"
-        "border-style: solid;"
-        "border-width: 1px;"
-        "border-radius: 16px;"
-        "border-color: black;"
-        "max-width:  32px;"
-        "max-height: 32px;"
-        "min-width:  32px;"
-        "min-height: 32px;");
-
-    auto f = font();
-    f.setPointSize(16);
-    setFont(f);
-
-    setText("0");
-
-    connect(this, &QPushButton::pressed, this, &ControllerButton::makeRequest);
 }
 
 ControllerButton::~ControllerButton()
 {
 }
 
-void ControllerButton::makeRequest()
+int ControllerButton::getFloorNumber() const
 {
-    emit requestFloor(floorNumber);
-    setDisabled(true);
+    return floorNumber;
 }
 
-void ControllerButton::setNumber(int n)
+void ControllerButton::pressButton()
 {
-    floorNumber = n;
-    setText(QString::number(n));
+    state = State::PRESSED;
+    emit pressedSignal(this);
+}
+
+void ControllerButton::releaseButton()
+{
+    state = State::RELEASED;
+    emit releasedSignal(this);
 }

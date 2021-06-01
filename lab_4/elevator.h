@@ -5,6 +5,8 @@
 
 #include "controller.h"
 #include "cabin.h"
+#include "controllerbutton.h"
+
 
 class Elevator : public QObject
 {
@@ -13,6 +15,11 @@ class Elevator : public QObject
 public:
     Elevator(Controller* controller, Cabin* cabin);
     ~Elevator();
+
+    void addButton(ControllerButton* button);
+
+protected slots:
+    void buttonPressed(ControllerButton* button);
 
 private:
     Controller* controller;

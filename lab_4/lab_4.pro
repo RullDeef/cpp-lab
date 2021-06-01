@@ -13,9 +13,9 @@ SOURCES += \
     cabinwidget.cpp \
     controller.cpp \
     controllerbutton.cpp \
+    controllerbuttonwidget.cpp \
     controllerwidget.cpp \
     door.cpp \
-    elevator.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -25,9 +25,9 @@ HEADERS += \
     common.h \
     controller.h \
     controllerbutton.h \
+    controllerbuttonwidget.h \
     controllerwidget.h \
     door.h \
-    elevator.h \
     mainwindow.h
 
 FORMS += \

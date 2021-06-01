@@ -5,46 +5,33 @@
 #include "common.h"
 #include "door.h"
 
+
 class Cabin : public QObject
 {
     Q_OBJECT
 
+public:
     enum class State
     {
         STOPPED,
         MOVING
     };
 
-public:
-    explicit Cabin(QObject *parent = nullptr);
-    explicit Cabin(Door* door);
+    Cabin() = default;
+
+    int getCurrFloor() const;
 
 signals:
-    void floorVisited(int floor, Direction direction);
-    void floorSkipped(int floor, Direction direction = Direction::NONE);
-
-    void doorsOpening();
-    void doorsClosing();
+    void movingSignal(Cabin* cabin);
+    void stoppedSignal(Cabin* cabin, int floor);
 
 public slots:
-    void setTarget(int floor);
-
-private slots:
-    void startMoving();
-    void finishMoving();
-    void doorsOpened();
+    void move(Direction direction);
 
 private:
-    void setupConnections();
-
-    Door* door;
-
     int currFloor = 1;
-    int targetFloor = 0;
     State state = State::STOPPED;
     Direction direction = Direction::NONE;
-
-    int floorTimeout = 2000;
 };
 
 #endif // CABIN_H

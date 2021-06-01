@@ -1,13 +1,14 @@
 #include "cabinwidget.h"
 #include "ui_cabinwidget.h"
 
-CabinWidget::CabinWidget(Cabin* cabin)
-    : QWidget(nullptr), ui(new Ui::Elevator), cabin(cabin)
+
+CabinWidget::CabinWidget(Cabin* cabin, Door* door)
+    : ui(new Ui::Elevator), cabin(cabin), door(door)
 {
     ui->setupUi(this);
 
-    connect(cabin, &Cabin::doorsOpening, this, &CabinWidget::playDoorsOpenAnimation);
-    connect(cabin, &Cabin::doorsClosing, this, &CabinWidget::playDoorsCloseAnimation);
+    connect(door, &Door::openingSignal, this, &CabinWidget::playDoorsOpenAnimation);
+    connect(door, &Door::closingSignal, this, &CabinWidget::playDoorsCloseAnimation);
 
     playDoorsOpenAnimation();
 }
@@ -15,26 +16,6 @@ CabinWidget::CabinWidget(Cabin* cabin)
 CabinWidget::~CabinWidget()
 {
     delete ui;
-}
-
-Cabin *CabinWidget::operator->()
-{
-    return cabin;
-}
-
-Cabin &CabinWidget::operator*()
-{
-    return *cabin;
-}
-
-void CabinWidget::onDoorsOpened()
-{
-
-}
-
-void CabinWidget::onDoorsClosed()
-{
-
 }
 
 void CabinWidget::doorOpenTick()
@@ -49,11 +30,12 @@ void CabinWidget::doorOpenTick()
         w = width() - 50;
         timer.stop();
         timer.disconnect();
-        // emit doorsClosed();
     }
 
     ui->spacer->changeSize(w, h);
     layout()->invalidate();
+
+    timer.setInterval(10);
 }
 
 void CabinWidget::doorCloseTick()
@@ -68,21 +50,22 @@ void CabinWidget::doorCloseTick()
         w = 0;
         timer.stop();
         timer.disconnect();
-        // emit doorsClosed();
     }
 
     ui->spacer->changeSize(w, h);
     layout()->invalidate();
+
+    timer.setInterval(10);
 }
 
 void CabinWidget::playDoorsOpenAnimation()
 {
     connect(&timer, &QTimer::timeout, this, &CabinWidget::doorOpenTick);
-    timer.start(1);
+    timer.start(500);
 }
 
 void CabinWidget::playDoorsCloseAnimation()
 {
     connect(&timer, &QTimer::timeout, this, &CabinWidget::doorCloseTick);
-    timer.start(1);
+    timer.start(500);
 }

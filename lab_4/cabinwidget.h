@@ -3,8 +3,9 @@
 
 #include <QWidget>
 #include <QTimer>
-
 #include "cabin.h"
+#include "door.h"
+
 
 namespace Ui {
 class Elevator;
@@ -15,16 +16,10 @@ class CabinWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CabinWidget(Cabin* cabin);
-    ~CabinWidget();
-
-    Cabin* operator->();
-    Cabin& operator*();
+    explicit CabinWidget(Cabin* cabin, Door* door);
+    virtual ~CabinWidget();
 
 public slots:
-    void onDoorsOpened();
-    void onDoorsClosed();
-
     void doorOpenTick();
     void doorCloseTick();
 
@@ -34,6 +29,7 @@ private:
 
     Ui::Elevator *ui;
     Cabin* cabin;
+    Door* door;
     QTimer timer;
 };
 

@@ -2,9 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "cabinwidget.h"
-#include "controllerwidget.h"
-#include "elevator.h"
+#include "controller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,8 +19,8 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    Elevator* elevator;
-    CabinWidget *cabinWidget;
-    ControllerWidget *controllerWidget;
+    Door* door;
+    Cabin* cabin;
+    Controller* controller;
 };
 #endif // MAINWINDOW_H

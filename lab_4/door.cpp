@@ -2,18 +2,41 @@
 #include <QDebug>
 #include "door.h"
 
-Door::Door(QObject *parent) : QObject(parent)
+constexpr int timeout = 3000;
+
+Door::Door() : QObject(nullptr)
 {
 }
 
-void Door::open()
+Door::~Door()
+{
+    qDebug() << "door removed!";
+}
+
+void Door::openDoor()
 {
     qDebug() << "door is opening...";
-    QTimer::singleShot(timeout, this, &Door::opened);
+    state = State::OPENING;
+    emit openingSignal(this);
+    QTimer::singleShot(timeout, this, &Door::_finishOpening);
 }
 
-void Door::close()
+void Door::closeDoor()
 {
     qDebug() << "door is closing...";
-    QTimer::singleShot(timeout, this, &Door::closed);
+    state = State::CLOSING;
+    emit closingSignal(this);
+    QTimer::singleShot(timeout, this, &Door::_finishClosing);
+}
+
+void Door::_finishOpening()
+{
+    state = State::OPENED;
+    emit openedSignal(this);
+}
+
+void Door::_finishClosing()
+{
+    state = State::CLOSED;
+    emit closedSignal(this);
 }
