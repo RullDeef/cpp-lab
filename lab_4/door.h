@@ -12,13 +12,13 @@ public:
     enum class State
     {
         CLOSED,
-        OPENING,
+        CLOSING,
         OPENED,
-        CLOSING
+        OPENING
     };
 
-    Door();
-    virtual ~Door();
+    Door() = default;
+    virtual ~Door() = default;
 
 signals:
     void openedSignal(Door* door);
@@ -27,15 +27,13 @@ signals:
     void closedSignal(Door* door);
 
 public slots:
-    void openDoor();
-    void closeDoor();
-
-protected slots:
-    void _finishOpening();
-    void _finishClosing();
+    void opening();
+    void closing();
+    void open();
+    void close();
 
 public:
-    State state;
+    State state = State::CLOSED;
 };
 
 #endif // DOOR_H

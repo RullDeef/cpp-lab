@@ -1,42 +1,62 @@
-#include <QTimer>
 #include <QDebug>
 #include "door.h"
 
-constexpr int timeout = 3000;
 
-Door::Door() : QObject(nullptr)
+void Door::opening()
 {
+    if (state == State::CLOSED || state == State::CLOSING)
+    {
+        qDebug() << "door is opening...";
+        state = State::OPENING;
+        emit openingSignal(this);
+    }
+    else
+        qDebug() << "Doors: ignored transition from "
+            << (state == State::OPENED ? "OPENED" : "OPENING")
+            << " to OPENING";
 }
 
-Door::~Door()
+void Door::closing()
 {
-    qDebug() << "door removed!";
+    if (state == State::OPENED)
+    {
+        qDebug() << "door is closing...";
+        state = State::CLOSING;
+        emit closingSignal(this);
+    }
+    else
+        qDebug() << "Doors: ignored transition from "
+            << (state == State::OPENING ? "OPENING" :
+               (state == State::CLOSING ? "CLOSING" : "CLOSED"))
+            << " to CLOSING";
 }
 
-void Door::openDoor()
+void Door::open()
 {
-    qDebug() << "door is opening...";
-    state = State::OPENING;
-    emit openingSignal(this);
-    QTimer::singleShot(timeout, this, &Door::_finishOpening);
+    if (state == State::OPENING)
+    {
+        qDebug() << "door opened.";
+        state = State::OPENED;
+        emit openedSignal(this);
+    }
+    else
+        qDebug() << "Doors: ignored transition from "
+            << (state == State::OPENED ? "OPENED" :
+               (state == State::CLOSING ? "CLOSING" : "CLOSED"))
+            << " to OPENED";
 }
 
-void Door::closeDoor()
+void Door::close()
 {
-    qDebug() << "door is closing...";
-    state = State::CLOSING;
-    emit closingSignal(this);
-    QTimer::singleShot(timeout, this, &Door::_finishClosing);
-}
-
-void Door::_finishOpening()
-{
-    state = State::OPENED;
-    emit openedSignal(this);
-}
-
-void Door::_finishClosing()
-{
-    state = State::CLOSED;
-    emit closedSignal(this);
+    if (state == State::CLOSING)
+    {
+        qDebug() << "door closed.";
+        state = State::CLOSED;
+        emit closedSignal(this);
+    }
+    else
+        qDebug() << "Doors: ignored transition from "
+            << (state == State::OPENED ? "OPENED" :
+               (state == State::CLOSED ? "CLOSED" : "OPENING"))
+            << " to CLOSED";
 }

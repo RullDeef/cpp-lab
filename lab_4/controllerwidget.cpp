@@ -11,7 +11,7 @@ ControllerWidget::ControllerWidget(Controller *controller)
         addFloorButton(i);
     ui->floorsLayout->insertSpacerItem(0, new QSpacerItem(200, 0));
 
-    connect(controller->getCabin(), &Cabin::stoppedSignal, this, &ControllerWidget::cabinVisited);
+    connect(controller->getCabin(), &Cabin::movingSignal, this, &ControllerWidget::cabinVisited);
     floorBulbs[0]->setChecked(true);
 }
 
@@ -42,5 +42,5 @@ void ControllerWidget::addFloorButton(int floor)
     buttonWidgets.insert(buttonWidgets.begin(), buttonWidget);
 
     ui->buttonsLayout->addWidget(buttonWidget);
-    controller->addButton(button);
+    controller->connectButton(button);
 }

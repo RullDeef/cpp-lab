@@ -11,7 +11,7 @@ class ControllerButtonWidget : public QPushButton
 
 public:
     explicit ControllerButtonWidget(ControllerButton* button);
-    virtual ~ControllerButtonWidget();
+    virtual ~ControllerButtonWidget() = default;
 
     ControllerButton* getControllerButton();
 

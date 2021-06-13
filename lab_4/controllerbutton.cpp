@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "controllerbutton.h"
 
 
@@ -6,23 +7,25 @@ ControllerButton::ControllerButton(int floor)
 {
 }
 
-ControllerButton::~ControllerButton()
-{
-}
-
 int ControllerButton::getFloorNumber() const
 {
     return floorNumber;
 }
 
-void ControllerButton::pressButton()
+void ControllerButton::press()
 {
-    state = State::PRESSED;
-    emit pressedSignal(this);
+    if (state == State::RELEASED)
+    {
+        state = State::PRESSED;
+        emit pressedSignal(this);
+    }
 }
 
-void ControllerButton::releaseButton()
+void ControllerButton::release()
 {
-    state = State::RELEASED;
-    emit releasedSignal(this);
+    if (state == State::PRESSED)
+    {
+        state = State::RELEASED;
+        emit releasedSignal(this);
+    }
 }

@@ -2,8 +2,8 @@
 #define CABIN_H
 
 #include <QObject>
+#include <QTimer>
 #include "common.h"
-#include "door.h"
 
 
 class Cabin : public QObject
@@ -14,24 +14,32 @@ public:
     enum class State
     {
         STOPPED,
+        STARTED_MOVING,
         MOVING
     };
 
-    Cabin() = default;
+    Cabin();
+    virtual ~Cabin() = default;
 
     int getCurrFloor() const;
+    Direction getDirection() const;
 
 signals:
-    void movingSignal(Cabin* cabin);
+    void movingSignal(Cabin* cabin, int floor);
+    void startMovingSignal(Cabin* cabin, int floor);
     void stoppedSignal(Cabin* cabin, int floor);
 
 public slots:
-    void move(Direction direction);
+    void startMove(int targetFloor);
+    void move();
+    void stop();
 
 private:
     int currFloor = 1;
-    State state = State::STOPPED;
+    int targetFloor = 1;
     Direction direction = Direction::NONE;
+    State state = State::STOPPED;
+    QTimer timer;
 };
 
 #endif // CABIN_H

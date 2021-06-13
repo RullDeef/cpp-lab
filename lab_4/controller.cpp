@@ -5,18 +5,28 @@
 Controller::Controller(Cabin *cabin, Door *door)
     : cabin(cabin), door(door)
 {
+    connect(cabin, &Cabin::movingSignal, this, &Controller::moveCabin);
     connect(cabin, &Cabin::stoppedSignal, this, &Controller::cabinStoppedDispatcher);
-    connect(door, &Door::closedSignal, this, &Controller::doorClosedDispatcher);
+    connect(door, &Door::closedSignal, this, &Controller::moveCabin);
     connect(door, &Door::openedSignal, this, &Controller::doorOpenedDispatcher);
+
+    connect(this, &Controller::startMovingSignal, door, &Door::opening);
+    connect(this, &Controller::cabinMoveSignal, cabin, &Cabin::startMove);
+    connect(this, &Controller::cabinStopSignal, cabin, &Cabin::stop);
+
+    connect(this, &Controller::doorsOpeningSignal, door, &Door::opening);
+    connect(this, &Controller::doorsClosingSignal, door, &Door::closing);
+
+    // добавить нормальный жц для контроллера.
 }
 
-void Controller::addButton(ControllerButton *button)
+void Controller::connectButton(ControllerButton *button)
 {
     connect(button, &ControllerButton::pressedSignal, this, &Controller::buttonPressedDispatcher);
     connect(this, &Controller::releaseButton, [button](int floor)
     {
         if (floor == button->getFloorNumber())
-            button->releaseButton();
+            button->release();
     });
 }
 
@@ -25,91 +35,83 @@ Cabin *Controller::getCabin()
     return cabin;
 }
 
-void Controller::cabinStoppedDispatcher(Cabin *cabin)
-{
-    int floor = cabin->getCurrFloor();
-
-    if (floorRequested[floor - 1])
-    {
-        qDebug() << "cabin stopped at floor " << floor;
-        floorRequested[floor - 1] = false;
-        door->openDoor();
-    }
-    else
-    {
-        qDebug() << "cabin passed floor " << floor;
-        cabin->move(currDirection);
-    }
-}
-
 void Controller::buttonPressedDispatcher(ControllerButton *button)
 {
+    bool started = hasRequests();
+    state = State::DETERMINE_NEXT_FLOOR;
     int floor = button->getFloorNumber();
-    addTarget(floor);
+
+    floorRequested[floor - 1] = true;
+    if (!started || floor == cabin->getCurrFloor())
+        emit startMovingSignal(getNextTargetFloor());
 }
 
-void Controller::doorClosedDispatcher(Door *door)
+void Controller::startMovingDispatcher(int targetFloor)
 {
-    int currFloor = cabin->getCurrFloor();
-    int targetFloor = getNextTargetFloor(currFloor, currDirection);
-
-    if (targetFloor < currFloor)
-        currDirection = Direction::DOWN;
+    if (state == State::DETERMINE_NEXT_FLOOR)
+    {
+        state = State::START_MOVING;
+        emit doorsOpeningSignal();
+    }
     else
-        currDirection = Direction::UP;
+        qDebug() << "Controller: ignored transition";
+}
 
-    cabin->move(currDirection);
+void Controller::cabinMovingDispatcher(Cabin *cabin, int currFloor)
+{
+    state = State::WAITING_FOR_ARRIVE;
+    if (floorRequested[currFloor - 1])
+        emit cabinStopSignal();
+    else
+    {
+        if (getNextTargetFloor() != 0)
+            emit cabinMoveSignal(getNextTargetFloor());
+    }
+}
+
+void Controller::cabinStoppedDispatcher(Cabin *cabin)
+{
+    if (state == State::WAITING_FOR_ARRIVE)
+    {
+        state = State::ARRIVED;
+        qDebug() << "cabin stopped at floor " << cabin->getCurrFloor();
+        emit doorsOpeningSignal();
+    }
+    else
+        qDebug() << "Controller: ignored transition to CABIN_STOPPED";
+}
+
+void Controller::moveCabin()
+{
+    state = State::WAITING_FOR_ARRIVE;
+    if (floorRequested[cabin->getCurrFloor() - 1])
+        emit cabinStopSignal();
+    else if (getNextTargetFloor() != 0)
+        emit cabinMoveSignal(getNextTargetFloor());
 }
 
 void Controller::doorOpenedDispatcher(Door *door)
 {
+    state = State::WAITING_PASSENGERS;
+    qDebug() << "waiting passengers...";
+
     int currFloor = cabin->getCurrFloor();
     floorRequested[currFloor - 1] = false;
 
     emit releaseButton(currFloor);
+    //emit doorsClosingSignal();
 
-    if (hasRequests())
-    {
-        qDebug() << "start going to the next floor";
-        int targetFloor = getNextTargetFloor(currFloor, currDirection);
-
-        if (targetFloor < currFloor)
-            currDirection = Direction::DOWN;
-        else
-            currDirection = Direction::UP;
-
-        door->closeDoor();
-    }
-    else
-    {
-        qDebug() << "no more requested floors";
-        state = State::FREE;
-        currDirection = Direction::NONE;
-    }
+    timer.disconnect();
+    connect(&timer, &QTimer::timeout, this, &Controller::waitingTimeout);
+    timer.start(2000);
 }
 
-void Controller::addTarget(int floor)
+void Controller::waitingTimeout()
 {
-    qDebug() << "requested floor: " << floor;
-
-    if (state == State::FREE)
-    {
-        if (floor == cabin->getCurrFloor())
-        {
-            qDebug() << "requested floor is current floor. Do nothing";
-            emit releaseButton(floor);
-        }
-        else
-        {
-            floorRequested[floor - 1] = true;
-            state = State::BUSY;
-            door->closeDoor();
-        }
-    }
-    else
-    {
-        floorRequested[floor - 1] = true;
-    }
+    state = State::CLOSING_DOORS;
+    qDebug() << "end waiting";
+    timer.stop();
+    emit doorsClosingSignal();
 }
 
 bool Controller::hasRequests() const
@@ -119,6 +121,14 @@ bool Controller::hasRequests() const
             return true;
 
     return false;
+}
+
+int Controller::getNextTargetFloor() const
+{
+    int currFloor = cabin->getCurrFloor();
+    Direction dir = cabin->getDirection();
+
+    return getNextTargetFloor(currFloor, dir);
 }
 
 int Controller::getNextTargetFloor(int currFloor, Direction dir) const

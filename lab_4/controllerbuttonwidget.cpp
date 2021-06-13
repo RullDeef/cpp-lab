@@ -23,10 +23,6 @@ ControllerButtonWidget::ControllerButtonWidget(ControllerButton* button)
     connect(button, &ControllerButton::releasedSignal, this, &ControllerButtonWidget::buttonReleased);
 }
 
-ControllerButtonWidget::~ControllerButtonWidget()
-{
-}
-
 ControllerButton *ControllerButtonWidget::getControllerButton()
 {
     return button;
@@ -35,7 +31,7 @@ ControllerButton *ControllerButtonWidget::getControllerButton()
 void ControllerButtonWidget::buttonPressed()
 {
     setDisabled(true);
-    button->pressButton();
+    button->press();
 }
 
 void ControllerButtonWidget::buttonReleased(ControllerButton *button)

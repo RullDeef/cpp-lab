@@ -1,29 +1,61 @@
-#include <QTimer>
 #include <QDebug>
 #include "cabin.h"
 
-constexpr int timeout = 1000;
 
+Cabin::Cabin()
+{
+    timer.setSingleShot(false);
+    connect(&timer, &QTimer::timeout, this, &Cabin::move);
+}
 
 int Cabin::getCurrFloor() const
 {
     return currFloor;
 }
 
-void Cabin::move(Direction direction)
+Direction Cabin::getDirection() const
 {
-    qDebug() << "start moving...";
-    this->direction = direction;
-    state = State::MOVING;
-    emit movingSignal(this);
-    QTimer::singleShot(timeout, [this, direction]()
-    {
-        if (direction == Direction::UP)
-            currFloor++;
-        else if (direction == Direction::DOWN)
-            currFloor--;
+    return direction;
+}
 
-        state = State::STOPPED;
-        emit stoppedSignal(this, currFloor);
-    });
+void Cabin::startMove(int targetFloor)
+{
+    if (state == State::STOPPED)
+    {
+        state = State::STARTED_MOVING;
+        qDebug() << "Cabin: started moving to floor " << targetFloor;
+        this->targetFloor = targetFloor;
+        emit startMovingSignal(this, currFloor);
+        timer.start(1000);
+    }
+}
+
+void Cabin::move()
+{
+    if (state == State::STARTED_MOVING || state == State::MOVING)
+    {
+        state = State::MOVING;
+        qDebug() << "Cabin: at " << currFloor;
+
+        if (currFloor < targetFloor)
+        {
+            direction = Direction::UP;
+            emit movingSignal(this, ++currFloor);
+        }
+        else if (targetFloor < currFloor)
+        {
+            direction = Direction::DOWN;
+            emit movingSignal(this, --currFloor);
+        }
+        else
+            emit movingSignal(this, currFloor);
+    }
+}
+
+void Cabin::stop()
+{
+    state = State::STOPPED;
+    qDebug() << "stopped moving.";
+    timer.stop();
+    emit stoppedSignal(this, currFloor);
 }

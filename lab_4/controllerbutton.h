@@ -16,7 +16,7 @@ public:
     };
 
     explicit ControllerButton(int floor);
-    virtual ~ControllerButton();
+    virtual ~ControllerButton() = default;
 
     int getFloorNumber() const;
 
@@ -25,8 +25,8 @@ signals:
     void releasedSignal(ControllerButton* button);
 
 public slots:
-    void pressButton();
-    void releaseButton();
+    void press();
+    void release();
 
 private:
     int floorNumber;

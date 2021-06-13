@@ -9,8 +9,6 @@ CabinWidget::CabinWidget(Cabin* cabin, Door* door)
 
     connect(door, &Door::openingSignal, this, &CabinWidget::playDoorsOpenAnimation);
     connect(door, &Door::closingSignal, this, &CabinWidget::playDoorsCloseAnimation);
-
-    playDoorsOpenAnimation();
 }
 
 CabinWidget::~CabinWidget()
@@ -30,12 +28,11 @@ void CabinWidget::doorOpenTick()
         w = width() - 50;
         timer.stop();
         timer.disconnect();
+        door->open();
     }
 
     ui->spacer->changeSize(w, h);
     layout()->invalidate();
-
-    timer.setInterval(10);
 }
 
 void CabinWidget::doorCloseTick()
@@ -50,22 +47,25 @@ void CabinWidget::doorCloseTick()
         w = 0;
         timer.stop();
         timer.disconnect();
+        door->close();
     }
 
     ui->spacer->changeSize(w, h);
     layout()->invalidate();
-
-    timer.setInterval(10);
 }
 
 void CabinWidget::playDoorsOpenAnimation()
 {
+    timer.stop();
+    timer.disconnect();
     connect(&timer, &QTimer::timeout, this, &CabinWidget::doorOpenTick);
-    timer.start(500);
+    timer.start(10);
 }
 
 void CabinWidget::playDoorsCloseAnimation()
 {
+    timer.stop();
+    timer.disconnect();
     connect(&timer, &QTimer::timeout, this, &CabinWidget::doorCloseTick);
-    timer.start(500);
+    timer.start(10);
 }
