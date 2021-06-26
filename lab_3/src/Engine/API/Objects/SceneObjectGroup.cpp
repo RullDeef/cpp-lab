@@ -1,16 +1,9 @@
 #include "SceneObjectGroup.hpp"
+#include "API/Objects/IObjectVisitor.hpp"
+
 
 SceneObjectGroup::SceneObjectGroup(const std::string& name)
     : ISceneObject(name)
-{
-}
-
-void SceneObjectGroup::addObject(std::shared_ptr<ISceneObject> object)
-{
-    objects.push_back(object);
-}
-
-void SceneObjectGroup::applyTransform(const Transform& t)
 {
 }
 
@@ -22,23 +15,9 @@ std::shared_ptr<ISceneObject> SceneObjectGroup::clone() const
     return copy;
 }
 
-/*
-void SceneObjectGroup::draw(std::shared_ptr<IRenderer> renderer) const
+void SceneObjectGroup::accept(IObjectVisitor* visitor)
 {
-    renderer->saveMatrix();
-    renderer->multiplyMatrix(getTransform());
-
-    for (auto& object : objects)
-        object->draw(renderer);
-
-    renderer->restoreMatrix();
-}
-*/
-
-void SceneObjectGroup::accept(std::shared_ptr<IObjectVisitor> visitor)
-{
-    for (auto& obj : objects)
-        obj->accept(visitor);
+    visitor->visit(*this);
 }
 
 void SceneObjectGroup::addChild(std::shared_ptr<ISceneObject> object)
@@ -49,6 +28,19 @@ void SceneObjectGroup::addChild(std::shared_ptr<ISceneObject> object)
 void SceneObjectGroup::removeChild(std::shared_ptr<ISceneObject> object)
 {
     objects.remove(object);
+}
+
+bool SceneObjectGroup::hasChild(std::shared_ptr<ISceneObject> object) const
+{
+    for (const auto& obj : objects)
+        if (obj == object)
+            return true;
+    return false;
+}
+
+size_t SceneObjectGroup::size() const
+{
+    return objects.size();
 }
 
 bool SceneObjectGroup::isVisible() const

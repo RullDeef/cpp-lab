@@ -13,12 +13,16 @@ public:
 
     constexpr double det() const;
 
+    double at(int row, int col) const;
+
     void translate(const Vector& offset);
     void rotate(const Vector& axis, double angle);
     void scale(const Vector& factor);
+    void scale(double value);
     Matrix inverse() const;
 
     Matrix operator*(const Matrix& mat) const;
+    Matrix operator*(double value) const;
 
     friend Vector operator*(const Vector& vec, const Matrix& mat);
 

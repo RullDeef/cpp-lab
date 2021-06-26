@@ -1,39 +1,43 @@
 #include "Controller.hpp"
 #include <algorithm>
 #include "Engine/Utils/Logger.hpp"
+#include <typeinfo>
 
 
 Controller::Controller(std::shared_ptr<IManagerFactory> managerFactory)
 {
-    stateManager = managerFactory->createStateManager();
-    sceneManager = managerFactory->createSceneManager(stateManager);
+
+    // sceneManager = managerFactory->createSceneManager();
+    // objectManager = managerFactory->createObjectManager();
+    // renderManager = managerFactory->createRenderManager();
+    // transformManager = managerFactory->createTransformManager();
+    // cameraManager = managerFactory->createCameraManager();
 }
 
-std::shared_ptr<IStateManager> Controller::getStateManager()
+Controller::~Controller()
 {
-    return stateManager;
+    for (auto& [type, manager] : managers)
+        unregisterManager(manager);
 }
 
-std::shared_ptr<ISceneManager> Controller::getSceneManager()
+void Controller::registerManager(std::shared_ptr<IManager> manager)
 {
-    return sceneManager;
+    const type_info& type = typeid(*manager);
+    if (managers.count(type) != 0)
+        throw std::runtime_error(std::string("Controller: duplicate of manager ") + type.name());
+    managers[type] = manager;
+
+    std::string msg = (std::string("Registered manager: ") + type.name());
+    LOGGER_LOG(msg.c_str());
 }
 
-
-/*
-void Controller::renderScene(std::shared_ptr<IRenderer> renderer)
+void Controller::unregisterManager(std::shared_ptr<IManager> manager)
 {
-    PerspectiveCamera* perspCam = new PerspectiveCamera();
-    perspCam->setViewport(renderer->getViewport());
-    perspCam->setNear(0.1);
-    perspCam->setFar(1000.0);
-    perspCam->setFov(75.0 * 3.1415926535 / 180);
+    const type_info& type = typeid(*manager);
+    if (managers.count(type) == 0)
+        throw std::runtime_error(std::string("Controller: tried to unregister not registered manager ") + type.name());
+    managers[type] = nullptr;
 
-    perspCam->getTransform().translate({ 0.0, 0.0, 10.0 });
-
-    std::shared_ptr<ICamera> camera = std::shared_ptr<ICamera>(perspCam);
-
-    renderer->clear(Color(0xFF, 0xFF, 0xFF, 0xFF));
-    sceneManager.renderScene(renderer, camera);
+    std::string msg = (std::string("Unregistered manager: ") + type.name());
+    LOGGER_LOG(msg.c_str());
 }
-*/

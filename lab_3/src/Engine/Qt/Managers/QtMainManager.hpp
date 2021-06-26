@@ -6,5 +6,16 @@
 class QtMainManager : public IMainManager
 {
 public:
-    QtMainManager
+    QtMainManager();
+    virtual ~QtMainManager();
+
+    virtual void shutDown(int exitCode = 0) override;
+    virtual int runMainloop() override;
+
+protected slots:
+    void close();
+
+private:
+    QApplication qtApp;
+    MainWindow* mainWindow;
 };

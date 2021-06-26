@@ -1,21 +1,9 @@
 #include "RenderSceneCommand.hpp"
-#include "Engine/API/Controller.hpp"
-#include "Engine/API/Event/SceneRenderEvent.hpp"
-#include "Engine/API/Managers/ISceneManager.hpp"
+#include "Utils/Logger.hpp"
+#include "API/Controller.hpp"
 
 
-RenderSceneCommand::RenderSceneCommand(std::shared_ptr<IRenderManager> manager)
-    : manager(manager)
+void RenderSceneCommand::execute(std::shared_ptr<Controller> controller)
 {
-}
-
-void RenderSceneCommand::execute()
-{
-    /*
-    if (auto sceneMng = getController()->request<SceneManager>())
-    {
-        auto scene = sceneMng->getScene();
-        getController()->postEvent(new SceneRenderEvent(scene));
-    }
-    */
+    controller->getRenderManager()->renderScene();
 }

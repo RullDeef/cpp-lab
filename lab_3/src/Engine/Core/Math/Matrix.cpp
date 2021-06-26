@@ -39,6 +39,11 @@ constexpr double Matrix::det() const
     return det;
 }
 
+double Matrix::at(int row, int col) const
+{
+    return data[row][col];
+}
+
 void Matrix::translate(const Vector& offset)
 {
     data[3][0] += offset.getX();
@@ -58,6 +63,16 @@ void Matrix::scale(const Vector& factor)
         data[i][0] *= factor.getX();
         data[i][1] *= factor.getY();
         data[i][2] *= factor.getZ();
+    }
+}
+
+void Matrix::scale(double value)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        data[i][0] *= value;
+        data[i][1] *= value;
+        data[i][2] *= value;
     }
 }
 
@@ -208,6 +223,13 @@ Matrix Matrix::operator*(const Matrix& mat) const
     return res;
 }
 
+Matrix Matrix::operator*(double value) const
+{
+    Matrix result = *this;
+    result.scale(value);
+    return result;
+}
+
 Matrix Matrix::zero()
 {
     return Matrix();
@@ -227,6 +249,11 @@ Matrix Matrix::translation(const Vector& offset)
 {
     Matrix res;
 
+    res.data[0][0] = 1.0;
+    res.data[1][1] = 1.0;
+    res.data[2][2] = 1.0;
+    res.data[3][3] = 1.0;
+
     res.data[3][0] = offset.getX();
     res.data[3][1] = offset.getY();
     res.data[3][2] = offset.getY();
@@ -240,7 +267,7 @@ Matrix Matrix::rotation(const Vector& axis, double angle)
     double len = axis.getLength();
     double x = axis.getX() / len, y = axis.getY() / len, z = axis.getZ() / len;
     double c = std::cos(angle), s = std::sin(angle);
-    double imc = 1 - c;
+    double imc = 1.0 - c;
 
     res.data[0][0] = c + x * x * imc;
     res.data[0][1] = x * y * imc + z * s;
@@ -254,7 +281,7 @@ Matrix Matrix::rotation(const Vector& axis, double angle)
     res.data[2][1] = y * z * imc - x * s;
     res.data[2][2] = c + z * z * imc;
 
-    res.data[3][3] = 1;
+    res.data[3][3] = 1.0;
 
     return res;
 }
@@ -266,6 +293,7 @@ Matrix Matrix::scaling(const Vector& factor)
     res.data[0][0] = factor.getX();
     res.data[1][1] = factor.getY();
     res.data[2][2] = factor.getZ();
+    res.data[3][3] = 1.0;
 
     return res;
 }

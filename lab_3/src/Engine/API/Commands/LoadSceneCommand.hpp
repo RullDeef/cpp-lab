@@ -1,16 +1,10 @@
-#include "ICommand.hpp"
-#include <memory>
+#pragma once
 
-#include "API/Managers/ISceneManager.hpp"
+#include "ICommand.hpp"
 
 
 class LoadSceneCommand : public ICommand
 {
 public:
-    LoadSceneCommand(std::shared_ptr<ISceneManager> manager);
-
-    virtual void execute() override;
-
-private:
-    std::weak_ptr<ISceneManager> manager;
+    virtual void execute(std::shared_ptr<Controller> controller) override;
 };

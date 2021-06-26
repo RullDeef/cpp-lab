@@ -7,7 +7,7 @@ void SceneBuilder::startBuild()
 
 void SceneBuilder::addObject(std::shared_ptr<ISceneObject> object)
 {
-    scene->addObject(object);
+    scene->addChild(object);
 }
 
 std::shared_ptr<Scene> SceneBuilder::getResult()

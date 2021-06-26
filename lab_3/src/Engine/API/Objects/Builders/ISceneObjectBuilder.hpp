@@ -8,5 +8,16 @@ class ISceneObjectBuilder
 public:
     virtual ~ISceneObjectBuilder() = default;
 
-    virtual std::shared_ptr<ISceneObject> build(const Transform& t = Transform()) = 0;
+    void setName(const std::string& name);
+    void setTransform(const Transform& t);
+
+    virtual std::shared_ptr<ISceneObject> build() = 0;
+
+protected:
+    const std::string& getName() const;
+    const Transform& getTransform() const;
+
+private:
+    std::string name = "";
+    Transform transform;
 };

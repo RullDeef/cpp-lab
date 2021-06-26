@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindowClass</class>
+ <widget class="QMainWindow" name="MainWindowClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>795</width>
+    <height>661</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QWidget" name="mainViewport" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>795</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Сцена</string>
+    </property>
+    <addaction name="sceneCreate"/>
+    <addaction name="sceneLoad"/>
+    <addaction name="sceneSave"/>
+    <addaction name="separator"/>
+    <addaction name="clearScene"/>
+    <addaction name="separator"/>
+    <addaction name="appExit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Правка</string>
+    </property>
+    <addaction name="action_4"/>
+    <addaction name="action_5"/>
+    <addaction name="separator"/>
+    <addaction name="action_8"/>
+    <addaction name="action_6"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>Объект</string>
+    </property>
+    <widget class="QMenu" name="menu_4">
+     <property name="title">
+      <string>Добавить...</string>
+     </property>
+     <addaction name="objHullModel"/>
+     <addaction name="objCamera"/>
+    </widget>
+    <addaction name="menu_4"/>
+    <addaction name="objLoad"/>
+    <addaction name="objSave"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="separator"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="sceneCreate">
+   <property name="text">
+    <string>Создать новую</string>
+   </property>
+  </action>
+  <action name="sceneLoad">
+   <property name="text">
+    <string>Загрузить</string>
+   </property>
+  </action>
+  <action name="sceneSave">
+   <property name="text">
+    <string>Сохранить</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>Отменить</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>Повторить</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>Снять выделение</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="text">
+    <string>Выделить все</string>
+   </property>
+  </action>
+  <action name="objHullModel">
+   <property name="text">
+    <string>Каркасный куб</string>
+   </property>
+  </action>
+  <action name="objCamera">
+   <property name="text">
+    <string>Камеру</string>
+   </property>
+  </action>
+  <action name="objLoad">
+   <property name="text">
+    <string>Загрузить</string>
+   </property>
+  </action>
+  <action name="objSave">
+   <property name="text">
+    <string>Сохранить?</string>
+   </property>
+  </action>
+  <action name="appExit">
+   <property name="text">
+    <string>Выйти</string>
+   </property>
+  </action>
+  <action name="clearScene">
+   <property name="text">
+    <string>Очистить сцену</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="MainWindow.qrc"/>
+ </resources>
+ <connections/>
+</ui>

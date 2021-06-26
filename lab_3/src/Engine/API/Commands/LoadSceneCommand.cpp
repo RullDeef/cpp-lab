@@ -1,21 +1,11 @@
-#include <QFileDialog>
-#include <stdexcept>
 #include "LoadSceneCommand.hpp"
-#include "Engine/Utils/Logger.hpp"
-#include "API/Managers/ISceneManager.hpp"
+#include "Utils/Logger.hpp"
+#include "API/Controller.hpp"
 
 
-LoadSceneCommand::LoadSceneCommand(std::shared_ptr<ISceneManager> manager)
-    : manager(manager)
-{
-}
-
-void LoadSceneCommand::execute()
+void LoadSceneCommand::execute(std::shared_ptr<Controller> controller)
 {
     LOG_FUNC;
 
-    if (manager.expired())
-        throw std::runtime_error("expired pointer to scene manager");
-
-    manager.lock()->loadScene();
+    controller->getSceneManager()->loadScene();
 }

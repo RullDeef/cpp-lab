@@ -6,7 +6,7 @@
 class QtStateManager : public IStateManager
 {
 public:
-    QtStateManager() = default;
+    QtStateManager();
     virtual ~QtStateManager() = default;
 
     virtual void undo() override {}

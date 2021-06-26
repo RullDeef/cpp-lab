@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Math/Vector.hpp"
+
 
 class Vertex
 {
@@ -17,6 +19,8 @@ public:
     inline constexpr void setY(double value) noexcept { y = value; }
     inline constexpr void setZ(double value) noexcept { z = value; }
     inline constexpr void setW(double value) noexcept { w = value; }
+
+    inline operator Vector() const { return Vector(x, y, z); }
 
 private:
     double x = 0.0;

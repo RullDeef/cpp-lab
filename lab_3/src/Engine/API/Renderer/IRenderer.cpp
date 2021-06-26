@@ -1,5 +1,6 @@
 #include "IRenderer.hpp"
 
+#if false
 IRenderer::IRenderer()
 {
     matrixStack.push(Matrix::identity());
@@ -42,3 +43,5 @@ const Matrix& IRenderer::getMatrix() const
 {
     return matrixStack.top();
 }
+
+#endif

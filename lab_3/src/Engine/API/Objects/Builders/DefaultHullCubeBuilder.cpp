@@ -1,13 +1,14 @@
 #include "DefaultHullCubeBuilder.hpp"
 #include "Engine/Utils/Logger.hpp"
+#include "API/Objects/HullModel/HullModelAdapter.hpp"
 
-DefaultHullCubeBuilder& DefaultHullCubeBuilder::setWidth(double newWidth)
+
+void DefaultHullCubeBuilder::setWidth(double newWidth)
 {
     width = newWidth;
-    return *this;
 }
 
-std::shared_ptr<ISceneObject> DefaultHullCubeBuilder::build(const Transform& t)
+std::shared_ptr<ISceneObject> DefaultHullCubeBuilder::build()
 {
     double hw = width / 2;
     std::vector<Vertex> verts = {
@@ -29,11 +30,15 @@ std::shared_ptr<ISceneObject> DefaultHullCubeBuilder::build(const Transform& t)
 
     std::vector<Edge> edges;
 
+    auto model = std::make_shared<HullModel>(verts, edges);
+
     for (int i = 0; i < indices.size(); i += 2)
-        edges.push_back(Edge(verts[indices[i]], verts[indices[i+1]]));
+        model->getEdges().push_back(Edge(model->getVertices()[indices[i]], model->getVertices()[indices[i + 1]]));
 
-    //std::shared_ptr<ISceneObject> model(new HullModelAdapter(verts, edges));
+    std::shared_ptr<ISceneObject> adaptedModel(new HullModelAdapter(model)); // каша - и модель, и её адаптер создаются тут. Не очень
 
-    //model->setTransform(t);
-    return nullptr; // model;
+    adaptedModel->setName(getName());
+    adaptedModel->getTransform() = getTransform();
+
+    return adaptedModel;
 }

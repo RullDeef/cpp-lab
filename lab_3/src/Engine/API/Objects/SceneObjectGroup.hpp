@@ -13,15 +13,15 @@ class SceneObjectGroup : public ISceneObject
 public:
     SceneObjectGroup(const std::string& name = "");
 
-    void addObject(std::shared_ptr<ISceneObject> object);
-
-    virtual void applyTransform(const Transform& t) override;
     virtual std::shared_ptr<ISceneObject> clone() const override;
 
-    virtual void accept(std::shared_ptr<IObjectVisitor> visitor) override;
+    virtual void accept(IObjectVisitor* visitor) override;
 
     virtual void addChild(std::shared_ptr<ISceneObject> object) override;
     virtual void removeChild(std::shared_ptr<ISceneObject> object) override;
+
+    bool hasChild(std::shared_ptr<ISceneObject> object) const;
+    size_t size() const;
 
     virtual bool isComposite() const override { return true; }
     virtual bool isVisible() const override;

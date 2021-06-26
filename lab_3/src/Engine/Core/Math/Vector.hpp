@@ -17,6 +17,8 @@ public:
     constexpr void setY(double val) { y = val; }
     constexpr void setZ(double val) { z = val; }
 
+    constexpr Vector operator*(double val) const { return Vector(x * val, y * val, z * val); }
+
     double getLength() const;
 
     constexpr static Vector zero()      { return Vector( 0.0,  0.0,  0.0); }

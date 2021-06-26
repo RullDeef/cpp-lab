@@ -2,9 +2,12 @@
 
 #include <memory>
 
+class Controller;
+
+
 class ICommand
 {
 public:
     virtual ~ICommand();
-    virtual void execute() = 0;
+    virtual void execute(std::shared_ptr<Controller> controller) = 0;
 };

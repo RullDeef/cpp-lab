@@ -1,100 +1,62 @@
 #include "QtManagerFactory.hpp"
-#include "Managers/QtStateManager.hpp"
-#include "Managers/QtSceneManager.hpp"
 
-/*
-#include <QTimer>
 
-#include "EngineQt.hpp"
-#include "Engine/Utils/Logger.hpp"
-#include "Engine/Qt/Renderer/QtRenderer.hpp"
-#include "Scene/SceneObjectGroup.hpp"
-#include "Scene/Objects/Builders/TransformBuilder.hpp"
-#include "Scene/Objects/Builders/DefaultHullCubeBuilder.hpp"
-
-EngineQt::EngineQt(QApplication& qtApp)
-    : qtApp(&qtApp)
+QtManagerFactory::QtManagerFactory(RenderViewport* viewport)
+    : viewport(viewport)
 {
 }
 
-EngineQt::~EngineQt()
+std::shared_ptr<SceneManager> QtManagerFactory::createSceneManager()
 {
-    delete mainWindow;
-}
-
-static std::shared_ptr<ISceneObject> object;
-static Vector axis = { 1.0, 0.0, 0.0 };
-
-void EngineQt::processCommandsQt()
-{
-    if (isRunning())
+    if (!sceneManager)
     {
-        processCommands();
-
-        axis = axis * Matrix::rotation({ 0.0, 1.0, 0.0 }, 0.1);
-        object->getTransform().rotate(axis, 0.1);
-        renderScene();
-
-        int i = 1;
-        for (auto& child : *(SceneObjectGroup*)&*object)
-        {
-            child->getTransform().rotate({double(i % 2), double(i % 3), double(i)}, 0.01);
-            i++;
-        }
-
-        QTimer::singleShot(10, this, &EngineQt::processCommandsQt);
+        sceneManager = std::make_shared<SceneManager>();
     }
+
+    return sceneManager;
 }
 
-void EngineQt::prepareWorkspace(int argc, char* argv[])
+std::shared_ptr<RenderManager> QtManagerFactory::createRenderManager()
 {
-    LOG_FUNC;
-
-    mainWindow = new MainWindow();
-
-    QGraphicsView* graphics = mainWindow->getGraphisView();
-    setRenderer(std::shared_ptr<IRenderer>(new QtRenderer(graphics)));
-
-    // add sample qube
-    object = std::shared_ptr<ISceneObject>(new SceneObjectGroup());
-
-    for (double dx = -1.5; dx <= 1.5; dx += 1.5)
+    if (!renderManager)
     {
-        ((SceneObjectGroup*)&*object)->addObject(DefaultHullCubeBuilder()
-            .setWidth(1.0)
-            .build(
-                TransformBuilder()
-                .translate({ dx, 0.0, 0.0 })
-                .rotate({1.0, dx, 1.0}, 3.1415 / 2)
-                .build())
-        );
+        createSceneManager();
+        createCameraManager();
+        renderer = std::make_shared<QtRenderer>(viewport);
+        renderManager = std::make_shared<RenderManager>(sceneManager, cameraManager, renderer);
     }
-    getController().addSceneObject(object);
 
-    QTimer::singleShot(0, this, &EngineQt::processCommandsQt);
-
-    renderScene();
-
-    mainWindow->show();
+    return renderManager;
 }
 
-int EngineQt::runMainLoop()
+std::shared_ptr<ObjectManager> QtManagerFactory::createObjectManager()
 {
-    LOG_FUNC;
+    if (!objectManager)
+    {
+        createSceneManager();
+        objectManager = std::make_shared<ObjectManager>(sceneManager);
+    }
 
-    int res = qtApp->exec();
-    shutdown();
-    return res;
+    return objectManager;
 }
 
-*/
-
-std::shared_ptr<IStateManager> QtManagerFactory::createStateManager()
+std::shared_ptr<TransformManager> QtManagerFactory::createTransformManager()
 {
-    return std::shared_ptr<IStateManager>(new QtStateManager());
+    if (!transformManager)
+    {
+        transformManager = std::make_shared<TransformManager>();
+    }
+
+    return transformManager;
 }
 
-std::shared_ptr<ISceneManager> QtManagerFactory::createSceneManager(std::shared_ptr<IStateManager> stateManager)
+std::shared_ptr<CameraManager> QtManagerFactory::createCameraManager()
 {
-    return std::shared_ptr<ISceneManager>(new QtSceneManager(stateManager));
+    if (!cameraManager)
+    {
+        createSceneManager();
+        cameraManager = std::make_shared<CameraManager>(sceneManager);
+    }
+
+    return cameraManager;
 }

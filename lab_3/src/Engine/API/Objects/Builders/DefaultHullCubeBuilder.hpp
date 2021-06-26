@@ -8,9 +8,9 @@
 class DefaultHullCubeBuilder : public ISceneObjectBuilder
 {
 public:
-    DefaultHullCubeBuilder& setWidth(double newWidth);
+    void setWidth(double newWidth);
 
-    std::shared_ptr<ISceneObject> build(const Transform& t = Transform()) override;
+    virtual std::shared_ptr<ISceneObject> build() override;
 
 private:
     double width = 1.0;

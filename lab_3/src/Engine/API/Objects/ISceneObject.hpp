@@ -6,7 +6,6 @@
 #include "Core/Math/Transform.hpp"
 
 class IObjectVisitor;
-class Memento;
 
 
 class ISceneObject
@@ -15,24 +14,24 @@ public:
     using ISceneObjectIterator = std::list<std::shared_ptr<ISceneObject>>::iterator;
     using ISceneObjectConstIterator = std::list<std::shared_ptr<ISceneObject>>::const_iterator;
 
-    ISceneObject(const std::string& name = "");
+    explicit ISceneObject(const std::string& name = "");
+    virtual ~ISceneObject() = default;
 
-    const std::string& getName() const;
+    const std::string& getName() const noexcept;
     void setName(const std::string& name);
 
-    virtual void applyTransform(const Transform& t) {};
+    Transform& getTransform();
+    const Transform& getTransform() const;
+
     virtual std::shared_ptr<ISceneObject> clone() const = 0;
 
-    virtual void accept(std::shared_ptr<IObjectVisitor> visitor) {};
+    virtual void accept(IObjectVisitor* visitor) {}
 
     virtual void addChild(std::shared_ptr<ISceneObject> object) {}
     virtual void removeChild(std::shared_ptr<ISceneObject> object) {}
 
-    virtual bool isComposite() const { return false; }
+    virtual bool isComposite() const;
     virtual bool isVisible() const = 0;
-
-    virtual std::shared_ptr<Memento> saveState() = 0;
-    virtual void restoreState(std::shared_ptr<Memento> memento) = 0;
 
     virtual ISceneObjectIterator begin() = 0;
     virtual ISceneObjectIterator end() = 0;
@@ -41,4 +40,5 @@ public:
 
 private:
     std::string name;
+    Transform transform;
 };

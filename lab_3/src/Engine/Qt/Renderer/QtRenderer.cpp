@@ -1,15 +1,55 @@
 #include "QtRenderer.hpp"
-#include "API/Objects/ICamera.hpp"
 #include "Utils/Logger.hpp"
+#include "API/Scene/Scene.hpp"
+#include "API/Objects/Camera/ICamera.hpp"
+#include "API/Objects/Camera/CameraAdapter.hpp"
+#include "API/Objects/HullModel/Edge.hpp"
+#include "API/Objects/HullModel/HullModelAdapter.hpp"
 
 
-QtRenderer::QtRenderer(QGraphicsView* graphicsView)
-    : graphics(graphicsView), graphicsScene(new QGraphicsScene(graphicsView))
+QtRenderer::QtRenderer(RenderViewport* viewport)
+    : renderViewport(viewport), painter(nullptr)
 {
-    graphics->setScene(graphicsScene);
 }
 
-QtRenderer::~QtRenderer()
+void QtRenderer::beginFrame(ICamera* camera)
+{
+    this->camera = camera;
+    painter = new QPainter(&renderViewport->getRenderTarget());
+    clear(Color(255, 255, 255, 255));
+
+    matrixStack = {};
+    matrixStack.push(Matrix::identity());
+}
+
+void QtRenderer::endFrame()
+{
+    camera = nullptr;
+    delete painter;
+    painter = nullptr;
+}
+
+void QtRenderer::visit(SceneObjectGroup& objectGroup)
+{
+    matrixStack.push(objectGroup.getTransform() * getMatrix());
+
+    for (auto& obj : objectGroup)
+        obj->accept(this);
+
+    matrixStack.pop();
+}
+
+void QtRenderer::visit(HullModelAdapter& hullModelAdapter)
+{
+    matrixStack.push(hullModelAdapter.getTransform() * getMatrix());
+
+    for (auto& edge : hullModelAdapter.getModel()->getEdges())
+        drawLine(edge.getStartVertex(), edge.getEndVertex());
+
+    matrixStack.pop();
+}
+
+void QtRenderer::visit(CameraAdapter& camera)
 {
 }
 
@@ -20,24 +60,29 @@ void QtRenderer::setStrokeColor(const Color& color)
 
 void QtRenderer::drawLine(const Vector& p1, const Vector& p2)
 {
-    Vector pp1 = getCamera()->projectPoint(p1 * getMatrix());
-    Vector pp2 = getCamera()->projectPoint(p2 * getMatrix());
+    Vector pp1 = camera->projectPoint(p1 * getMatrix());
+    Vector pp2 = camera->projectPoint(p2 * getMatrix());
 
     QPen pen(strokeColor.getHex());
 
-    graphicsScene->addLine(pp1.getX(), pp1.getY(), pp2.getX(), pp2.getY(), pen);
+    painter->setPen(pen);
+    painter->drawLine(pp1.getX(), pp1.getY(), pp2.getX(), pp2.getY());
 }
 
 void QtRenderer::clear(const Color& color)
 {
-    graphicsScene->clear();
-    graphics->update();
+    painter->fillRect(renderViewport->rect(), color.getHex());
 }
 
-Rect QtRenderer::getViewport() const
+Rect QtRenderer::getViewport()
 {
-    double width = graphics->viewport()->width();
-    double height = graphics->viewport()->height();
+    double width = renderViewport->width();
+    double height = renderViewport->height();
 
     return Rect(0.0, 0.0, width, height);
+}
+
+const Matrix& QtRenderer::getMatrix() const
+{
+    return matrixStack.top();
 }
