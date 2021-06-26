@@ -1,5 +1,5 @@
 #include "InspectorWidget.h"
-#include "TransformWidget/TransformWidget.h"
+//#include "TransformWidget/TransformWidget.h"
 
 
 InspectorWidget::InspectorWidget()
@@ -9,7 +9,7 @@ InspectorWidget::InspectorWidget()
     setWindowTitle(u8"Инспектор");
 }
 
-void InspectorWidget::inspect(std::shared_ptr<ISceneObject> object)
+void InspectorWidget::inspect(IObject* object)
 {
     while (auto w = widget()->findChild<QWidget*>())
         delete w;
@@ -23,7 +23,7 @@ void InspectorWidget::inspect(std::shared_ptr<ISceneObject> object)
 
     if (object)
     {
-        widget()->layout()->addWidget(new TransformWidget(object->getTransform()));
+        // widget()->layout()->addWidget(new TransformWidget(object->getTransform()));
 
         auto spacer = new QSpacerItem(0, height() / 2, QSizePolicy::Fixed, QSizePolicy::Expanding);
         widget()->layout()->addItem(spacer);

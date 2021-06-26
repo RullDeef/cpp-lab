@@ -1,6 +1,6 @@
 #include "ObjectListItemWidget.h"
 
-ObjectListItemWidget::ObjectListItemWidget(std::shared_ptr<ISceneObject> object)
+ObjectListItemWidget::ObjectListItemWidget(IObject* object)
     : object(object)
 {
     ui.setupUi(this);
@@ -9,37 +9,24 @@ ObjectListItemWidget::ObjectListItemWidget(std::shared_ptr<ISceneObject> object)
     connect(ui.selectedCheckBox, &QCheckBox::toggled, this, &ObjectListItemWidget::selectCheckboxToggled);
 }
 
-ObjectListItemWidget::~ObjectListItemWidget()
-{
-}
-
-void ObjectListItemWidget::setObject(std::shared_ptr<ISceneObject> newObject)
+void ObjectListItemWidget::setObject(IObject* newObject)
 {
     object = newObject;
     updateLabels();
 }
 
-std::shared_ptr<ISceneObject> ObjectListItemWidget::getObject()
+IObject* ObjectListItemWidget::getObject()
 {
-    return object.lock();
+    return object;
 }
 
 void ObjectListItemWidget::selectCheckboxToggled(bool state)
 {
-    if (auto ptr = object.lock())
-        emit selectionToggled(ptr, state);
+    emit selectionToggled(object, state);
 }
 
 void ObjectListItemWidget::updateLabels()
 {
-    if (auto ptr = object.lock())
-    {
-        ui.objectNameLabel->setText(QString::fromStdString(ptr->getName()));
-        ui.visibleCheckBox->setChecked(ptr->isVisible());
-    }
-    else
-    {
-        ui.objectNameLabel->setText("?");
-        ui.visibleCheckBox->setChecked(false);
-    }
+    ui.objectNameLabel->setText(QString::fromStdString(object->getName()));
+    // ui.visibleCheckBox->setChecked(object->isVisible());
 }

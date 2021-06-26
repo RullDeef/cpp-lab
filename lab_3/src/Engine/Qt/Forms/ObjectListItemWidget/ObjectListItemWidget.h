@@ -1,9 +1,8 @@
 #pragma once
 
-#include <memory>
 #include <QWidget>
 #include "ui_ObjectListItemWidget.h"
-#include "API/Objects/ISceneObject.hpp"
+#include "Objects/IObject.hpp"
 
 
 class ObjectListItemWidget : public QWidget
@@ -11,14 +10,14 @@ class ObjectListItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ObjectListItemWidget(std::shared_ptr<ISceneObject> object);
-    virtual ~ObjectListItemWidget();
+    explicit ObjectListItemWidget(IObject* object);
+    virtual ~ObjectListItemWidget() = default;
 
-    void setObject(std::shared_ptr<ISceneObject> newObject);
-    std::shared_ptr<ISceneObject> getObject();
+    void setObject(IObject* newObject);
+    IObject* getObject();
 
 signals:
-    void selectionToggled(std::shared_ptr<ISceneObject> object, bool selected);
+    void selectionToggled(IObject* object, bool selected);
 
 protected slots:
     void selectCheckboxToggled(bool state);
@@ -28,5 +27,5 @@ protected:
 
 private:
     Ui::ObjectListItemWidget ui;
-    std::weak_ptr<ISceneObject> object;
+    IObject* object;
 };

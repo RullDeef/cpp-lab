@@ -9,7 +9,7 @@ HierarchyWidget::HierarchyWidget()
     setWindowTitle(u8"Иерархия объектов");
 }
 
-void HierarchyWidget::updateHierarchy(const Scene& scene)
+void HierarchyWidget::updateHierarchy(Scene& scene)
 {
     clearWidgets();
 
@@ -20,7 +20,7 @@ void HierarchyWidget::updateHierarchy(const Scene& scene)
     widget()->layout()->addItem(spacer);
 }
 
-void HierarchyWidget::itemSelectionToggled(std::shared_ptr<ISceneObject> object, bool state)
+void HierarchyWidget::itemSelectionToggled(IObject* object, bool state)
 {
     emit selectionToggled(object, state);
 }
@@ -38,12 +38,12 @@ void HierarchyWidget::clearWidgets()
     }
 }
 
-void HierarchyWidget::addListItem(std::shared_ptr<ISceneObject> object)
+void HierarchyWidget::addListItem(IObject* object)
 {
-    if (object->isComposite())
-        for (auto& inner : *object)
-            addListItem(inner);
-    else
+    // if (object->isComposite())
+    //     for (auto& inner : *object)
+    //         addListItem(inner);
+    // else
     {
         auto listItem = new ObjectListItemWidget(object);
         connect(listItem, &ObjectListItemWidget::selectionToggled, this, &HierarchyWidget::itemSelectionToggled);

@@ -1,27 +1,28 @@
+#include <stdexcept>
 #include "RenderManager.hpp"
-// #include "RenderManager.hpp"
-// #include "API/Objects/Camera/PerspectiveCamera.hpp"
-// #include "Qt/Renderer/QtRenderer.hpp"
-// #include "APIdefaulthullube builder!!! tes moc"
-// #include "API/Objects/Builders/DefaultHullCubeBuilder.hpp"
-// #include "API/Objects/Builders/TransformBuilder.hpp"
+#include "Scene/Scene.hpp"
+#include "Objects/Camera/Camera.hpp"
+#include "Utils/Logger.hpp"
 
 
-RenderManager::RenderManager(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<CameraManager> cameraManager, std::shared_ptr<IRenderer> renderer)
-    : renderer(renderer), sceneManager(sceneManager), cameraManager(cameraManager)
+RenderManager::RenderManager(std::shared_ptr<Renderer> renderer)
+    : renderer(renderer)
 {
+    LOG_FUNC;
 }
 
-void RenderManager::renderScene()
+void RenderManager::changeRenderer(std::shared_ptr<Renderer> newRenderer)
 {
-    IRenderer* rendererPtr = &*renderer;
+    LOG_FUNC;
+    if (!newRenderer)
+        throw std::runtime_error("RenderManager::changeRenderer: bad new renderer");
+    renderer = newRenderer;
+}
 
-    auto scene = sceneManager->getScene();
-    auto camera = cameraManager->getActiveCamera();
-    camera->setViewport(renderer->getViewport());
-
-    renderer->beginFrame(&*camera);
-    for (const auto& obj : scene)
-        obj->accept(rendererPtr);
+void RenderManager::renderScene(const Scene& scene, const Camera& camera)
+{
+    renderer->beginFrame(camera);
+    for (auto& object : scene)
+        object->accept(*renderer);
     renderer->endFrame();
 }

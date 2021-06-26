@@ -2,7 +2,8 @@
 
 #include <QDockWidget>
 #include "ui_HierarchyWidget.h"
-#include "API/Scene/Scene.hpp"
+#include "Scene/Scene.hpp"
+#include "Objects/IObject.hpp"
 
 
 class HierarchyWidget : public QDockWidget
@@ -13,17 +14,17 @@ public:
     HierarchyWidget();
     virtual ~HierarchyWidget() = default;
 
-    void updateHierarchy(const Scene& scene);
+    void updateHierarchy(Scene& scene);
 
 signals:
-    void selectionToggled(std::shared_ptr<ISceneObject> object, bool state);
+    void selectionToggled(IObject* object, bool state);
 
 protected slots:
-    void itemSelectionToggled(std::shared_ptr<ISceneObject> object, bool state);
+    void itemSelectionToggled(IObject* object, bool state);
 
 private:
     void clearWidgets();
-    void addListItem(std::shared_ptr<ISceneObject> object);
+    void addListItem(IObject* object);
 
     Ui::HierarchyWidget ui;
 };

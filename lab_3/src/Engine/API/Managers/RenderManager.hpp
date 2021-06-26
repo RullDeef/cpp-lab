@@ -1,21 +1,21 @@
 #pragma once
 
+#include <memory>
 #include "IManager.hpp"
-#include "SceneManager.hpp"
-#include "CameraManager.hpp"
-#include "API/Renderer/IRenderer.hpp"
+#include "Visitors/Renderer/Renderer.hpp"
+
+class Scene;
 
 
 class RenderManager : public IManager
 {
 public:
-    explicit RenderManager(std::shared_ptr<SceneManager> sceneManager, std::shared_ptr<CameraManager> cameraManager, std::shared_ptr<IRenderer> renderer);
-    virtual ~RenderManager() = default;
+    explicit RenderManager(std::shared_ptr<Renderer> renderer);
 
-    virtual void renderScene();
+    void changeRenderer(std::shared_ptr<Renderer> newRenderer);
+
+    void renderScene(const Scene& scene, const Camera& camera);
 
 private:
-    std::shared_ptr<IRenderer> renderer;
-    std::shared_ptr<SceneManager> sceneManager;
-    std::shared_ptr<CameraManager> cameraManager;
+    std::shared_ptr<Renderer> renderer;
 };

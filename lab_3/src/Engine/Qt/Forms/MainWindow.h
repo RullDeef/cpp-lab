@@ -3,11 +3,13 @@
 #include <memory>
 #include <QtWidgets/QMainWindow>
 #include "ui_MainWindow.h"
-#include "API/Facade.hpp"
+#include "API/Facade/Facade.hpp"
+#include "API/Managers/IManagerFactory.hpp"
 
 #include "Qt/Forms/HierarhyWidget/HierarchyWidget.h"
 #include "Qt/Forms/InspectorWidget/InspectorWidget.h"
-#include "API/Transformer/Transformer.hpp"
+
+class IObject;
 
 
 class MainWindow : public QMainWindow
@@ -15,7 +17,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(std::shared_ptr<IManagerFactory> managerFactory);
+    MainWindow();
 
 protected slots:
     void redrawScene();
@@ -27,7 +29,7 @@ protected slots:
     void addObjHullModelPressed();
     void clearScenePressed();
 
-    void selectionToggled(std::shared_ptr<ISceneObject> object, bool state);
+    void selectionToggled(IObject* object, bool state);
 
     void mousePressViewport(QMouseEvent* event);
     void mouseMoveViewport(QMouseEvent* event);
@@ -40,7 +42,6 @@ private:
     Facade facade;
     std::shared_ptr<IManagerFactory> managerFactory;
 
-    Transformer transformer;
     HierarchyWidget* hierarchyWidget;
     InspectorWidget* inspectorWidget;
 };

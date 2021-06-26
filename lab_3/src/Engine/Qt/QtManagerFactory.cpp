@@ -1,4 +1,5 @@
 #include "QtManagerFactory.hpp"
+#include "Visitors/Renderer/Renderer.hpp"
 
 
 QtManagerFactory::QtManagerFactory(RenderViewport* viewport)
@@ -6,7 +7,7 @@ QtManagerFactory::QtManagerFactory(RenderViewport* viewport)
 {
 }
 
-std::shared_ptr<SceneManager> QtManagerFactory::createSceneManager()
+std::shared_ptr<SceneManager> QtManagerFactory::getSceneManager()
 {
     if (!sceneManager)
     {
@@ -16,47 +17,13 @@ std::shared_ptr<SceneManager> QtManagerFactory::createSceneManager()
     return sceneManager;
 }
 
-std::shared_ptr<RenderManager> QtManagerFactory::createRenderManager()
+std::shared_ptr<RenderManager> QtManagerFactory::getRenderManager()
 {
     if (!renderManager)
     {
-        createSceneManager();
-        createCameraManager();
-        renderer = std::make_shared<QtRenderer>(viewport);
-        renderManager = std::make_shared<RenderManager>(sceneManager, cameraManager, renderer);
+        auto renderer = std::make_shared<Renderer>(viewport);
+        renderManager = std::make_shared<RenderManager>(renderer);
     }
 
     return renderManager;
-}
-
-std::shared_ptr<ObjectManager> QtManagerFactory::createObjectManager()
-{
-    if (!objectManager)
-    {
-        createSceneManager();
-        objectManager = std::make_shared<ObjectManager>(sceneManager);
-    }
-
-    return objectManager;
-}
-
-std::shared_ptr<TransformManager> QtManagerFactory::createTransformManager()
-{
-    if (!transformManager)
-    {
-        transformManager = std::make_shared<TransformManager>();
-    }
-
-    return transformManager;
-}
-
-std::shared_ptr<CameraManager> QtManagerFactory::createCameraManager()
-{
-    if (!cameraManager)
-    {
-        createSceneManager();
-        cameraManager = std::make_shared<CameraManager>(sceneManager);
-    }
-
-    return cameraManager;
 }

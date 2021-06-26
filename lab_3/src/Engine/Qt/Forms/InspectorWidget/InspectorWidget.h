@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QDockWidget>
-#include "API/Objects/ISceneObject.hpp"
+#include "Objects/IObject.hpp"
 #include "ui_InspectorWidget.h"
 
 
@@ -13,10 +13,10 @@ public:
     InspectorWidget();
     virtual ~InspectorWidget() = default;
 
-    void inspect(std::shared_ptr<ISceneObject> object);
+    void inspect(IObject* object);
 
 private:
     Ui::InspectorWidget ui;
 
-    std::weak_ptr<ISceneObject> object;
+    IObject* object;
 };

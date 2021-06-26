@@ -1,20 +1,18 @@
 #pragma once
 
+#include <memory>
 #include "IManager.hpp"
-#include "API/Scene/Scene.hpp"
+
+class Scene;
 
 
 class SceneManager : public IManager
 {
 public:
-    SceneManager();
-    virtual ~SceneManager() = default;
+    void setScene(std::shared_ptr<Scene> newScene);
 
-    virtual void createEmptyScene();
-    virtual void loadScene(const char* filename);
-
-    virtual Scene& getScene();
-    virtual const Scene& getScene() const;
+    Scene& getScene();
+    const Scene& getScene() const;
 
 private:
     std::shared_ptr<Scene> scene;
