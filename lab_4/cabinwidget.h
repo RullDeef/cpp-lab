@@ -15,6 +15,12 @@ class CabinWidget : public QWidget
 {
     Q_OBJECT
 
+    enum class State
+    {
+        PLAYING_OPEN_ANIMATION,
+        PLAYING_CLOSE_ANIMATION
+    };
+
 public:
     explicit CabinWidget(Cabin* cabin, Door* door);
     virtual ~CabinWidget();
@@ -31,6 +37,7 @@ private:
     Cabin* cabin;
     Door* door;
     QTimer timer;
+    State state = State::PLAYING_CLOSE_ANIMATION;
 };
 
 #endif // CABINWIDGET_H

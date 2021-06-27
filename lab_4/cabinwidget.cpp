@@ -18,6 +18,7 @@ CabinWidget::~CabinWidget()
 
 void CabinWidget::doorOpenTick()
 {
+    state = State::PLAYING_OPEN_ANIMATION;
     int w = ui->spacer->sizeHint().width();
     int h = ui->spacer->sizeHint().height();
 
@@ -37,6 +38,7 @@ void CabinWidget::doorOpenTick()
 
 void CabinWidget::doorCloseTick()
 {
+    state = State::PLAYING_CLOSE_ANIMATION;
     int w = ui->spacer->sizeHint().width();
     int h = ui->spacer->sizeHint().height();
 

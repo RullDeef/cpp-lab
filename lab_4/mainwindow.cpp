@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete controller;
-    delete cabin;
-    delete door;
+    //delete controller;
+    //delete cabin;
+    //delete door;
 }

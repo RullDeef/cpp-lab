@@ -32,29 +32,24 @@ public:
 
 signals:
     void releaseButton(int floor);
-
     void startMovingSignal(int targetFloor);
-
     void doorsOpeningSignal();
     void doorsClosingSignal();
     void cabinMoveSignal(int targetFloor);
+    void cabinMove();
     void cabinStopSignal();
     void cabinStoppedSignal();
 
 public slots:
-    void buttonPressedDispatcher(ControllerButton* button);
-    void startMovingDispatcher(int targetFloor);
-
-    void cabinMovingDispatcher(Cabin* cabin, int currFloor);
-    void cabinStoppedDispatcher(Cabin* cabin);
-    void moveCabin();
-    void doorOpenedDispatcher(Door* door);
-
-    void waitingTimeout();
+    void buttonPressedDispatcher(ControllerButton* button); // DETERMINE_NEXT_FLOOR
+    void startMovingDispatcher(int targetFloor);            // START_MOVING
+    void cabinMovingDispatcher();                           // WAITING_FOR_ARRIVE
+    void cabinStoppedDispatcher(Cabin* cabin);              // ARRIVE
+    void doorOpenedDispatcher(Door* door);                  // WAITING_PASSENGERS
+    void waitingTimeout();                                  // CLOSING_DOORS
 
 private:
     bool hasRequests() const;
-
     int getNextTargetFloor() const;
     int getNextTargetFloor(int currFloor, Direction dir) const;
 
