@@ -1,7 +1,6 @@
 #include <QApplication>
 #include "Utils/Logger.hpp"
 #include "Qt/Forms/MainWindow.h"
-#include "Qt/QtManagerFactory.hpp"
 
 
 int main(int argc, char *argv[])

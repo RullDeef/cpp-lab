@@ -4,7 +4,7 @@
 #include "Camera.hpp"
 
 
-class CameraAdapter : IObject
+class CameraAdapter : public IObject
 {
 public:
     CameraAdapter(const std::string& name, Camera* camera);

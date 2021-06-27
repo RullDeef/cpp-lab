@@ -17,6 +17,16 @@ std::shared_ptr<SceneManager> QtManagerFactory::getSceneManager()
     return sceneManager;
 }
 
+std::shared_ptr<CameraManager> QtManagerFactory::getCameraManager()
+{
+    if (!cameraManager)
+    {
+        cameraManager = std::make_shared<CameraManager>();
+    }
+
+    return cameraManager;
+}
+
 std::shared_ptr<RenderManager> QtManagerFactory::getRenderManager()
 {
     if (!renderManager)
@@ -26,4 +36,14 @@ std::shared_ptr<RenderManager> QtManagerFactory::getRenderManager()
     }
 
     return renderManager;
+}
+
+std::shared_ptr<LoadManager> QtManagerFactory::getLoadManager()
+{
+    if (!loadManager)
+    {
+        loadManager = std::make_shared<LoadManager>();
+    }
+
+    return loadManager;
 }

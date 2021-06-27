@@ -6,9 +6,9 @@
 
 class WireframeModel
 {
+public:
     using Edge = std::pair<size_t, size_t>;
 
-public:
     WireframeModel() = default;
 
     template<typename _VertexInputIt, typename _EdgeInputIt>

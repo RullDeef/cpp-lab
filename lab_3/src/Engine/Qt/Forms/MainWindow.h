@@ -38,6 +38,8 @@ protected slots:
 private:
     void connectActions();
 
+    void updateHierarchy();
+
     Ui::MainWindowClass ui;
     Facade facade;
     std::shared_ptr<IManagerFactory> managerFactory;

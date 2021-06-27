@@ -5,8 +5,6 @@
 
 void Facade::execute(ICommand& command)
 {
-    LOG_FUNC;
-
     try
     {
         command.execute();

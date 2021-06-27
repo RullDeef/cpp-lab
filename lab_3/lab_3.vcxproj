@@ -101,8 +101,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\API\Managers\CameraManager.hpp" />
     <ClInclude Include="src\Engine\API\Managers\IManagerFactory.hpp" />
+    <ClInclude Include="src\Engine\API\Managers\LoadManager.hpp" />
     <ClInclude Include="src\Engine\API\Managers\SceneManager.hpp" />
+    <ClInclude Include="src\Engine\Creators\Builders\CameraBuilder.hpp" />
+    <ClInclude Include="src\Engine\Creators\Builders\SceneBuilder.hpp" />
+    <ClInclude Include="src\Engine\Creators\Builders\WireframeModelBuilder.hpp" />
+    <ClInclude Include="src\Engine\Creators\Directors\EmptySceneDirector.hpp" />
+    <ClInclude Include="src\Engine\Creators\Directors\FileWireframeModelDirector.hpp" />
+    <ClInclude Include="src\Engine\Creators\Directors\SceneDirector.hpp" />
+    <ClInclude Include="src\Engine\Creators\Loaders\OBJLoader\OBJFace.hpp" />
+    <ClInclude Include="src\Engine\Creators\Loaders\SceneLoader.hpp" />
+    <ClInclude Include="src\Engine\Creators\Loaders\OBJLoader\OBJLoader.hpp" />
     <ClInclude Include="src\Engine\Objects\ObjectGroup.hpp" />
     <ClInclude Include="src\Engine\Qt\QtManagerFactory.hpp" />
     <QtMoc Include="src\Engine\Qt\Renderer\QtRenderViewport.hpp" />
@@ -135,8 +146,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\API\Facade\Facade.cpp" />
+    <ClCompile Include="src\Engine\API\Managers\CameraManager.cpp" />
+    <ClCompile Include="src\Engine\API\Managers\LoadManager.cpp" />
     <ClCompile Include="src\Engine\API\Managers\RenderManager.cpp" />
     <ClCompile Include="src\Engine\API\Managers\SceneManager.cpp" />
+    <ClCompile Include="src\Engine\Core\Vertex.cpp" />
+    <ClCompile Include="src\Engine\Creators\Builders\CameraBuilder.cpp" />
+    <ClCompile Include="src\Engine\Creators\Builders\SceneBuilder.cpp" />
+    <ClCompile Include="src\Engine\Creators\Builders\WireframeModelBuilder.cpp" />
+    <ClCompile Include="src\Engine\Creators\Directors\EmptySceneDirector.cpp" />
+    <ClCompile Include="src\Engine\Creators\Directors\FileWireframeModelDirector.cpp" />
+    <ClCompile Include="src\Engine\Creators\Loaders\OBJLoader\OBJFace.cpp" />
+    <ClCompile Include="src\Engine\Creators\Loaders\OBJLoader\OBJLoader.cpp" />
     <ClCompile Include="src\Engine\Objects\Camera\Camera.cpp" />
     <ClCompile Include="src\Engine\Objects\Camera\CameraAdapter.cpp" />
     <ClCompile Include="src\Engine\Objects\IObject.cpp" />

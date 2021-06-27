@@ -38,15 +38,22 @@ MainWindow::MainWindow()
     connect((QtRenderViewport *)viewport, &QtRenderViewport::mouseReleaseSignal, this, &MainWindow::mouseReleaseViewport);
     connectActions();
 
+    Scene* scene = nullptr;
+    facade.execute(LoadEmptySceneCommand(*(managerFactory->getLoadManager()), scene));
+    auto scenePtr = std::shared_ptr<Scene>(scene);
+    facade.execute(SetSceneCommand(*(managerFactory->getSceneManager()), scenePtr));
+
     timer.callOnTimeout(this, &MainWindow::redrawScene);
     timer.start(100);
 }
 
 void MainWindow::redrawScene()
 {
-    const Scene* scene;
-    const Camera* camera;
+    const Scene* scene = nullptr;
+    const Camera* camera = nullptr;
 
+    facade.execute(RequestConstSceneCommand(*(managerFactory->getSceneManager()), scene));
+    facade.execute(RequestConstActiveCameraCommand(*(managerFactory->getCameraManager()), camera));
     facade.execute(RenderSceneCommand(*(managerFactory->getRenderManager()), *scene, *camera));
     ui.mainViewport->update();
 }
@@ -59,10 +66,8 @@ void MainWindow::appExitPressed()
 void MainWindow::sceneCreatePressed()
 {
     // facade->execute(std::make_shared<CreateEmptySceneCommand>());
-    Scene scene;
-
-    if (hierarchyWidget)
-        hierarchyWidget->updateHierarchy(scene);
+    
+    updateHierarchy();
 
     // transformer.reset(managerFactory->createCameraManager()->getActiveCamera());
 }
@@ -71,10 +76,7 @@ void MainWindow::sceneLoadPressed()
 {
     // facade->execute(std::make_shared<LoadSceneCommand>());
 
-    Scene scene;
-
-    if (hierarchyWidget)
-        hierarchyWidget->updateHierarchy(scene);
+    updateHierarchy();
 
     // transformer.reset(managerFactory->createCameraManager()->getActiveCamera());
 }
@@ -89,10 +91,7 @@ void MainWindow::addObjHullModelPressed()
     // auto command = std::shared_ptr<ICommand>(new AddHullModelCommand(object));
     // facade->execute(command);
 
-    Scene scene;
-
-    if (hierarchyWidget)
-        hierarchyWidget->updateHierarchy(scene);
+    updateHierarchy();
 }
 
 void MainWindow::clearScenePressed()
@@ -100,10 +99,7 @@ void MainWindow::clearScenePressed()
     // auto command = std::shared_ptr<ICommand>(new ClearSceneCommand());
     // facade->execute(command);
 
-    Scene scene;
-
-    if (hierarchyWidget)
-        hierarchyWidget->updateHierarchy(scene);
+    updateHierarchy();
 
     // transformer.reset();
     redrawScene();
@@ -157,4 +153,15 @@ void MainWindow::connectActions()
     // add object actions
     connect(ui.objHullModel, &QAction::triggered, this, &MainWindow::addObjHullModelPressed);
     connect(ui.clearScene, &QAction::triggered, this, &MainWindow::clearScenePressed);
+}
+
+void MainWindow::updateHierarchy()
+{
+    if (hierarchyWidget)
+    {
+        Scene* scene = nullptr;
+        facade.execute(RequestSceneCommand(*(managerFactory->getSceneManager()), scene));
+
+        hierarchyWidget->updateHierarchy(*scene);
+    }
 }
