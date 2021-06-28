@@ -9,7 +9,7 @@ FileWireframeModelDirector::FileWireframeModelDirector(const std::string& filena
 {
 }
 
-IObject* FileWireframeModelDirector::makeWireframeModel()
+IObject* FileWireframeModelDirector::makeObject()
 {
     WireframeModelBuilder builder;
     OBJLoader loader(filename);

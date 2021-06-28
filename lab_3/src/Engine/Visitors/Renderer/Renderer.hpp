@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stack>
+#include "Core/Math/Matrix.hpp"
 #include "Visitors/IObjectVisitor.hpp"
 
 class Camera;
@@ -19,6 +21,12 @@ public:
     virtual void visit(CameraAdapter& object) override;
 
 private:
+    const Matrix& getCurrMatrix() const;
+    void pushMatrix(const Matrix& mat);
+    void popMatrix();
+
     RenderViewport* viewport;
-    const Camera* activeCamera = nullptr;
+    // const Camera* activeCamera = nullptr;
+
+    std::stack<Matrix> matrixStack;
 };

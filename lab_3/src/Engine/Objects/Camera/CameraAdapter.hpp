@@ -12,6 +12,9 @@ public:
 
     ~CameraAdapter();
 
+    Camera& getCamera();
+    const Camera& getCamera() const;
+
     void accept(IObjectVisitor& visitor) override;
 
 private:

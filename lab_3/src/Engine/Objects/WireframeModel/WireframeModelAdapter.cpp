@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Visitors/IObjectVisitor.hpp"
 #include "WireframeModelAdapter.hpp"
 
@@ -16,6 +17,20 @@ WireframeModelAdapter::~WireframeModelAdapter()
 {
     if (model)
         delete model;
+}
+
+WireframeModel& WireframeModelAdapter::getModel()
+{
+    if (!model)
+        throw std::runtime_error("WireframeModelAdapter: bad model pointer");
+    return *model;
+}
+
+const WireframeModel& WireframeModelAdapter::getModel() const
+{
+    if (!model)
+        throw std::runtime_error("WireframeModelAdapter: bad model pointer");
+    return *model;
 }
 
 void WireframeModelAdapter::accept(IObjectVisitor& visitor)

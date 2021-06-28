@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-//#include "Core/Math/Transform.hpp"
+#include "Objects/Transform/Transform.hpp"
 #include "ui_TransformWidget.h"
 
 
@@ -10,7 +10,7 @@ class TransformWidget : public QWidget
     Q_OBJECT
 
 public:
-    //explicit TransformWidget(const Transform& transform);
+    explicit TransformWidget(const Transform& transform);
     virtual ~TransformWidget() = default;
 
 private:

@@ -30,6 +30,7 @@ public:
     static Matrix identity();
 
     static Matrix translation(const Vector& offset);
+    static Matrix rotation(const Vector& eulerAngles);
     static Matrix rotation(const Vector& axis, double angle);
     static Matrix scaling(const Vector& factor);
 

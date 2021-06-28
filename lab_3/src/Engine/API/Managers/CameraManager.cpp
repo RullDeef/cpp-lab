@@ -1,5 +1,7 @@
 #include <stdexcept>
 #include "CameraManager.hpp"
+#include "Objects/Camera/CameraAdapter.hpp"
+#include "Scene/Scene.hpp"
 #include "Utils/Logger.hpp"
 
 
@@ -20,6 +22,15 @@ const Camera& CameraManager::getActiveCamera() const
 void CameraManager::setScene(Scene& newScene)
 {
     scene = &newScene;
+
+    for (auto& object : *scene)
+    {
+        if (auto camera = dynamic_cast<CameraAdapter*>(object))
+        {
+            activeCamera = &camera->getCamera();
+            break;
+        }
+    }
 }
 
 void CameraManager::switchNextCamera()

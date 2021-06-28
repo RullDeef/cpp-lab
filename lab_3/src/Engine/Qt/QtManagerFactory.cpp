@@ -47,3 +47,33 @@ std::shared_ptr<LoadManager> QtManagerFactory::getLoadManager()
 
     return loadManager;
 }
+
+std::shared_ptr<ObjectManager> QtManagerFactory::getObjectManager()
+{
+    if (!objectManager)
+    {
+        objectManager = std::make_shared<ObjectManager>();
+    }
+
+    return objectManager;
+}
+
+std::shared_ptr<TransformManager> QtManagerFactory::getTransformManager()
+{
+    if (!transformManager)
+    {
+        transformManager = std::make_shared<TransformManager>();
+    }
+
+    return transformManager;
+}
+
+std::shared_ptr<SelectionManager> QtManagerFactory::getSelectionManager()
+{
+    if (!selectionManager)
+    {
+        selectionManager = std::make_shared<SelectionManager>();
+    }
+
+    return selectionManager;
+}

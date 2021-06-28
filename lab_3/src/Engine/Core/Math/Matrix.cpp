@@ -239,8 +239,10 @@ Matrix Matrix::identity()
 {
     Matrix mat;
 
-    for (int i = 0; i < 4; i++)
-        mat.data[i][i] = 1.0;
+    mat.data[0][0] = 1.0;
+    mat.data[1][1] = 1.0;
+    mat.data[2][2] = 1.0;
+    mat.data[3][3] = 1.0;
 
     return mat;
 }
@@ -256,9 +258,16 @@ Matrix Matrix::translation(const Vector& offset)
 
     res.data[3][0] = offset.getX();
     res.data[3][1] = offset.getY();
-    res.data[3][2] = offset.getY();
+    res.data[3][2] = offset.getZ();
 
     return res;
+}
+
+Matrix Matrix::rotation(const Vector& eulerAngles)
+{
+    return Matrix::rotation(Vector(1, 0, 0), eulerAngles.getX())
+        * Matrix::rotation(Vector(0, 1, 0), eulerAngles.getY())
+        * Matrix::rotation(Vector(0, 0, 1), eulerAngles.getZ());
 }
 
 Matrix Matrix::rotation(const Vector& axis, double angle)
@@ -317,9 +326,10 @@ Vector operator*(const Vector& vec, const Matrix& mat)
 {
     Vector res;
 
-    res.setX(mat.data[0][0] * vec.getX() + mat.data[1][0] * vec.getY() + mat.data[2][0] * vec.getZ() + mat.data[3][0]);
-    res.setY(mat.data[0][1] * vec.getX() + mat.data[1][1] * vec.getY() + mat.data[2][1] * vec.getZ() + mat.data[3][1]);
-    res.setZ(mat.data[0][2] * vec.getX() + mat.data[1][2] * vec.getY() + mat.data[2][2] * vec.getZ() + mat.data[3][2]);
+    res.setX(mat.data[0][0] * vec.getX() + mat.data[1][0] * vec.getY() + mat.data[2][0] * vec.getZ() + mat.data[3][0] * vec.getW());
+    res.setY(mat.data[0][1] * vec.getX() + mat.data[1][1] * vec.getY() + mat.data[2][1] * vec.getZ() + mat.data[3][1] * vec.getW());
+    res.setZ(mat.data[0][2] * vec.getX() + mat.data[1][2] * vec.getY() + mat.data[2][2] * vec.getZ() + mat.data[3][2] * vec.getW());
+    res.setW(mat.data[0][3] * vec.getX() + mat.data[1][3] * vec.getY() + mat.data[2][3] * vec.getZ() + mat.data[3][3] * vec.getW());
 
     return res;
 }

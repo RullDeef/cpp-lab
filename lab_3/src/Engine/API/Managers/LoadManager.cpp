@@ -19,7 +19,7 @@ void LoadManager::loadWireframe(Scene& scene, const std::string& filename)
 {
     LOG_FUNC;
 
-    IObject* object = FileWireframeModelDirector(filename).makeWireframeModel();
+    IObject* object = FileWireframeModelDirector(filename).makeObject();
     std::copy(&object, &object + 1, scene.end());
 }
 

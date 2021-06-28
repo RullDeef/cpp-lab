@@ -1,13 +1,14 @@
-#include "MainWindow.h"
-#include "Commands/CommandList.hpp"
-#include "Qt/QtManagerFactory.hpp"
 #include <QTimer>
 #include <QMouseEvent>
+#include "MainWindow.h"
+#include "API/Facade/Facade.hpp"
+#include "Qt/QtManagerFactory.hpp"
+#include "Commands/CommandList.hpp"
 
 #include "Scene/Scene.hpp"
 #include "Objects/Camera/Camera.hpp"
 #include "Qt/Renderer/QtRenderViewport.hpp"
-// #include "API/Objects/Builders/DefaultHullCubeBuilder.hpp"
+#include "Creators/Directors/WireframeCubeDirector.hpp"
 
 
 static QTimer timer;
@@ -31,6 +32,7 @@ MainWindow::MainWindow()
     {
         inspectorWidget = new InspectorWidget();
         addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, inspectorWidget);
+        connect(inspectorWidget, &InspectorWidget::deleteObject, this, &MainWindow::deleteObject);
     }
 
     connect((QtRenderViewport *)viewport, &QtRenderViewport::mousePressSignal, this, &MainWindow::mousePressViewport);
@@ -40,8 +42,11 @@ MainWindow::MainWindow()
 
     Scene* scene = nullptr;
     facade.execute(LoadEmptySceneCommand(*(managerFactory->getLoadManager()), scene));
-    auto scenePtr = std::shared_ptr<Scene>(scene);
-    facade.execute(SetSceneCommand(*(managerFactory->getSceneManager()), scenePtr));
+    facade.execute(SetSceneCommand(*(managerFactory->getSceneManager()), scene));
+    facade.execute(UpdateSceneCameraCommand(*(managerFactory->getCameraManager()), *scene));
+    
+    updateHierarchy();
+    updateInspector();
 
     timer.callOnTimeout(this, &MainWindow::redrawScene);
     timer.start(100);
@@ -65,8 +70,11 @@ void MainWindow::appExitPressed()
 
 void MainWindow::sceneCreatePressed()
 {
-    // facade->execute(std::make_shared<CreateEmptySceneCommand>());
-    
+    Scene* scene = nullptr;
+    facade.execute(LoadEmptySceneCommand(*(managerFactory->getLoadManager()), scene));
+    facade.execute(SetSceneCommand(*(managerFactory->getSceneManager()), scene));
+    facade.execute(UpdateSceneCameraCommand(*(managerFactory->getCameraManager()), *scene));
+
     updateHierarchy();
 
     // transformer.reset(managerFactory->createCameraManager()->getActiveCamera());
@@ -83,38 +91,46 @@ void MainWindow::sceneLoadPressed()
 
 void MainWindow::addObjHullModelPressed()
 {
-    // auto builder = DefaultHullCubeBuilder();
-    // builder.setName("Hull Cube");
-    // builder.setWidth(1.0);
-    // auto object = builder.build();
-    // 
-    // auto command = std::shared_ptr<ICommand>(new AddHullModelCommand(object));
-    // facade->execute(command);
+    Scene* scene = nullptr;
+    IObject* model = WireframeCubeDirector().makeObject();
+
+    facade.execute(RequestSceneCommand(*(managerFactory->getSceneManager()), scene));
+    facade.execute(AddObjectCommand(*(managerFactory->getObjectManager()), *scene, model));
 
     updateHierarchy();
 }
 
 void MainWindow::clearScenePressed()
 {
-    // auto command = std::shared_ptr<ICommand>(new ClearSceneCommand());
-    // facade->execute(command);
+    Scene* scene = nullptr;
+
+    facade.execute(RequestSceneCommand(*(managerFactory->getSceneManager()), scene));
+    facade.execute(ClearSceneCommand(*(managerFactory->getObjectManager()), *scene));
 
     updateHierarchy();
-
     // transformer.reset();
     redrawScene();
 }
 
+void MainWindow::deleteObject(IObject* object)
+{
+    Scene* scene = nullptr;
+
+    facade.execute(RequestSceneCommand(*(managerFactory->getSceneManager()), scene));
+    facade.execute(RemoveObjectCommand(*(managerFactory->getObjectManager()), *scene, object));
+
+    updateHierarchy();
+    updateInspector();
+}
+
 void MainWindow::selectionToggled(IObject* object, bool state)
 {
-    // auto command = std::shared_ptr<ICommand>(new ToggleSelectionCommand(object));
-    // facade->execute(command);
+    if (state)
+        facade.execute(SelectObjectCommand(*(managerFactory->getSelectionManager()), object));
+    else
+        facade.execute(DeselectObjectCommand(*(managerFactory->getSelectionManager()), object));
 
-    // auto selection = managerFactory->createSelectionManager()->getSelected();
-    // if (selection->size() == 1)
-    //     inspectorWidget->inspect(*selection->begin());
-    // else
-    //     inspectorWidget->inspect(nullptr);
+    updateInspector();
 }
 
 void MainWindow::mousePressViewport(QMouseEvent* event)
@@ -129,6 +145,14 @@ void MainWindow::mousePressViewport(QMouseEvent* event)
 
 void MainWindow::mouseMoveViewport(QMouseEvent* event)
 {
+    Vector offset(2, 2, 2);
+    IObject* selection = nullptr;
+
+    facade.execute(GetSelectionCommand(*(managerFactory->getSelectionManager()), selection));
+    facade.execute(TranslateObjectCommand(*(managerFactory->getTransformManager()), selection, offset));
+
+    updateInspector();
+    redrawScene();
     // if (transformer.isActive())
     // {
     //     transformer.touchMove(event->pos().x(), event->pos().y());
@@ -163,5 +187,16 @@ void MainWindow::updateHierarchy()
         facade.execute(RequestSceneCommand(*(managerFactory->getSceneManager()), scene));
 
         hierarchyWidget->updateHierarchy(*scene);
+    }
+}
+
+void MainWindow::updateInspector()
+{
+    if (inspectorWidget)
+    {
+        IObject* selection = nullptr;
+        facade.execute(GetSelectionCommand(*(managerFactory->getSelectionManager()), selection));
+
+        inspectorWidget->inspect(selection);
     }
 }

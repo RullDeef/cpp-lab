@@ -14,3 +14,13 @@ void IObject::setName(const std::string& newName)
 {
     name = newName;
 }
+
+Transform& IObject::getTransform()
+{
+    return transform;
+}
+
+const Transform& IObject::getTransform() const
+{
+    return transform;
+}

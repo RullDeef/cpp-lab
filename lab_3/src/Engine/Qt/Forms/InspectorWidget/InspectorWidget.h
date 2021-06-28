@@ -15,8 +15,14 @@ public:
 
     void inspect(IObject* object);
 
+signals:
+    void deleteObject(IObject* object);
+
+protected slots:
+    void deleteButtonPressed();
+
 private:
     Ui::InspectorWidget ui;
 
-    IObject* object;
+    IObject* object = nullptr;
 };

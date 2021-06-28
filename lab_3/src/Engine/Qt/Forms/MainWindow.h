@@ -29,6 +29,7 @@ protected slots:
     void addObjHullModelPressed();
     void clearScenePressed();
 
+    void deleteObject(IObject* object);
     void selectionToggled(IObject* object, bool state);
 
     void mousePressViewport(QMouseEvent* event);
@@ -39,6 +40,7 @@ private:
     void connectActions();
 
     void updateHierarchy();
+    void updateInspector();
 
     Ui::MainWindowClass ui;
     Facade facade;

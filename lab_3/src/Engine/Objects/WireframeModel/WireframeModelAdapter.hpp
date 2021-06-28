@@ -12,6 +12,9 @@ public:
 
     ~WireframeModelAdapter();
 
+    WireframeModel& getModel();
+    const WireframeModel& getModel() const;
+
     void accept(IObjectVisitor& visitor) override;
 
 private:

@@ -1,5 +1,6 @@
+#include <QPushButton>
 #include "InspectorWidget.h"
-//#include "TransformWidget/TransformWidget.h"
+#include "TransformWidget/TransformWidget.h"
 
 
 InspectorWidget::InspectorWidget()
@@ -23,9 +24,21 @@ void InspectorWidget::inspect(IObject* object)
 
     if (object)
     {
-        // widget()->layout()->addWidget(new TransformWidget(object->getTransform()));
+        this->object = object;
+
+        QPushButton* deleteButton = new QPushButton();
+        deleteButton->setText(u8"удалить выделенное");
+        connect(deleteButton, &QPushButton::pressed, this, &InspectorWidget::deleteButtonPressed);
+
+        widget()->layout()->addWidget(deleteButton);
+        widget()->layout()->addWidget(new TransformWidget(object->getTransform()));
 
         auto spacer = new QSpacerItem(0, height() / 2, QSizePolicy::Fixed, QSizePolicy::Expanding);
         widget()->layout()->addItem(spacer);
     }
+}
+
+void InspectorWidget::deleteButtonPressed()
+{
+    emit deleteObject(object);
 }

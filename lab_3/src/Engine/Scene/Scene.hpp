@@ -17,6 +17,11 @@ public:
     Scene(_InputIt iterBegin, _InputIt iterEnd)
         : objects(iterBegin, iterEnd) {}
 
+    void insert(ObjectIterator iter, IObject* object);
+
+    void erase(ConstObjectIterator iter);
+    void erase(ConstObjectIterator iterFirst, ConstObjectIterator iterLast);
+
     ObjectIterator begin();
     ObjectIterator end();
 
