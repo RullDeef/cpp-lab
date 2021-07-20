@@ -13,6 +13,12 @@ public:
     constexpr Vector(const Vector& v)
         : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
+    Vector& operator=(const Vector& v)
+    {
+        x = v.x; y = v.y; z = v.z; w = v.w;
+        return *this;
+    }
+
     constexpr double getX() const { return x; }
     constexpr double getY() const { return y; }
     constexpr double getZ() const { return z; }

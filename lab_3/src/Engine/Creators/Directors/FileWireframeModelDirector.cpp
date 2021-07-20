@@ -9,7 +9,7 @@ FileWireframeModelDirector::FileWireframeModelDirector(const std::string& filena
 {
 }
 
-IObject* FileWireframeModelDirector::makeObject()
+std::shared_ptr<IObject> FileWireframeModelDirector::makeObject()
 {
     WireframeModelBuilder builder;
     OBJLoader loader(filename);
@@ -28,5 +28,5 @@ IObject* FileWireframeModelDirector::makeObject()
         }
     }
 
-    return new WireframeModelAdapter(builder.getResult());
+    return std::shared_ptr<IObject>(new WireframeModelAdapter(builder.getResult()));
 }

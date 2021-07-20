@@ -13,6 +13,8 @@ public:
     NamedVectorWidget(const QString& name, const Vector& vector);
     virtual ~NamedVectorWidget() = default;
 
+    Vector getValue() const;
+
 private:
     Ui::NamedVectorWidget ui;
 };

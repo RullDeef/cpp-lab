@@ -28,14 +28,21 @@ void InspectorWidget::inspect(IObject* object)
 
         QPushButton* deleteButton = new QPushButton();
         deleteButton->setText(u8"удалить выделенное");
+        widget()->layout()->addWidget(deleteButton);
         connect(deleteButton, &QPushButton::pressed, this, &InspectorWidget::deleteButtonPressed);
 
-        widget()->layout()->addWidget(deleteButton);
-        widget()->layout()->addWidget(new TransformWidget(object->getTransform()));
+        auto transformWidget = new TransformWidget(object->getTransform());
+        widget()->layout()->addWidget(transformWidget);
+        connect(transformWidget, &TransformWidget::transformChanged, this, &InspectorWidget::transformChangedSlot);
 
         auto spacer = new QSpacerItem(0, height() / 2, QSizePolicy::Fixed, QSizePolicy::Expanding);
         widget()->layout()->addItem(spacer);
     }
+}
+
+void InspectorWidget::transformChangedSlot()
+{
+    emit transformChanged();
 }
 
 void InspectorWidget::deleteButtonPressed()

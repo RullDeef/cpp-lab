@@ -11,7 +11,7 @@ class FileWireframeModelDirector : public IObjectDirector
 public:
     explicit FileWireframeModelDirector(const std::string& filename);
 
-    IObject* makeObject() override;
+    std::shared_ptr<IObject> makeObject() override;
 
 private:
     const std::string filename;

@@ -15,8 +15,8 @@ public:
     const std::string& getName() const;
     void setName(const std::string& newName);
 
-    Transform& getTransform();
-    const Transform& getTransform() const;
+    virtual Transform& getTransform();
+    virtual const Transform& getTransform() const;
 
     virtual void accept(IObjectVisitor& visitor) {};
 

@@ -10,3 +10,8 @@ NamedVectorWidget::NamedVectorWidget(const QString& name, const Vector& vector)
     ui.yInput->setValue(vector.getY());
     ui.zInput->setValue(vector.getZ());
 }
+
+Vector NamedVectorWidget::getValue() const
+{
+    return Vector(ui.xInput->value(), ui.yInput->value(), ui.zInput->value());
+}

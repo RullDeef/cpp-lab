@@ -31,6 +31,7 @@ protected slots:
 
     void deleteObject(IObject* object);
     void selectionToggled(IObject* object, bool state);
+    void inspectorChanged();
 
     void mousePressViewport(QMouseEvent* event);
     void mouseMoveViewport(QMouseEvent* event);

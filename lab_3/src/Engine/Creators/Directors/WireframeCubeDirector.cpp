@@ -4,7 +4,7 @@
 #include "Utils/Logger.hpp"
 
 
-IObject* WireframeCubeDirector::makeObject()
+std::shared_ptr<IObject> WireframeCubeDirector::makeObject()
 {
     LOG_FUNC;
 
@@ -35,7 +35,7 @@ IObject* WireframeCubeDirector::makeObject()
     builder.addEdge(5, 7);
     builder.addEdge(6, 7);
 
-    IObject* object = new WireframeModelAdapter(builder.getResult());
+    std::shared_ptr<IObject> object = std::shared_ptr<IObject>(new WireframeModelAdapter(builder.getResult()));
     object->setName("Cube");
     return object;
 }

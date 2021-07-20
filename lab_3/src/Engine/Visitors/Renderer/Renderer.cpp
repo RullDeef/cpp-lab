@@ -5,7 +5,7 @@
 #include "RenderViewport.hpp"
 
 
-Renderer::Renderer(RenderViewport* viewport)
+Renderer::Renderer(RenderViewport& viewport)
     : viewport(viewport)
 {
 }
@@ -13,7 +13,7 @@ Renderer::Renderer(RenderViewport* viewport)
 void Renderer::beginFrame(const Camera& camera)
 {
     matrixStack.push(camera.getProjectionMatrix());
-    viewport->clear();
+    viewport.clear();
 }
 
 void Renderer::endFrame()
@@ -42,10 +42,10 @@ void Renderer::visit(WireframeModelAdapter& object)
         const auto& v1 = vertices[i];
         const auto& v2 = vertices[j];
 
-        const auto& p1 = v1.getPosition() * worldMatrix;
-        const auto& p2 = v2.getPosition() * worldMatrix;
+        const auto& p1 = (v1.getPosition() * worldMatrix).wnorm();
+        const auto& p2 = (v2.getPosition() * worldMatrix).wnorm();
 
-        viewport->drawLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+        viewport.drawLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
     }
 
     popMatrix();

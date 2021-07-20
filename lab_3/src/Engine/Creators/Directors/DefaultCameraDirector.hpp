@@ -1,10 +1,11 @@
 #pragma once
 
+#include <memory>
 #include "IObjectDirector.hpp"
 
 
 class DefaultCameraDirector : public IObjectDirector
 {
 public:
-    IObject* makeObject() override;
+    std::shared_ptr<IObject> makeObject() override;
 };

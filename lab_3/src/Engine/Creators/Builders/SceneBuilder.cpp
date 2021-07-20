@@ -3,18 +3,18 @@
 #include "Utils/Logger.hpp"
 
 
-void SceneBuilder::addObject(IObject* object)
+void SceneBuilder::addObject(std::shared_ptr<IObject> object)
 {
     LOG_FUNC;
 
     objects.push_back(object);
 }
 
-Scene* SceneBuilder::getResult()
+std::shared_ptr<Scene> SceneBuilder::getResult()
 {
     LOG_FUNC;
 
-    Scene* result = new Scene(objects.begin(), objects.end());
+    std::shared_ptr<Scene> result = std::make_shared<Scene>(objects.begin(), objects.end());
     objects.clear();
     return result;
 }

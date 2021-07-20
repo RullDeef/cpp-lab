@@ -13,13 +13,13 @@ public:
 
     // Transform& operator=(const Transform& t) = delete;
 
-    const Vector& getPosition() const;
-    const Vector& getRotation() const;
-    const Vector& getScale() const;
+    virtual const Vector& getPosition() const;
+    virtual const Vector& getRotation() const;
+    virtual const Vector& getScale() const;
 
-    void setPosition(const Vector& pos);
-    void setRotation(const Vector& rot);
-    void setScale(const Vector& scl);
+    virtual void setPosition(const Vector& pos);
+    virtual void setRotation(const Vector& rot);
+    virtual void setScale(const Vector& scl);
 
     operator Matrix() const;
 

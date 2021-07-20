@@ -6,5 +6,5 @@
 class WireframeCubeDirector : public IObjectDirector
 {
 public:
-    IObject* makeObject() override;
+    std::shared_ptr<IObject> makeObject() override;
 };

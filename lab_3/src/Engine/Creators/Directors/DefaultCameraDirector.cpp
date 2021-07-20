@@ -4,13 +4,13 @@
 #include "Utils/Logger.hpp"
 
 
-IObject* DefaultCameraDirector::makeObject()
+std::shared_ptr<IObject> DefaultCameraDirector::makeObject()
 {
     LOG_FUNC;
 
     CameraBuilder builder;
 
-    auto camera = new CameraAdapter(builder.getResult());
+    auto camera = std::shared_ptr<IObject>(new CameraAdapter(builder.getResult()));
     camera->setName("Main Camera");
     return camera;
 }

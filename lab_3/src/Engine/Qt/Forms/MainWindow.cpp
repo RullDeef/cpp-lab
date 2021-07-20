@@ -1,5 +1,6 @@
 #include <QTimer>
 #include <QMouseEvent>
+#include <QFileDialog>
 #include "MainWindow.h"
 #include "API/Facade/Facade.hpp"
 #include "Qt/QtManagerFactory.hpp"
@@ -33,6 +34,7 @@ MainWindow::MainWindow()
         inspectorWidget = new InspectorWidget();
         addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, inspectorWidget);
         connect(inspectorWidget, &InspectorWidget::deleteObject, this, &MainWindow::deleteObject);
+        connect(inspectorWidget, &InspectorWidget::transformChanged, this, &MainWindow::inspectorChanged);
     }
 
     connect((QtRenderViewport *)viewport, &QtRenderViewport::mousePressSignal, this, &MainWindow::mousePressViewport);
@@ -40,7 +42,7 @@ MainWindow::MainWindow()
     connect((QtRenderViewport *)viewport, &QtRenderViewport::mouseReleaseSignal, this, &MainWindow::mouseReleaseViewport);
     connectActions();
 
-    Scene* scene = nullptr;
+    std::shared_ptr<Scene> scene;
     facade.execute(LoadEmptySceneCommand(*(managerFactory->getLoadManager()), scene));
     facade.execute(SetSceneCommand(*(managerFactory->getSceneManager()), scene));
     facade.execute(UpdateSceneCameraCommand(*(managerFactory->getCameraManager()), *scene));
@@ -54,8 +56,8 @@ MainWindow::MainWindow()
 
 void MainWindow::redrawScene()
 {
-    const Scene* scene = nullptr;
-    const Camera* camera = nullptr;
+    std::shared_ptr<Scene> scene;
+    std::shared_ptr<Camera> camera;
 
     facade.execute(RequestConstSceneCommand(*(managerFactory->getSceneManager()), scene));
     facade.execute(RequestConstActiveCameraCommand(*(managerFactory->getCameraManager()), camera));
@@ -76,26 +78,28 @@ void MainWindow::sceneCreatePressed()
     facade.execute(UpdateSceneCameraCommand(*(managerFactory->getCameraManager()), *scene));
 
     updateHierarchy();
-
-    // transformer.reset(managerFactory->createCameraManager()->getActiveCamera());
 }
 
 void MainWindow::sceneLoadPressed()
 {
-    // facade->execute(std::make_shared<LoadSceneCommand>());
+    std::string filename = QFileDialog::getOpenFileName().toStdString();
+
+    Scene* scene = nullptr;
+    facade.execute(LoadFileSceneCommand(*(managerFactory->getLoadManager()), scene, filename));
+    facade.execute(SetSceneCommand(*(managerFactory->getSceneManager()), scene));
+    facade.execute(UpdateSceneCameraCommand(*(managerFactory->getCameraManager()), *scene));
 
     updateHierarchy();
-
-    // transformer.reset(managerFactory->createCameraManager()->getActiveCamera());
 }
 
 void MainWindow::addObjHullModelPressed()
 {
     Scene* scene = nullptr;
-    IObject* model = WireframeCubeDirector().makeObject();
+    std::shared_ptr<IObject> model = WireframeCubeDirector().makeObject();
 
     facade.execute(RequestSceneCommand(*(managerFactory->getSceneManager()), scene));
     facade.execute(AddObjectCommand(*(managerFactory->getObjectManager()), *scene, model));
+    facade.execute(ClearSelectionCommand(*(managerFactory->getSelectionManager())));
 
     updateHierarchy();
 }
@@ -108,7 +112,6 @@ void MainWindow::clearScenePressed()
     facade.execute(ClearSceneCommand(*(managerFactory->getObjectManager()), *scene));
 
     updateHierarchy();
-    // transformer.reset();
     redrawScene();
 }
 
@@ -118,6 +121,7 @@ void MainWindow::deleteObject(IObject* object)
 
     facade.execute(RequestSceneCommand(*(managerFactory->getSceneManager()), scene));
     facade.execute(RemoveObjectCommand(*(managerFactory->getObjectManager()), *scene, object));
+    facade.execute(ClearSelectionCommand(*(managerFactory->getSelectionManager())));
 
     updateHierarchy();
     updateInspector();
@@ -133,6 +137,13 @@ void MainWindow::selectionToggled(IObject* object, bool state)
     updateInspector();
 }
 
+void MainWindow::inspectorChanged()
+{
+    updateInspector();
+
+    redrawScene();
+}
+
 void MainWindow::mousePressViewport(QMouseEvent* event)
 {
     // if (event->button() == Qt::MouseButton::LeftButton)
@@ -145,21 +156,14 @@ void MainWindow::mousePressViewport(QMouseEvent* event)
 
 void MainWindow::mouseMoveViewport(QMouseEvent* event)
 {
-    Vector offset(2, 2, 2);
-    IObject* selection = nullptr;
-
-    facade.execute(GetSelectionCommand(*(managerFactory->getSelectionManager()), selection));
-    facade.execute(TranslateObjectCommand(*(managerFactory->getTransformManager()), selection, offset));
-
-    updateInspector();
-    redrawScene();
-    // if (transformer.isActive())
-    // {
-    //     transformer.touchMove(event->pos().x(), event->pos().y());
-    //     Transform t = transformer.getResult();
-    //     auto command = std::shared_ptr<ICommand>(new TransformSelectedCommand(t));
-    //     facade->execute(command);
-    // }
+    // Vector offset(2, 2, 2);
+    // IObject* selection = nullptr;
+    // 
+    // facade.execute(GetSelectionCommand(*(managerFactory->getSelectionManager()), selection));
+    // facade.execute(TranslateObjectCommand(*(managerFactory->getTransformManager()), selection, offset));
+    // 
+    // updateInspector();
+    // redrawScene();
 }
 
 void MainWindow::mouseReleaseViewport(QMouseEvent* event)
@@ -197,6 +201,10 @@ void MainWindow::updateInspector()
         IObject* selection = nullptr;
         facade.execute(GetSelectionCommand(*(managerFactory->getSelectionManager()), selection));
 
-        inspectorWidget->inspect(selection);
+        auto group = static_cast<ObjectGroup*>(selection);
+        if (group->begin() != group->end())
+            inspectorWidget->inspect(selection);
+        else
+            inspectorWidget->inspect(nullptr);
     }
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <list>
 
 class IObject;
@@ -7,8 +8,8 @@ class IObject;
 
 class Scene
 {
-    using ObjectIterator = std::list<IObject*>::iterator;
-    using ConstObjectIterator = std::list<IObject*>::const_iterator;
+    using ObjectIterator = std::list<std::shared_ptr<IObject>>::iterator;
+    using ConstObjectIterator = std::list<std::shared_ptr<IObject>>::const_iterator;
 
 public:
     Scene() = default;
@@ -17,7 +18,7 @@ public:
     Scene(_InputIt iterBegin, _InputIt iterEnd)
         : objects(iterBegin, iterEnd) {}
 
-    void insert(ObjectIterator iter, IObject* object);
+    void insert(ObjectIterator iter, std::shared_ptr<IObject> object);
 
     void erase(ConstObjectIterator iter);
     void erase(ConstObjectIterator iterFirst, ConstObjectIterator iterLast);
@@ -29,5 +30,5 @@ public:
     ConstObjectIterator end() const;
 
 private:
-    std::list<IObject*> objects;
+    std::list<std::shared_ptr<IObject>> objects;
 };

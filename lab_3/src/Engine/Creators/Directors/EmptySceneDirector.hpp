@@ -6,5 +6,5 @@
 class EmptySceneDirector : public SceneDirector
 {
 public:
-    virtual Scene* makeScene() override;
+    virtual std::shared_ptr<Scene> makeScene() override;
 };

@@ -1,7 +1,7 @@
 #include "Scene.hpp"
 
 
-void Scene::insert(ObjectIterator iter, IObject* object)
+void Scene::insert(ObjectIterator iter, std::shared_ptr<IObject> object)
 {
     objects.insert(iter, object);
 }

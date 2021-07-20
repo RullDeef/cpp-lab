@@ -17,9 +17,11 @@ public:
 
 signals:
     void deleteObject(IObject* object);
+    void transformChanged();
 
 protected slots:
     void deleteButtonPressed();
+    void transformChangedSlot();
 
 private:
     Ui::InspectorWidget ui;

@@ -1,10 +1,12 @@
 #pragma once
 
+#include <memory>
+
 class Scene;
 
 
 class SceneDirector
 {
 public:
-    virtual Scene* makeScene() = 0;
+    virtual std::shared_ptr<Scene> makeScene() = 0;
 };

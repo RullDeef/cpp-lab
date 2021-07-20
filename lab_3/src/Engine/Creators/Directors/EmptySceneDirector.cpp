@@ -9,13 +9,13 @@
 #include "Utils/Logger.hpp"
 
 
-Scene* EmptySceneDirector::makeScene()
+std::shared_ptr<Scene> EmptySceneDirector::makeScene()
 {
     LOG_FUNC;
 
     SceneBuilder builder;
 
-    IObject* camera = new CameraAdapter(CameraBuilder().getResult());
+    std::shared_ptr<IObject> camera = std::shared_ptr<IObject>(new CameraAdapter(CameraBuilder().getResult()));
     camera->setName("Main Camera");
     builder.addObject(camera);
 

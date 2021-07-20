@@ -113,6 +113,7 @@
     <ClInclude Include="src\Engine\Creators\Builders\WireframeModelBuilder.hpp" />
     <ClInclude Include="src\Engine\Creators\Directors\DefaultCameraDirector.hpp" />
     <ClInclude Include="src\Engine\Creators\Directors\EmptySceneDirector.hpp" />
+    <ClInclude Include="src\Engine\Creators\Directors\FileSceneDirector.hpp" />
     <ClInclude Include="src\Engine\Creators\Directors\FileWireframeModelDirector.hpp" />
     <ClInclude Include="src\Engine\Creators\Directors\IObjectDirector.hpp" />
     <ClInclude Include="src\Engine\Creators\Directors\SceneDirector.hpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="src\Engine\Creators\Loaders\SceneLoader.hpp" />
     <ClInclude Include="src\Engine\Creators\Loaders\OBJLoader\OBJLoader.hpp" />
     <ClInclude Include="src\Engine\Objects\ObjectGroup.hpp" />
+    <ClInclude Include="src\Engine\Objects\Transform\GroupTransform.hpp" />
     <ClInclude Include="src\Engine\Objects\Transform\Transform.hpp" />
     <ClInclude Include="src\Engine\Qt\QtManagerFactory.hpp" />
     <QtMoc Include="src\Engine\Qt\Renderer\QtRenderViewport.hpp" />
@@ -166,14 +168,17 @@
     <ClCompile Include="src\Engine\Creators\Builders\WireframeModelBuilder.cpp" />
     <ClCompile Include="src\Engine\Creators\Directors\DefaultCameraDirector.cpp" />
     <ClCompile Include="src\Engine\Creators\Directors\EmptySceneDirector.cpp" />
+    <ClCompile Include="src\Engine\Creators\Directors\FileSceneDirector.cpp" />
     <ClCompile Include="src\Engine\Creators\Directors\FileWireframeModelDirector.cpp" />
     <ClCompile Include="src\Engine\Creators\Directors\WireframeCubeDirector.cpp" />
     <ClCompile Include="src\Engine\Creators\Loaders\OBJLoader\OBJFace.cpp" />
     <ClCompile Include="src\Engine\Creators\Loaders\OBJLoader\OBJLoader.cpp" />
+    <ClCompile Include="src\Engine\Creators\Loaders\SceneLoader.cpp" />
     <ClCompile Include="src\Engine\Objects\Camera\Camera.cpp" />
     <ClCompile Include="src\Engine\Objects\Camera\CameraAdapter.cpp" />
     <ClCompile Include="src\Engine\Objects\IObject.cpp" />
     <ClCompile Include="src\Engine\Objects\ObjectGroup.cpp" />
+    <ClCompile Include="src\Engine\Objects\Transform\GroupTransform.cpp" />
     <ClCompile Include="src\Engine\Objects\Transform\Transform.cpp" />
     <ClCompile Include="src\Engine\Objects\WireframeModel\WireframeModel.cpp" />
     <ClCompile Include="src\Engine\Objects\WireframeModel\WireframeModelAdapter.cpp" />

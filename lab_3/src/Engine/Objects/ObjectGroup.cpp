@@ -5,11 +5,13 @@
 ObjectGroup::ObjectGroup(bool isOwner)
     : isOwner(isOwner)
 {
+    transform = new GroupTransform(*this);
 }
 
 ObjectGroup::ObjectGroup(const std::string& name, bool isOwner)
     : IObject(name), isOwner(isOwner)
 {
+    transform = new GroupTransform(*this);
 }
 
 ObjectGroup::~ObjectGroup()
@@ -17,6 +19,18 @@ ObjectGroup::~ObjectGroup()
     if (isOwner)
         for (auto& object : objects)
             delete object;
+
+    delete transform;
+}
+
+Transform& ObjectGroup::getTransform()
+{
+    return *transform;
+}
+
+const Transform& ObjectGroup::getTransform() const
+{
+    return *transform;
 }
 
 void ObjectGroup::accept(IObjectVisitor& visitor)
@@ -24,7 +38,7 @@ void ObjectGroup::accept(IObjectVisitor& visitor)
     visitor.visit(*this);
 }
 
-void ObjectGroup::insert(ObjectIterator iter, IObject* object)
+void ObjectGroup::insert(ObjectIterator iter, std::shared_ptr<IObject> object)
 {
     objects.insert(iter, object);
 }

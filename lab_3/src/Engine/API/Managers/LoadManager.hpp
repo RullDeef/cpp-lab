@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include "IManager.hpp"
 
@@ -10,8 +11,8 @@ class Scene;
 class LoadManager : public IManager
 {
 public:
-    Scene* loadEmptyScene();
-    // Scene* loadScene(const std::string& filename);
+    std::shared_ptr<Scene> loadEmptyScene();
+    std::shared_ptr<Scene> loadScene(const std::string& filename);
 
     void loadWireframe(Scene& scene, const std::string& filename);
     void loadCamera(Scene& scene, const std::string& filename);

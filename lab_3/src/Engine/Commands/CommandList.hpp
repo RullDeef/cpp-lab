@@ -27,7 +27,7 @@ private:
     const Camera& camera;
 };
 
-using RequestSceneCommand = RequestCommand<SceneManager, Scene, (Scene& (SceneManager::*)())&SceneManager::getScene>;
+using RequestSceneCommand = RequestCommand<SceneManager, std::shared_ptr<Scene>, (std::shared_ptr<Scene> (SceneManager::*)())&SceneManager::getScene>;
 using RequestConstSceneCommand = RequestCommand<SceneManager, const Scene, (const Scene& (SceneManager::*)() const)&SceneManager::getScene>;
 
 class SetSceneCommand : public ICommand
@@ -68,20 +68,34 @@ using SwitchPrevActiveCamera = ManagerCommand<CameraManager, &CameraManager::swi
 class LoadEmptySceneCommand : public ICommand
 {
 public:
-    LoadEmptySceneCommand(LoadManager& manager, Scene*& scene)
+    LoadEmptySceneCommand(LoadManager& manager, std::shared_ptr<Scene>& scene)
         : manager(manager), scene(scene) {}
 
     void execute() override { scene = manager.loadEmptyScene(); }
 
 private:
     LoadManager& manager;
-    Scene*& scene;
+    std::shared_ptr<Scene>& scene;
+};
+
+class LoadFileSceneCommand : public ICommand
+{
+public:
+    LoadFileSceneCommand(LoadManager& manager, std::shared_ptr<Scene>& scene, const std::string& filename)
+        : manager(manager), scene(scene), filename(filename) {}
+
+    void execute() override { scene = manager.loadScene(filename); }
+
+private:
+    LoadManager& manager;
+    std::shared_ptr<Scene>& scene;
+    std::string filename;
 };
 
 class AddObjectCommand : public ICommand
 {
 public:
-    AddObjectCommand(ObjectManager& manager, Scene& scene, IObject* object)
+    AddObjectCommand(ObjectManager& manager, Scene& scene, std::shared_ptr<IObject> object)
         : manager(manager), scene(scene), object(object) {}
 
     void execute() override { manager.addObject(scene, object); }
@@ -89,13 +103,13 @@ public:
 private:
     ObjectManager& manager;
     Scene& scene;
-    IObject* object;
+    std::shared_ptr<IObject> object;
 };
 
 class RemoveObjectCommand : public ICommand
 {
 public:
-    RemoveObjectCommand(ObjectManager& manager, Scene& scene, IObject* object)
+    RemoveObjectCommand(ObjectManager& manager, Scene& scene, std::shared_ptr<IObject> object)
         : manager(manager), scene(scene), object(object) {}
 
     void execute() override { manager.deleteObject(scene, object); }
@@ -103,7 +117,7 @@ public:
 private:
     ObjectManager& manager;
     Scene& scene;
-    IObject* object;
+    std::shared_ptr<IObject> object;
 };
 
 class ClearSceneCommand : public ICommand

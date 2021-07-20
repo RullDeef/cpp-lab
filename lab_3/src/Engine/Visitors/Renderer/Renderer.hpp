@@ -11,7 +11,7 @@ class RenderViewport;
 class Renderer : public IObjectVisitor
 {
 public:
-    explicit Renderer(RenderViewport* viewport);
+    explicit Renderer(RenderViewport& viewport);
 
     void beginFrame(const Camera& camera);
     void endFrame();
@@ -25,8 +25,6 @@ private:
     void pushMatrix(const Matrix& mat);
     void popMatrix();
 
-    RenderViewport* viewport;
-    // const Camera* activeCamera = nullptr;
-
+    RenderViewport& viewport;
     std::stack<Matrix> matrixStack;
 };

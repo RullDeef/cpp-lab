@@ -9,7 +9,7 @@
 #include "Utils/Logger.hpp"
 
 
-void ObjectManager::addObject(Scene& scene, IObject* object)
+void ObjectManager::addObject(Scene& scene, std::shared_ptr<IObject> object)
 {
     LOG_FUNC;
 
@@ -21,7 +21,7 @@ void ObjectManager::addObject(Scene& scene, IObject* object)
 
     std::string name = object->getName();
     int counter = 0;
-    std::find_if(scene.begin(), scene.end(), [&name, &counter](IObject* obj)
+    std::find_if(scene.begin(), scene.end(), [&name, &counter](std::shared_ptr<IObject> obj)
     {
         if (obj->getName() == name)
             counter++;
@@ -34,7 +34,7 @@ void ObjectManager::addObject(Scene& scene, IObject* object)
     scene.insert(scene.end(), object);
 }
 
-void ObjectManager::deleteObject(Scene& scene, IObject* object)
+void ObjectManager::deleteObject(Scene& scene, std::shared_ptr<IObject> object)
 {
     LOG_FUNC;
 
@@ -43,7 +43,7 @@ void ObjectManager::deleteObject(Scene& scene, IObject* object)
 
     if (std::find(scene.begin(), scene.end(), object) == scene.end())
     {
-        if (auto group = dynamic_cast<ObjectGroup*>(object))
+        if (auto group = dynamic_cast<ObjectGroup*>(object.get()))
         {
             for (auto& obj : *group)
                 deleteObject(scene, obj);

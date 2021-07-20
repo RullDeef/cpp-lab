@@ -40,7 +40,7 @@ void Transform::setScale(const Vector& scl)
 Transform::operator Matrix() const
 {
     auto T = Matrix::translation(position);
-    auto R = Matrix::rotation(rotation);
+    auto R = Matrix::rotation(rotation / 180.0);
     auto S = Matrix::scaling(scale);
     return T * R * S;
 }

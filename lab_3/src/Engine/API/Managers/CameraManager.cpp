@@ -25,7 +25,7 @@ void CameraManager::setScene(Scene& newScene)
 
     for (auto& object : *scene)
     {
-        if (auto camera = dynamic_cast<CameraAdapter*>(object))
+        if (auto camera = dynamic_cast<CameraAdapter*>(object.get()))
         {
             activeCamera = &camera->getCamera();
             break;
